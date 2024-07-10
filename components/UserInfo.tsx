@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button, StyleSheet } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
-import { getUserByEmail } from "../services/hubspotService";
+import { getUserByEmail, getUserLeadDetailsByEmail } from "../services/hubspotService";
 
 const UserInfo: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -13,7 +13,8 @@ const UserInfo: React.FC = () => {
 
   const fetchUser = async () => {
     try {
-      const userData = await getUserByEmail(email);
+      //const userData = await getUserByEmail(email);
+      const userData = await getUserLeadDetailsByEmail(email);
       //console.log("USERDATA: \n");
       console.log(userData);
       //console.log("USERDATA ABOVE!");
@@ -38,6 +39,9 @@ const UserInfo: React.FC = () => {
             Name: {user.firstname} {user.lastname}
           </Text>
           <Text>Email: {user.email}</Text>
+          <Text>Arch Type: {user.arch_type}</Text>
+          <Text>Medical Waiver Sent? {user.medical_waiver_sent ? user.medical_waiver_sent : "False"}</Text>
+          <Text>Medical Waiver Signed? {user.medical_waiver_signed ? user.medical_waiver_signed : "False"}</Text>
           {/* Add other user details as needed */}
         </View>
       )}

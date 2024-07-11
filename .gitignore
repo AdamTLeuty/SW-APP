@@ -1,0 +1,95 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Output of the 'go build' command
+main
+main.exe
+*.out
+
+# Output of the 'go run' command
+*.run
+
+# Go test binaries
+*.test
+
+# Generated files
+*.exe~
+*.dll
+*.dmg
+*.ds_store
+*.dylib
+*.exe
+*.exe~
+*.o
+*.out
+*.pdb
+*.pid
+*.prof
+*.so
+*.swp
+
+# Output of the dep command
+/vendor/
+
+# Output of the Go vendor tool
+vendor/
+
+# Go workspace file
+*.workspace
+
+# Node modules (if you are using Node.js for frontend or other purposes)
+node_modules/
+
+# Logs
+*.log
+
+# IntelliJ IDEs
+.idea/
+
+# VS Code
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Emacs
+*~
+
+# Vim
+*.swp
+*.swo
+*.vim
+
+# JetBrains IDEs (e.g., GoLand)
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build and coverage directories
+bin/
+coverage/
+
+# Output of the golangci-lint
+golangci-lint-output.json
+
+# Environment variable files
+.env
+
+# Go mod and sum files should be tracked
+# Uncomment the following lines if you want to exclude these files
+# go.sum
+# go.mod
+
+# Specific OS generated files
+Thumbs.db
+ehthumbs.db
+
+# Any oher OS-specific temporary files or directories
+*~
+

@@ -32,14 +32,26 @@ export function Text(props: TextProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
-  return <DefaultText style={[{ color }, style]} {...otherProps} />;
+  const defaultStyle = {
+    color,
+    fontFamily: "Poppins",
+    // Add other default styles here
+  };
+
+  return <DefaultText style={[defaultStyle, style]} {...otherProps} />;
 }
 
 export function View(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "background");
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  const defaultStyle = {
+    backgroundColor,
+    fontFamily: "Poppins",
+    // Add other default styles here
+  };
+
+  return <DefaultView style={[defaultStyle, style]} {...otherProps} />;
 }
 
 export function TextInput(props: TextInputProps & { lightColor?: string; darkColor?: string }) {
@@ -47,5 +59,12 @@ export function TextInput(props: TextInputProps & { lightColor?: string; darkCol
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "background");
 
-  return <DefaultTextInput style={[{ color, backgroundColor }, style]} placeholderTextColor={color} {...otherProps} />;
+  const defaultStyle = {
+    color,
+    backgroundColor,
+    fontFamily: "Poppins",
+    // Add other default styles here
+  };
+
+  return <DefaultTextInput style={[defaultStyle, style]} placeholderTextColor={color} {...otherProps} />;
 }

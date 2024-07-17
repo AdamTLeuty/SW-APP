@@ -16,10 +16,10 @@ const UserInfo: React.FC = () => {
       //const userData = await getUserByEmail(email);
       const userData = await getUserLeadDetailsByEmail(email);
       //console.log("USERDATA: \n");
-      console.log(userData);
+      //console.log(userData);
       //console.log("USERDATA ABOVE!");
       setUser(userData);
-      console.log("User is: " + user);
+      //console.log("User is: " + user);
       setError("");
     } catch (err) {
       setError("Error fetching user data. Please check the email and try again.");

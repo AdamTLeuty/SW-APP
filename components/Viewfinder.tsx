@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, StyleSheet, TouchableOpacity } from "react-native";
+import { Button, StyleSheet, TouchableOpacity, LayoutChangeEvent } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 
 import { Text, View, TextInput } from "./Themed";
@@ -48,6 +48,7 @@ function Shutter_Button() {
 const Viewfinder: React.FC = () => {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
+  const [maxHeight, setMaxHeight] = useState(0);
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -79,6 +80,13 @@ const Viewfinder: React.FC = () => {
   function takePicture() {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
+
+  const onLayout = (event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout;
+    if (height > maxHeight) {
+      setMaxHeight(height);
+    }
+  };
   /*
     return (
       <MaskedView
@@ -117,13 +125,13 @@ const Viewfinder: React.FC = () => {
   return (
     <CameraView style={styles.camera} facing={facing}>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.gallery} onPress={openGallery}>
+        <TouchableOpacity style={[styles.gallery, { height: maxHeight }]} onPress={openGallery} onLayout={onLayout}>
           <GalleryIcon />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.shutter_button} onPress={takePicture}>
+        <TouchableOpacity style={[styles.shutter_button, { height: maxHeight }]} onPress={takePicture} onLayout={onLayout}>
           <Shutter_Button />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.flip} onPress={toggleCameraFacing}>
+        <TouchableOpacity style={[styles.flip, { height: maxHeight }]} onPress={toggleCameraFacing} onLayout={onLayout}>
           <FlipIcon />
         </TouchableOpacity>
       </View>
@@ -153,33 +161,30 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     backgroundColor: "transparent",
-    margin: 30,
+    margin: 28,
     //borderColor: "red",
     //borderWidth: 5,
     borderWidth: 5,
-    borderColor: "green",
     height: "auto",
-  },
-  flip: {
-    flex: 1,
-    alignSelf: "flex-end",
     alignItems: "flex-end",
-    borderWidth: 5,
-    borderColor: "red",
   },
+
   gallery: {
     flex: 1,
-    alignSelf: "flex-end",
     alignItems: "flex-start",
     borderWidth: 5,
-    borderColor: "red",
+    justifyContent: "center",
   },
   shutter_button: {
     flex: 1,
-    alignSelf: "flex-end",
     alignItems: "center",
     borderWidth: 5,
-    borderColor: "red",
+  },
+  flip: {
+    flex: 1,
+    borderWidth: 5,
+    justifyContent: "center",
+    alignItems: "flex-end",
   },
   text: {
     fontSize: 24,

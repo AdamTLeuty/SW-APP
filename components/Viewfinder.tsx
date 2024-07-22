@@ -125,13 +125,13 @@ const Viewfinder: React.FC = () => {
   return (
     <CameraView style={styles.camera} facing={facing}>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.gallery, { height: maxHeight }]} onPress={openGallery} onLayout={onLayout}>
+        <TouchableOpacity style={[styles.gallery]} onPress={openGallery} onLayout={onLayout}>
           <GalleryIcon />
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.shutter_button, { height: maxHeight }]} onPress={takePicture} onLayout={onLayout}>
+        <TouchableOpacity style={[styles.shutter_button]} onPress={takePicture} onLayout={onLayout}>
           <Shutter_Button />
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.flip, { height: maxHeight }]} onPress={toggleCameraFacing} onLayout={onLayout}>
+        <TouchableOpacity style={[styles.flip]} onPress={toggleCameraFacing} onLayout={onLayout}>
           <FlipIcon />
         </TouchableOpacity>
       </View>
@@ -158,31 +158,24 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   buttonContainer: {
-    flex: 1,
     flexDirection: "row",
     backgroundColor: "transparent",
     margin: 28,
-    //borderColor: "red",
-    //borderWidth: 5,
-    borderWidth: 5,
-    height: "auto",
-    alignItems: "flex-end",
+    alignItems: "center",
+    marginTop: "auto",
   },
 
   gallery: {
     flex: 1,
     alignItems: "flex-start",
-    borderWidth: 5,
     justifyContent: "center",
   },
   shutter_button: {
     flex: 1,
     alignItems: "center",
-    borderWidth: 5,
   },
   flip: {
     flex: 1,
-    borderWidth: 5,
     justifyContent: "center",
     alignItems: "flex-end",
   },

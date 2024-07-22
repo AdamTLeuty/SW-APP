@@ -7,7 +7,7 @@ import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 
-import { LogoTitle } from "@/components/Logo";
+import CustomHeader from "@/components/CustomHeader";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["name"]; color: string }) {
@@ -32,7 +32,7 @@ export default function TabLayout() {
           href: null,
           title: "Log In",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerTitle: (props) => <LogoTitle {...props} locked={true} />,
+          /*headerTitle: (props) => <LogoTitle {...props} locked={true} />,
           headerStyle: {
             height: 150, // Set the height of the header here
             borderBottomWidth: 0, // Remove the bottom border
@@ -45,7 +45,10 @@ export default function TabLayout() {
                 {({ pressed }) => <FontAwesome name="info-circle" size={25} color={Colors[colorScheme ?? "light"].text} style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />}
               </Pressable>
             </Link>
-          ),
+          ),*/
+          header: ({ navigation, route, options }) => {
+            return <CustomHeader locked={true} />;
+          },
         }}
       />
     </Tabs>

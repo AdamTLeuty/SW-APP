@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Button, StyleSheet } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { Button, Pressable, StyleSheet, Animated } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
 import { registerNewUser, loginExistingUser } from "../services/authService";
 import { storeToken } from "../services/tokenStorage";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
+import { ScreenStackHeaderCenterView } from "react-native-screens";
+
+import { useThemeColor } from "./Themed";
 
 //import { useRoute } from "@react-navigation/native";
 
@@ -44,6 +47,22 @@ const LoginArea: React.FC = () => {
     }
   };
 
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(scale, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scale, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+
   const handleLogin = async () => {
     try {
       const loginResponse = await loginExistingUser(email, password, login);
@@ -61,10 +80,37 @@ const LoginArea: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input} placeholder="Enter email" value={email} onChangeText={setEmail} />
-      <TextInput style={styles.input} placeholder="Enter password" value={password} onChangeText={setPassword} secureTextEntry={true} />
-      <Button title="Register" onPress={handleRegister} />
-      <Button title="Login" onPress={handleLogin} />
+      <TextInput
+        style={styles.input}
+        placeholder="Enter email"
+        placeHolderTextColorLight={"#BDBDBD"}
+        placeHolderTextColorDark={"#FFFFFF"}
+        lightColor={"#5700FF"}
+        darkColor={"FFFFFF"}
+        lightBgColor="#F7F6F8"
+        darkBgColor="#5700FF"
+        value={email}
+        onChangeText={setEmail}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Enter password"
+        placeHolderTextColorLight={"#BDBDBD"}
+        placeHolderTextColorDark={"#FFFFFF"}
+        lightColor={"#5700FF"}
+        darkColor={"FFFFFF"}
+        lightBgColor="#F7F6F8"
+        darkBgColor="#5700FF"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={true}
+      />
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <Pressable style={styles.loginButton} onPress={handleLogin} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+          <Text style={styles.loginButtonText}>Login</Text>
+        </Pressable>
+      </Animated.View>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {response ? <Text style={styles.userInfo}>{response}</Text> : null}
@@ -75,13 +121,16 @@ const LoginArea: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    width: "100%",
   },
   input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
     marginBottom: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 17,
+    paddingVertical: 15,
+    borderRadius: 10,
+    fontSize: 16,
+    verticalAlign: "bottom",
+    elevation: -100,
   },
   userInfo: {
     marginTop: 20,
@@ -90,6 +139,34 @@ const styles = StyleSheet.create({
     color: "red",
     marginTop: 10,
     textAlign: "center",
+  },
+  loginButton: {
+    backgroundColor: "#5700FF",
+    color: "white",
+    width: "100%",
+    textAlign: "center",
+    padding: 11,
+    borderRadius: 47,
+    marginTop: 23,
+  },
+  loginButtonText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 18,
+  },
+  orText: {
+    fontSize: 16,
+    marginVertical: 14,
+    padding: 0,
+    textAlign: "center",
+    width: "100%",
+  },
+  registerText: {
+    textAlign: "center",
+    fontSize: 16,
+    textDecorationStyle: "solid",
+    textDecorationColor: "#5700ff",
+    textDecorationLine: "underline",
   },
 });
 

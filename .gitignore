@@ -46,3 +46,4 @@ expo-env.d.ts
 android/
 .nvimlog
 .watchmanconfig
+*.pe

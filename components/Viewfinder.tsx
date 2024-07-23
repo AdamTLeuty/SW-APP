@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Button, StyleSheet, TouchableOpacity, LayoutChangeEvent } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { Image, Button, StyleSheet, TouchableOpacity, LayoutChangeEvent } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 
 import { Text, View, TextInput } from "./Themed";
@@ -49,6 +49,8 @@ const Viewfinder: React.FC = () => {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [maxHeight, setMaxHeight] = useState(0);
+  const cameraRef = useRef(null);
+  const [photo, setPhoto] = useState(null);
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -77,9 +79,13 @@ const Viewfinder: React.FC = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
-  function takePicture() {
-    setFacing((current) => (current === "back" ? "front" : "back"));
-  }
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      const options = { quality: 0.5, base64: true };
+      const photo = await cameraRef.current.takePictureAsync(options);
+      setPhoto(photo);
+    }
+  };
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
@@ -87,55 +93,28 @@ const Viewfinder: React.FC = () => {
       setMaxHeight(height);
     }
   };
-  /*
-    return (
-      <MaskedView
-        style={{ flex: 1, flexDirection: "row", height: "100%" }}
-        maskElement={
-          <View
-            style={{
-              // Transparent background because mask is based off alpha channel.
-              backgroundColor: "transparent",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Svg style={styles.svg} height="100%" width="100%">
-              <Ellipse cx="50%" cy="50%" rx="40%" ry="30%" />
-            </Svg>
-          </View>
-        }
-      >
 
-        <CameraView style={styles.camera} facing={facing}>
+  return (
+    <View style={styles.container}>
+      {photo ? (
+        <Image source={{ uri: photo.uri }} style={styles.preview} />
+      ) : (
+        <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.flip} onPress={toggleCameraFacing}>
-              <FlipIcon />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.gallery} onPress={openGallery}>
+            <TouchableOpacity style={[styles.gallery]} onPress={openGallery} onLayout={onLayout}>
               <GalleryIcon />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.shutter_button]} onPress={takePicture} onLayout={onLayout}>
+              <Shutter_Button />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.flip]} onPress={toggleCameraFacing} onLayout={onLayout}>
+              <FlipIcon />
             </TouchableOpacity>
           </View>
         </CameraView>
-      </MaskedView>
-    );
-  };*/
-
-  return (
-    <CameraView style={styles.camera} facing={facing}>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.gallery]} onPress={openGallery} onLayout={onLayout}>
-          <GalleryIcon />
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.shutter_button]} onPress={takePicture} onLayout={onLayout}>
-          <Shutter_Button />
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.flip]} onPress={toggleCameraFacing} onLayout={onLayout}>
-          <FlipIcon />
-        </TouchableOpacity>
-      </View>
-    </CameraView>
+      )}
+      {photo && <Button title="Retake" onPress={() => setPhoto(null)} />}
+    </View>
   );
 };
 
@@ -163,6 +142,10 @@ const styles = StyleSheet.create({
     margin: 28,
     alignItems: "center",
     marginTop: "auto",
+  },
+  preview: {
+    flex: 1,
+    width: "100%",
   },
 
   gallery: {

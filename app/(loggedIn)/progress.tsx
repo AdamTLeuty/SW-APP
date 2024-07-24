@@ -9,11 +9,9 @@ import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
 
-import Viewfinder from "@/components/Viewfinder";
-
 //import { useRoute } from "@react-navigation/native";
 
-export default function Camera() {
+export default function Progress() {
   const { isLoggedIn, logout } = useUserContext();
   //const routeTest = useRoute();
 
@@ -29,7 +27,9 @@ export default function Camera() {
 
   return (
     <View style={styles.container}>
-      <Viewfinder />
+      <Text style={styles.title}>Customer Support</Text>
+      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <Text style={styles.content}>We want to make sure that you have the best experience from start to finish.</Text>
     </View>
   );
 }
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    padding: 0,
+    padding: 20,
   },
   title: {
     fontSize: 20,
@@ -51,4 +51,5 @@ const styles = StyleSheet.create({
     height: 1,
     width: "80%",
   },
+  content: {},
 });

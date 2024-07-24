@@ -1,8 +1,11 @@
 import { Svg, Path, ClipPath, G, Rect, Defs } from "react-native-svg";
+import { useThemeColor } from "./Themed";
 
 export function TrayIcon(props: { iconName: string; color?: string; width?: string; height?: string }) {
+  const defaultColor = useThemeColor({}, "text"); //Use the default text colour for the colour scheme
+
   const icon = props.iconName;
-  const color = props.color ? props.color : "#FF00FF";
+  const color = props.color ? props.color : defaultColor;
 
   const width = props.width ? props.width : "50";
   const height = props.height ? props.height : width;

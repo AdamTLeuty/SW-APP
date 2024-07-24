@@ -37,11 +37,7 @@ export default function Home() {
       </Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text>Welcome to the SCC Portal home.</Text>
-      <TrayIcon iconName="home" color="#FF0000" width="60" />
-      <TrayIcon iconName="calendar" color="#00FF00" />
-      <TrayIcon iconName="photo" color="#0000FF" />
-      <TrayIcon iconName="play" color="#FFFF00" />
-      <TrayIcon iconName="support" color="#FF00FF" />
+
       <Button title="Sign Out" onPress={handleLogout} />
     </View>
   );

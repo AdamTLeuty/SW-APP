@@ -11,7 +11,7 @@ import { getToken } from "@/services/tokenStorage";
 
 //import { useRoute } from "@react-navigation/native";
 
-export default function Camera() {
+export default function Support() {
   const { isLoggedIn, logout } = useUserContext();
   //const routeTest = useRoute();
 
@@ -51,4 +51,5 @@ const styles = StyleSheet.create({
     height: 1,
     width: "80%",
   },
+  content: {},
 });

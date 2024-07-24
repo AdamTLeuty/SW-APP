@@ -47,3 +47,4 @@ android/
 .nvimlog
 .watchmanconfig
 *.pe
+metro.config.js

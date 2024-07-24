@@ -8,6 +8,7 @@ import { Text, View } from "@/components/Themed";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
+import { TrayIcon } from "@/components/Icon";
 
 //import { useRoute } from "@react-navigation/native";
 
@@ -31,9 +32,16 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Home</Text>
+      <Text style={styles.title} textBreakStrategy="balanced" fontWeight="800">
+        Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
+      </Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text>Welcome to the SCC Portal home.</Text>
+      <TrayIcon iconName="home" color="#FF0000" width="60" />
+      <TrayIcon iconName="calendar" color="#00FF00" />
+      <TrayIcon iconName="photo" color="#0000FF" />
+      <TrayIcon iconName="play" color="#FFFF00" />
+      <TrayIcon iconName="support" color="#FF00FF" />
       <Button title="Sign Out" onPress={handleLogout} />
     </View>
   );
@@ -44,12 +52,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    padding: 20,
+    padding: 26,
   },
   title: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
     fontFamily: "Poppins_Bold",
+    textAlign: "center",
   },
   separator: {
     marginVertical: 30,

@@ -1,5 +1,3 @@
-import { Pressable, Image } from "react-native";
-
 import { Svg, Path } from "react-native-svg";
 
 export function LogoTitle(props: { locked: boolean }) {

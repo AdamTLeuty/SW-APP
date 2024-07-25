@@ -8,6 +8,7 @@ import { Text, View } from "@/components/Themed";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
+import Calendar from "@/components/Calendar";
 
 //import { useRoute } from "@react-navigation/native";
 
@@ -30,6 +31,7 @@ export default function Progress() {
       <Text style={styles.title}>Customer Support</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.content}>We want to make sure that you have the best experience from start to finish.</Text>
+      <Calendar title="Calendar" rows={2} />
     </View>
   );
 }

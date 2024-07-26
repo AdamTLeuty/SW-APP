@@ -3,7 +3,7 @@
  * https://docs.expo.io/guides/color-schemes/
  */
 
-import { Text as DefaultText, View as DefaultView, TextInput as DefaultTextInput, Button as DefaultButton, ButtonProps } from "react-native";
+import { Text as DefaultText, View as DefaultView, TextInput as DefaultTextInput, Button as DefaultButton, ButtonProps, ScrollView as DefaultScrollView } from "react-native";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
@@ -79,6 +79,19 @@ export function View(props: ViewProps) {
   };
 
   return <DefaultView style={[defaultStyle, style]} {...otherProps} />;
+}
+
+export function ScrollView(props: ViewProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "background");
+
+  const defaultStyle = {
+    backgroundColor: backgroundColor,
+    fontFamily: "Poppins_Regular",
+    // Add other default styles here
+  };
+
+  return <DefaultScrollView style={[defaultStyle, style]} {...otherProps} />;
 }
 
 export function TextInput(

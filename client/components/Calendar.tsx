@@ -1,10 +1,15 @@
-// components/UserInfo.tsx
-
-import React, { useState } from "react";
-import { Button, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Button, StyleSheet, LayoutChangeEvent } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
 import { getUserByEmail, getUserLeadDetailsByEmail } from "../services/hubspotService";
+
+const layoutConstants = {
+  cardMinWidth: 57,
+  cardMinHeight: 86,
+  minCardGap: 18,
+  container_padding: 30, // Sum of horizontal padding values
+};
 
 interface CalendarProps {
   title: string;
@@ -15,41 +20,88 @@ interface DateCardProps {
   i: number;
 }
 
+interface DateCardRowProps {
+  rowNumber: number;
+  cardNumber: number;
+}
+
+const getDate = (daysToAdd: number) => {
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + daysToAdd);
+
+  const formattedDate = `${currentDate.getDate()}`;
+
+  return formattedDate.toString().padStart(2, "0");
+};
+
+const getDayOfWeek = (daysToAdd: number) => {
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + daysToAdd);
+
+  const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  return daysOfWeek[currentDate.getDay()];
+};
+
 const DateCard: React.FC<DateCardProps> = ({ i }) => {
+  const [parentWidth, setParentWidth] = useState<number>(0);
+
+  const handleCardLayout = (event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout;
+    setParentWidth(width);
+  };
+
+  let currentDate: boolean = false;
+
+  if (getDate(i) === getDate(0)) {
+    currentDate = true;
+  }
+
   return (
-    <View style={styles.dateCard}>
-      <Text style={styles.dayOfWeek} lightColor="#fff" darkColor="#000" fontWeight="500">
-        {"Tu"}
+    <View style={[styles.dateCard, currentDate ? styles.currentCard : styles.otherCard]} onLayout={handleCardLayout}>
+      <Text style={styles.dayOfWeek} lightColor={currentDate ? "#fff" : "#5700FF"} darkColor="#000" fontWeight="500">
+        {getDayOfWeek(i)}
       </Text>
-      <Text style={styles.dateText} lightColor="#fff" darkColor="#000" fontWeight="700">
-        {i}
+      <Text style={styles.dateText} lightColor={currentDate ? "#fff" : "#5700FF"} darkColor="#000" fontWeight="700">
+        {getDate(i)}
       </Text>
     </View>
   );
 };
 
-const DateCardRow: React.FC<DateCardProps> = ({ i }) => {
+const DateCardRow: React.FC<DateCardRowProps> = ({ rowNumber, cardNumber }) => {
+  const startingValue = rowNumber * cardNumber;
+
   return (
     <View style={styles.dateCardRow}>
-      {Array.from({ length: 5 }).map((_, i) => (
+      {Array.from({ length: cardNumber }).map((_, i) => (
         //<Text key={i}>{i}</Text>
-        <DateCard i={i} />
+        <DateCard i={startingValue + i} />
       ))}
     </View>
   );
 };
 
 const Calendar: React.FC<CalendarProps> = ({ rows, title }) => {
-  const fetchDate = async () => {};
+  const [parentWidth, setParentWidth] = useState<number>(0);
+
+  const handleLayout = (event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout;
+    setParentWidth(width);
+  };
+
+  let availableParentWidth = parentWidth - layoutConstants.container_padding; //exclude the padding
+
+  //Calculate maximum number of cards that can fit on one line;
+  let maxCards = Math.floor((availableParentWidth + layoutConstants.minCardGap) / (layoutConstants.cardMinWidth + layoutConstants.minCardGap));
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={handleLayout}>
       <Text style={styles.title} lightColor="#000" darkColor="#FFF" fontWeight="600">
         {title}
       </Text>
       {Array.from({ length: rows }).map((_, i) => (
         //<Text key={i}>{i}</Text>
-        <DateCardRow i={i} />
+        <DateCardRow rowNumber={i} cardNumber={maxCards} />
       ))}
     </View>
   );
@@ -64,10 +116,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
-    //width: "100%",
+    width: "100%",
     borderRadius: 10,
     paddingVertical: 20,
-    paddingHorizontal: 15,
+    paddingHorizontal: layoutConstants.container_padding / 2,
     textAlign: "center",
     alignSelf: "center",
     minWidth: 0,
@@ -80,37 +132,39 @@ const styles = StyleSheet.create({
   dateCardRow: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-start",
-    gap: 20,
+    justifyContent: "space-between",
     flexDirection: "row",
     width: "100%",
   },
   dateCard: {
-    backgroundColor: "#5700FF",
+    width: layoutConstants.cardMinWidth,
+    minHeight: layoutConstants.cardMinHeight,
+
     borderRadius: 10,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 15,
     paddingTop: 10,
     paddingBottom: 15,
     marginVertical: 10,
-    width: "auto",
     shadowColor: "rgba(153, 128, 172, 0.50)",
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.5,
+    shadowOpacity: 1,
     shadowRadius: 4,
     elevation: 2,
     alignSelf: "flex-end",
+    marginHorizontal: 0,
   },
+  currentCard: { backgroundColor: "#5700FF" },
+  otherCard: { backgroundColor: "#fff" },
   dayOfWeek: {
     fontSize: 14,
     fontWeight: 500,
     textAlign: "center",
   },
   dateText: {
-    fontSize: 20,
+    fontSize: 26,
     fontWeight: 700,
     textAlign: "center",
   },

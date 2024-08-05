@@ -9,6 +9,7 @@ import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
 import { TrayIcon } from "@/components/Icon";
+import Calendar from "@/components/Calendar";
 
 //import { useRoute } from "@react-navigation/native";
 
@@ -35,6 +36,7 @@ export default function Home() {
       <Text style={styles.title} textBreakStrategy="balanced" fontWeight="800">
         Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
       </Text>
+      <Calendar rows={1} title="Your progress" />
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text>Welcome to the SCC Portal home.</Text>
 
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    padding: 26,
+    padding: 20,
   },
   title: {
     fontSize: 25,

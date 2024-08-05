@@ -27,7 +27,7 @@ interface ResponseMessage {
   token: string;
 }
 
-export const registerNewUser = async (email: string, password: string): Promise<ResponseMessage | null> => {
+export const registerNewUser = async (email: string, password: string, login: (userData: { name: string; email: string }) => void): Promise<ResponseMessage | null> => {
   try {
     const response = await authService.post(
       `/api/register`,
@@ -41,6 +41,11 @@ export const registerNewUser = async (email: string, password: string): Promise<
         },
       },
     );
+
+    const mockUserData = { name: "John Doe", email: email };
+    //console.log("Before the login state call");
+    login(mockUserData);
+
     for (let key in response.data) {
       if (response.data.hasOwnProperty(key)) {
         // Ensure it is the object's own property

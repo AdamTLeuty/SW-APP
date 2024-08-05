@@ -3,25 +3,19 @@ import { StyleSheet, Pressable } from "react-native";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
 import { Text, View } from "@/components/Themed";
-
+import RegisterArea from "@/components/RegisterArea";
 import { router } from "expo-router";
 
-export default function SignInScreen() {
+export default function RegisterScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title} fontWeight={"800"} lightColor={"#000"} darkColor={"#fff"}>
-        Log in
+        Register
       </Text>
       <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
-        Please enter the email you gave us when you booked your consultation.
+        Time to create your scc hub account to track your smile transformation
       </Text>
-      <LoginArea />
-      <Text style={styles.orText}>Or</Text>
-      <Pressable>
-        <Text style={styles.registerText} lightColor="#5700ff" darkColor="#ffffff" onPress={() => router.replace("/register")}>
-          Register
-        </Text>
-      </Pressable>
+      <RegisterArea />
     </View>
   );
 }

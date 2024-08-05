@@ -32,20 +32,19 @@ export default function TabLayout() {
           href: null,
           title: "Log In",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          /*headerTitle: (props) => <LogoTitle {...props} locked={true} />,
-          headerStyle: {
-            height: 150, // Set the height of the header here
-            borderBottomWidth: 0, // Remove the bottom border
-            shadowOpacity: 0, // Remove the shadow for iOS
-            elevation: 0, // Remove the shadow for Android
+
+          header: ({ navigation, route, options }) => {
+            return <CustomHeader locked={true} />;
           },
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => <FontAwesome name="info-circle" size={25} color={Colors[colorScheme ?? "light"].text} style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />}
-              </Pressable>
-            </Link>
-          ),*/
+        }}
+      />
+      <Tabs.Screen
+        name="register"
+        options={{
+          href: null,
+          title: "Register",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={true} />;
           },

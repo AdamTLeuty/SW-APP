@@ -108,7 +108,7 @@ export default function TabLayout() {
             <TabBarIcon iconName="support" width="30" color={focused ? inactiveColor : activeColor} backgroundColor={focused ? activeColor : inactiveColor} focused={focused} />
           ),
           header: ({ navigation, route, options }) => {
-            return <CustomHeader locked={false} />;
+            return <CustomHeader locked={false} nav={navigation} />;
           },
         }}
       />

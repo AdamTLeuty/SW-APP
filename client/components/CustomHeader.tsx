@@ -1,12 +1,32 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { LogoTitle } from "./Logo";
+import { TrayIcon } from "./Icon";
 
-const CustomHeader = (props: { locked: boolean }) => {
-  const { locked, ...otherProps } = props;
+const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any }) => {
+  const { locked, backButton, ...otherProps } = props;
+
+  const goBack = () => {
+    props.nav.goBack();
+  };
+
   return (
     <View style={styles.headerContainer}>
-      <LogoTitle {...props} locked={locked} />
+      <View style={styles.buttonContainer}>
+        {backButton ? (
+          <TouchableOpacity activeOpacity={0.5} onPress={goBack}>
+            <TrayIcon iconName="back-arrow" />
+          </TouchableOpacity>
+        ) : null}
+      </View>
+      <View style={styles.buttonContainer}>
+        <LogoTitle style={styles.logo} {...props} locked={locked} />
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity activeOpacity={0.5}>
+          <TrayIcon color="#BDBDBD" iconName="three-dots" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -20,10 +40,32 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: "20%",
   },
+  buttonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    borderColor: "red",
+    borderWidth: 0,
+    borderStyle: "solid",
+    height: "100%",
+  },
   logo: {
     width: 40,
     height: 40,
     marginRight: 10,
+    flex: 1,
+    borderColor: "red",
+    borderWidth: 0,
+    borderStyle: "solid",
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+    borderColor: "blue",
+    borderWidth: 0,
+    borderStyle: "solid",
   },
   title: {
     color: "#fff",

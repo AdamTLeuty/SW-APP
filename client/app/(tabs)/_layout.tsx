@@ -34,7 +34,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
 
           header: ({ navigation, route, options }) => {
-            return <CustomHeader locked={true} />;
+            return <CustomHeader locked={true} nav={navigation} />;
           },
         }}
       />
@@ -46,7 +46,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
 
           header: ({ navigation, route, options }) => {
-            return <CustomHeader locked={true} />;
+            return <CustomHeader locked={true} backButton={true} nav={navigation} />;
           },
         }}
       />

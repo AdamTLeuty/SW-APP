@@ -1,7 +1,7 @@
-import { Svg, Path, ClipPath, G, Rect, Defs } from "react-native-svg";
+import { Svg, Path, ClipPath, G, Rect, Defs, Circle } from "react-native-svg";
 import { useThemeColor } from "./Themed";
 
-export function TrayIcon(props: { iconName: string; color?: string; width?: string; height?: string }) {
+export function TrayIcon(props: { iconName: string; color?: string; width?: string; height?: string; style?: object }) {
   const defaultColor = useThemeColor({}, "text"); //Use the default text colour for the colour scheme
 
   const icon = props.iconName;
@@ -98,7 +98,27 @@ export function TrayIcon(props: { iconName: string; color?: string; width?: stri
         />
       </Svg>
     );
+  } else if (props.iconName == "three-dots") {
+    return (
+      <Svg style={props.style} width="30" height="8" viewBox="0 0 30 8" fill="none">
+        <Circle cx="4" cy="4" r="4" transform="matrix(1 0 0 -1 0 8)" fill={color} />
+        <Circle cx="4" cy="4" r="4" transform="matrix(1 0 0 -1 11 8)" fill={color} />
+        <Circle cx="4" cy="4" r="4" transform="matrix(1 0 0 -1 22 8)" fill={color} />
+      </Svg>
+    );
+  } else if (props.iconName == "back-arrow") {
+    return (
+      <Svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <Circle cx="15" cy="15" r="15" transform="rotate(-180 15 15)" fill={color} />
+        <Path d="M17.1196 21.8479L10.9788 15.7072C10.5883 15.3167 10.5883 14.6835 10.9788 14.293L17.1196 8.15225" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      </Svg>
+    );
   } else {
     return;
   }
 }
+
+/*<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="15" cy="15" r="15" transform="rotate(-180 15 15)" fill="#5700FF"/>
+<path d="M17.1196 21.8479L10.9788 15.7072C10.5883 15.3167 10.5883 14.6835 10.9788 14.293L17.1196 8.15225" stroke="white" stroke-width="3" stroke-linecap="round"/>
+</svg> */

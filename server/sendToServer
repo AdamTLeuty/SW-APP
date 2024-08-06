@@ -1,0 +1,2 @@
+#!/bin/zsh
+rsync -avz -e 'ssh -i ~/.ssh/shared_server' . root@molar.dentahost.co.uk:/home/appauthscc/public_html/auth-server

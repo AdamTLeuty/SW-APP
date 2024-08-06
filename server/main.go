@@ -136,6 +136,9 @@ func setupRouter(db *sql.DB) *gin.Engine {
 			return
 		}
 
+		fmt.Println(loginDetails.Email)
+		fmt.Println(loginDetails.Password)
+
 		var user User
 		err := db.QueryRow("SELECT id, email, password FROM users WHERE email = ?", loginDetails.Email).Scan(&user.ID, &user.Email, &user.Password)
 		if err != nil {

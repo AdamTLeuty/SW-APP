@@ -75,7 +75,7 @@ const DateCardRow: React.FC<DateCardRowProps> = ({ rowNumber, cardNumber }) => {
     <View style={styles.dateCardRow}>
       {Array.from({ length: cardNumber }).map((_, i) => (
         //<Text key={i}>{i}</Text>
-        <DateCard i={startingValue + i} />
+        <DateCard key={startingValue + i} i={startingValue + i} />
       ))}
     </View>
   );
@@ -101,7 +101,7 @@ const Calendar: React.FC<CalendarProps> = ({ rows, title }) => {
       </Text>
       {Array.from({ length: rows }).map((_, i) => (
         //<Text key={i}>{i}</Text>
-        <DateCardRow rowNumber={i} cardNumber={maxCards} />
+        <DateCardRow rowNumber={i} cardNumber={maxCards} key={i} />
       ))}
     </View>
   );

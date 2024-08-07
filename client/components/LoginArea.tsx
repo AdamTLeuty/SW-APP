@@ -3,7 +3,7 @@ import { Button, Pressable, StyleSheet, Animated } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
 import { registerNewUser, loginExistingUser, loginExistingUserWithToken } from "../services/authService";
-import { storeToken } from "../services/tokenStorage";
+import { storeToken, deleteToken } from "../services/tokenStorage";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { ScreenStackHeaderCenterView } from "react-native-screens";
@@ -29,6 +29,12 @@ const LoginArea: React.FC = () => {
       //console.log("Before the routing change");
       router.replace("/(loggedIn)/home");
       //console.log("After the routing change");
+    } else {
+      console.log("Not logged in");
+      const token = async () => await getToken();
+      if (token != null) {
+        handleLoginWithToken();
+      }
     }
   }, [isLoggedIn]);
 
@@ -94,14 +100,14 @@ const LoginArea: React.FC = () => {
       }
 
       setResponse(loginResponse ? loginResponse.message : null);
-      loginResponse ? console.log(loginResponse.token ? loginResponse.token : "NO TOKEN") : null;
-      loginResponse ? storeToken(loginResponse.token) : null;
       setError(null);
     } catch (err) {
       console.error(err + " ... " + typeof err);
       const errorMessage = (err as any)?.response?.data?.error;
-      setError(typeof errorMessage == "string" ? errorMessage : "Login FAILED :(");
+      setError("Login with session token failed, please log in using email and password");
       setResponse(null);
+
+      await deleteToken();
     }
   };
 
@@ -139,12 +145,6 @@ const LoginArea: React.FC = () => {
         </Pressable>
       </Animated.View>
 
-      <Animated.View style={{ transform: [{ scale }] }}>
-        <Pressable style={styles.loginButton} onPress={handleLoginWithToken} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-          <Text style={styles.loginButtonText}>Login with token</Text>
-        </Pressable>
-      </Animated.View>
-
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {response ? <Text style={styles.userInfo}>{response}</Text> : null}
     </View>
@@ -153,7 +153,11 @@ const LoginArea: React.FC = () => {
 
 /*
 
-
+<Animated.View style={{ transform: [{ scale }] }}>
+  <Pressable style={styles.loginButton} onPress={handleLoginWithToken} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+    <Text style={styles.loginButtonText}>Login with token</Text>
+  </Pressable>
+</Animated.View>
 
 */
 

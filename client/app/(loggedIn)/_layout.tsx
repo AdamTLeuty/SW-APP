@@ -9,7 +9,7 @@ import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 
 import { LogoTitle } from "@/components/Logo";
 import CustomHeader from "@/components/CustomHeader";
-import { TrayIcon } from "@/components/Icon";
+import { Icon } from "@/components/Icon";
 import { View } from "@/components/Themed";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -21,7 +21,7 @@ function TabBarIcon(props: { iconName: string; width?: string; height?: string; 
 
   return (
     <View style={[styles.trayIcon, otherStyles]}>
-      <TrayIcon {...props} width="32" />
+      <Icon {...props} width="32" />
     </View>
   );
 }

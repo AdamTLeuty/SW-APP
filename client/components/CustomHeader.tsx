@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { LogoTitle } from "./Logo";
-import { TrayIcon } from "./Icon";
+import { Icon } from "./Icon";
 
 const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any }) => {
   const { locked, backButton, ...otherProps } = props;
@@ -15,7 +15,7 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
       <View style={styles.buttonContainer}>
         {backButton ? (
           <TouchableOpacity activeOpacity={0.5} onPress={goBack}>
-            <TrayIcon iconName="back-arrow" />
+            <Icon iconName="back-arrow" />
           </TouchableOpacity>
         ) : null}
       </View>
@@ -24,7 +24,7 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity activeOpacity={0.5}>
-          <TrayIcon color="#BDBDBD" iconName="three-dots" />
+          <Icon color="#BDBDBD" iconName="three-dots" />
         </TouchableOpacity>
       </View>
     </View>

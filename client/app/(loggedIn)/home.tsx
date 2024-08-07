@@ -8,7 +8,7 @@ import { Text, View } from "@/components/Themed";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
-import { TrayIcon } from "@/components/Icon";
+import { Icon } from "@/components/Icon";
 import Calendar from "@/components/Calendar";
 
 //import { useRoute } from "@react-navigation/native";

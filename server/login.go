@@ -37,3 +37,36 @@ func login(c *gin.Context, db *sql.DB) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully", "token": token})
 }
+
+type tokenLoginDetails struct {
+	Token string `json:"token"`
+	Email string `json;"email"`
+}
+
+func loginWithToken(c *gin.Context, db *sql.DB) {
+	var tokenLoginDetails tokenLoginDetails
+	if err := c.ShouldBindJSON(&tokenLoginDetails); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	claimValue, err := verifyToken(tokenLoginDetails.Token)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+	} else {
+		fmt.Printf("Claim value: %v\n", claimValue)
+	}
+	fmt.Println("The decoded claim is: ", claimValue)
+	fmt.Println("The error from the token verification is: ", err)
+
+	if err != nil {
+
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err})
+
+	} else {
+
+		c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully", "email": claimValue})
+
+	}
+
+}

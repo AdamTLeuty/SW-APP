@@ -1,1 +1,4 @@
 users.db
+go.mod
+go.sum
+accessServer

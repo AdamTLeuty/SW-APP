@@ -144,3 +144,10 @@ ehthumbs.db
 # Any other OS-specific temporary files or directories
 *~
 
+#Do not include source SVGs
+*.svg
+
+#Server access shell scripts
+accessServer
+excludeFromServer
+sendToServer

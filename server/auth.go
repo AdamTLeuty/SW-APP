@@ -24,18 +24,29 @@ func createToken(email string) (string, error) {
 	return tokenString, nil
 }
 
-func verifyToken(tokenString string) error {
+func verifyToken(tokenString string) (interface{}, error) {
+
+	claimKey := "email"
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secretKey, nil
+		fmt.Printf("Secret key is: %s\n", secretKey)
+		return []byte(secretKey), nil
 	})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if !token.Valid {
-		return fmt.Errorf("invalid token")
+		return nil, fmt.Errorf("invalid token")
 	}
 
-	return nil
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		if claimValue, ok := claims[claimKey]; ok {
+			return claimValue, nil
+		}
+		return nil, fmt.Errorf("claim %s not found in token", claimKey)
+	}
+
+	return nil, fmt.Errorf("could not extract claims from token")
 }

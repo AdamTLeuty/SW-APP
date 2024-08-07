@@ -4,11 +4,30 @@ import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
 import { Text, View } from "@/components/Themed";
 
+import { useEffect, useState } from "react";
+
 import { router } from "expo-router";
+import { getToken } from "@/services/tokenStorage";
 
 export default function SignInScreen() {
+  const [token, setToken] = useState(String);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const retrievedToken = await getToken();
+      if (retrievedToken != null) {
+        setToken(retrievedToken);
+      } else {
+        setToken("No Token");
+      }
+    };
+
+    fetchToken();
+  }, []);
+
   return (
     <View style={styles.container}>
+      <Text>{typeof token == "string" ? token : "No token"}</Text>
       <Text style={styles.title} fontWeight={"800"} lightColor={"#000"} darkColor={"#fff"}>
         Log in
       </Text>

@@ -97,3 +97,35 @@ export const loginExistingUser = async (email: string, password: string, login: 
     throw error;
   }
 };
+
+export const loginExistingUserWithToken = async (token: string, login: (userData: { name: string; email: string }) => void): Promise<ResponseMessage | null> => {
+  try {
+    const response = await authService.post(
+      `/api/loginWithToken`,
+      {
+        token: token,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    for (let key in response.data) {
+      if (response.data.hasOwnProperty(key)) {
+        console.log(key + ": " + response.data[key]);
+      }
+    }
+
+    const userEmail = response.data.message.email;
+
+    const mockUserData = { name: "John Doe", email: userEmail };
+    login(mockUserData);
+
+    return { message: response.data.message, token: response.data.token };
+  } catch (error) {
+    console.error("Error fetching user data from auth server:", error);
+    throw error;
+  }
+};

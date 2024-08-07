@@ -2,13 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button, Pressable, StyleSheet, Animated } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
-import { registerNewUser, loginExistingUser } from "../services/authService";
+import { registerNewUser, loginExistingUser, loginExistingUserWithToken } from "../services/authService";
 import { storeToken } from "../services/tokenStorage";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { ScreenStackHeaderCenterView } from "react-native-screens";
 
 import { useThemeColor } from "./Themed";
+
+import { getToken } from "../services/tokenStorage";
 
 //import { useRoute } from "@react-navigation/native";
 
@@ -78,6 +80,31 @@ const LoginArea: React.FC = () => {
     }
   };
 
+  const handleLoginWithToken = async () => {
+    try {
+      //const token = "THIS_IS_A_TOKEN";
+      const token = await getToken();
+      let loginResponse;
+      if (typeof token == "string") {
+        loginResponse = await loginExistingUserWithToken(token, login);
+      } else {
+        console.log("There is no saved token");
+        return;
+        //loginResponse = await loginExistingUserWithToken("THISTOKENWASSENTBECAUSETHEREISNOSAVEDTOKEN", userEmail, login);
+      }
+
+      setResponse(loginResponse ? loginResponse.message : null);
+      loginResponse ? console.log(loginResponse.token ? loginResponse.token : "NO TOKEN") : null;
+      loginResponse ? storeToken(loginResponse.token) : null;
+      setError(null);
+    } catch (err) {
+      console.error(err + " ... " + typeof err);
+      const errorMessage = (err as any)?.response?.data?.error;
+      setError(typeof errorMessage == "string" ? errorMessage : "Login FAILED :(");
+      setResponse(null);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -112,11 +139,23 @@ const LoginArea: React.FC = () => {
         </Pressable>
       </Animated.View>
 
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <Pressable style={styles.loginButton} onPress={handleLoginWithToken} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+          <Text style={styles.loginButtonText}>Login with token</Text>
+        </Pressable>
+      </Animated.View>
+
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {response ? <Text style={styles.userInfo}>{response}</Text> : null}
     </View>
   );
 };
+
+/*
+
+
+
+*/
 
 const styles = StyleSheet.create({
   container: {

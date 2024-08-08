@@ -110,7 +110,7 @@ export function Icon(props: { iconName: string; color?: string; width?: string; 
     return (
       <Svg width="30" height="30" viewBox="0 0 30 30" fill="none">
         <Circle cx="15" cy="15" r="15" transform="rotate(-180 15 15)" fill={color} />
-        <Path d="M17.1196 21.8479L10.9788 15.7072C10.5883 15.3167 10.5883 14.6835 10.9788 14.293L17.1196 8.15225" stroke={color} strokeWidth="3" strokeLinecap="round" />
+        <Path d="M17.1196 21.8479L10.9788 15.7072C10.5883 15.3167 10.5883 14.6835 10.9788 14.293L17.1196 8.15225" stroke={"white"} strokeWidth="3" strokeLinecap="round" />
       </Svg>
     );
   } else if (props.iconName == "mail") {

@@ -146,6 +146,17 @@ export default function TabLayout() {
           },
         }}
       />
+      <Tabs.Screen
+        name="liveChat"
+        options={{
+          href: null,
+          title: "Live Chat",
+
+          header: ({ navigation, route, options }) => {
+            return <CustomHeader locked={true} backButton={true} nav={navigation} />;
+          },
+        }}
+      />
     </Tabs>
   );
 }

@@ -1,4 +1,4 @@
-import { Button, StyleSheet } from "react-native";
+import { Button, StyleSheet, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
@@ -37,6 +37,11 @@ export default function Support() {
         <LogoLinkCard text="Email Us" iconName="phone" link="mailto:info@smilecorrectclub.co.uk" linkType="mail" />
         <LogoLinkCard text="Contact Us" iconName="support" link="https://www.example.com" linkType="web" />
       </View>
+      <Pressable>
+        <Text lightColor="#5700ff" darkColor="#ffffff" onPress={() => router.navigate("/liveChat")}>
+          Live Chat
+        </Text>
+      </Pressable>
     </View>
   );
 }

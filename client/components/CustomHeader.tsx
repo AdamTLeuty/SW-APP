@@ -2,12 +2,14 @@ import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { LogoTitle } from "./Logo";
 import { Icon } from "./Icon";
+import { useRouter } from "expo-router";
 
 const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any }) => {
   const { locked, backButton, ...otherProps } = props;
+  const router = useRouter();
 
   const goBack = () => {
-    props.nav.goBack();
+    router.back();
   };
 
   return (

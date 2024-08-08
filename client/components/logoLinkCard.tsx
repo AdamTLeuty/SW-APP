@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, StyleSheet, LayoutChangeEvent, Alert, Pressable } from "react-native";
+import { router } from "expo-router";
 
 import { Text, View, TextInput } from "./Themed";
 
@@ -7,7 +8,7 @@ import * as Linking from "expo-linking";
 
 import { Icon } from "./Icon";
 
-type linkType = "web" | "mail" | "phone";
+type linkType = "web" | "mail" | "phone" | "screen";
 
 interface LogoLinkCardProps {
   text: string;
@@ -22,6 +23,8 @@ const handleClick = (link?: string, linkType?: linkType) => {
       handleWeb(link);
     } else if (linkType == "mail") {
       handleEmail(link);
+    } else if (linkType == "screen") {
+      handleScreen(link);
     } else {
       handleCall(link);
     }
@@ -40,35 +43,59 @@ const handleWeb = (link: string) => {
   Linking.openURL(link).catch((err) => Alert.alert("Error", "Unable to open web browser"));
 };
 
-const handleApp = (link: string) => {
-  //Go to the other screen
+const handleScreen = (link: string) => {
+  router.push(link);
 };
 
 const LogoLinkCard: React.FC<LogoLinkCardProps> = ({ text, iconName, link, linkType }) => {
   return (
-    <Pressable onPress={() => handleClick(link, linkType)}>
-      <View style={styles.container}>
-        <Icon iconName={iconName} color="white" />
-        <Text style={styles.cardText} lightColor={"#5700FF"} darkColor="#000" fontWeight="600">
-          {text}
-        </Text>
-      </View>
+    <Pressable style={styles.container} onPress={() => handleClick(link, linkType)}>
+      <Icon iconName={iconName} color="white" />
+      <Text style={styles.cardText} lightColor={"#5700FF"} darkColor="#000" fontWeight="600">
+        {text}
+      </Text>
     </Pressable>
   );
 };
-
+/*
+<Pressable  onPress={() => handleClick(link, linkType)}>
+  <View style={styles.container}>
+    <Icon iconName={iconName} color="white" />
+    <Text style={styles.cardText} lightColor={"#5700FF"} darkColor="#000" fontWeight="600">
+      {text}
+    </Text>
+  </View>
+</Pressable>
+*/
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#5700FF",
     borderRadius: 10,
-    minWidth: 110,
-    minHeight: 110,
-    aspectRatio: 1,
-
     alignItems: "center",
     justifyContent: "space-between",
-    paddingBottom: 5,
-    paddingTop: 28,
+
+    paddingBottom: 6,
+    paddingTop: 25,
+    paddingHorizontal: 3,
+
+    flex: 1,
+
+    minWidth: "25%",
+
+    aspectRatio: 1,
+    //flexBasis: 0,
+    //flexShrink: 1,
+    //flexGrow: 1,
+    //flex: 1,
+    //maxWidth: 110,
+    //maxHeight: 110,
+    //maxWidth: 110,
+    //aspectRatio: 1,
+    //height: "auto",
+    //alignSelf: "flex-start",
+    //width: "25%",
+
+    margin: 0,
   },
   title: {},
   dateCardRow: {},
@@ -77,6 +104,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     lineHeight: 29,
+    minWidth: 10,
+    width: 100,
+    flexWrap: "wrap",
+    maxWidth: "100%",
   },
 });
 

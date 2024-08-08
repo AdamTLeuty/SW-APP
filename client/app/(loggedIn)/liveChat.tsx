@@ -7,8 +7,8 @@ import { Text, View } from "@/components/Themed";
 export default function LiveChatScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Live Chat Page</Text>
-      <WebView style={styles.webview} source={{ uri: "https://app-auth.smilewhite.co.uk/chat.php?version=4" }} />
+      <Text style={styles.title}>Live Chat</Text>
+      <WebView style={styles.webview} source={{ uri: "https://app-auth.smilewhite.co.uk/chat.php" }} />
     </View>
   );
 }

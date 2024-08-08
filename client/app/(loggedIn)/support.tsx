@@ -33,15 +33,10 @@ export default function Support() {
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.content}>We want to make sure that you have the best experience from start to finish.</Text>
       <View style={styles.supportCards}>
-        <LogoLinkCard text="Call Us" iconName="mail" link="tel:${03308226507}" linkType="phone" />
-        <LogoLinkCard text="Email Us" iconName="phone" link="mailto:info@smilecorrectclub.co.uk" linkType="mail" />
-        <LogoLinkCard text="Contact Us" iconName="support" link="https://www.example.com" linkType="web" />
+        <LogoLinkCard text="Call Us" iconName="phone" link="tel:${03308226507}" linkType="phone" />
+        <LogoLinkCard text="Email Us" iconName="mail" link="mailto:info@smilecorrectclub.co.uk" linkType="mail" />
+        <LogoLinkCard text="Live Chat" iconName="support" link="/liveChat" linkType="screen" />
       </View>
-      <Pressable>
-        <Text lightColor="#5700ff" darkColor="#ffffff" onPress={() => router.navigate("/liveChat")}>
-          Live Chat
-        </Text>
-      </Pressable>
     </View>
   );
 }
@@ -65,10 +60,15 @@ const styles = StyleSheet.create({
   },
   supportCards: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "stretch",
     justifyContent: "space-between",
     width: "100%",
     marginVertical: 10,
+    flexWrap: "wrap",
+    maxWidth: "100%",
+    rowGap: 10,
+    columnGap: 10,
+    //flex: 1,
   },
   content: {},
 });

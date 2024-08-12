@@ -87,6 +87,7 @@ function RootLayoutNav() {
         <Stack>
           <Stack.Screen name="(loggedIn)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          <Stack.Screen name="aligner-change-modal" options={{ presentation: "modal", headerShown: false }} />
         </Stack>
       </ThemeProvider>
     );

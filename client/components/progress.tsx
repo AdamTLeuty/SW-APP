@@ -1,10 +1,8 @@
-import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withTiming, SharedValue } from "react-native-reanimated";
-
 import { Text, View } from "./Themed";
 
-import { Pressable, StyleSheet, SafeAreaView, Button } from "react-native";
+import { StyleSheet } from "react-native";
 
-import { LinearProgress } from "react-native-elements";
+import { LinearProgress } from "@rneui/themed";
 
 interface Props {
   text: String;
@@ -34,7 +32,6 @@ const Progress: React.FC<Props> = ({ text, currentAlignerCount, totalAlignerCoun
     </View>
   );
 };
-//box-shadow: 0px 1px 4px 0px rgba(153, 128, 172, 0.50);
 
 const styles = StyleSheet.create({
   container: {

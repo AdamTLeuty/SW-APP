@@ -10,6 +10,7 @@ import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
 import { Icon } from "@/components/Icon";
 import Calendar from "@/components/Calendar";
+import Progress from "@/components/progress";
 
 //import { useRoute } from "@react-navigation/native";
 
@@ -33,14 +34,13 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
+      <Button title="Sign Out" onPress={handleLogout} />
       <Text style={styles.title} textBreakStrategy="balanced" fontWeight="800">
         Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
       </Text>
       <Calendar rows={1} title="Your progress" />
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text>Welcome to the SCC Portal home.</Text>
-
-      <Button title="Sign Out" onPress={handleLogout} />
+      <Progress text="Progress Bar" currentAlignerCount={20} totalAlignerCount={30} />
     </View>
   );
 }

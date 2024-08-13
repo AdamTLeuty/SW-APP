@@ -8,7 +8,11 @@ import { CameraView, useCameraPermissions, CameraType } from "expo-camera";
 
 //import { useRoute } from "@react-navigation/native";
 
+import { router } from "expo-router";
+
 import { Svg, Path, Rect, Circle, Ellipse } from "react-native-svg";
+
+import { useCurrentImageContext } from "@/components/currentImageContext";
 
 function FlipIcon() {
   return (
@@ -52,6 +56,8 @@ const Viewfinder: React.FC = () => {
   const cameraRef = useRef(null);
   const [photo, setPhoto] = useState(null);
 
+  const { hasCurrentImage, newImage } = useCurrentImageContext();
+
   if (!permission) {
     // Camera permissions are still loading.
     return (
@@ -81,9 +87,11 @@ const Viewfinder: React.FC = () => {
 
   const takePicture = async () => {
     if (cameraRef.current) {
-      const options = { quality: 0.5, base64: true };
+      const options = { quality: 1, base64: true };
       const photo = await cameraRef.current.takePictureAsync(options);
       setPhoto(photo);
+      newImage({ uri: photo.uri });
+      router.navigate("/confirm-picture-modal");
     }
   };
 
@@ -96,24 +104,19 @@ const Viewfinder: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {photo ? (
-        <Image source={{ uri: photo.uri }} style={styles.preview} />
-      ) : (
-        <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.gallery]} onPress={openGallery} onLayout={onLayout}>
-              <GalleryIcon />
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.shutter_button]} onPress={takePicture} onLayout={onLayout}>
-              <Shutter_Button />
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.flip]} onPress={toggleCameraFacing} onLayout={onLayout}>
-              <FlipIcon />
-            </TouchableOpacity>
-          </View>
-        </CameraView>
-      )}
-      {photo && <Button title="Retake" onPress={() => setPhoto(null)} />}
+      <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={[styles.gallery]} onPress={openGallery} onLayout={onLayout}>
+            <GalleryIcon />
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.shutter_button]} onPress={takePicture} onLayout={onLayout}>
+            <Shutter_Button />
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.flip]} onPress={toggleCameraFacing} onLayout={onLayout}>
+            <FlipIcon />
+          </TouchableOpacity>
+        </View>
+      </CameraView>
     </View>
   );
 };

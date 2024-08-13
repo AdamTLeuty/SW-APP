@@ -6,6 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { UserProvider, useUserContext } from "@/components/userContext";
+import { ImageProvider, useCurrentImageContext } from "@/components/currentImageContext";
 
 import { useColorScheme } from "@/components/useColorScheme";
 
@@ -63,7 +64,9 @@ export default function RootLayout() {
 
   return (
     <UserProvider>
-      <RootLayoutNav />
+      <ImageProvider>
+        <RootLayoutNav />
+      </ImageProvider>
     </UserProvider>
   );
 }
@@ -88,6 +91,7 @@ function RootLayoutNav() {
           <Stack.Screen name="(loggedIn)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           <Stack.Screen name="aligner-change-modal" options={{ presentation: "modal", headerShown: false }} />
+          <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
         </Stack>
       </ThemeProvider>
     );

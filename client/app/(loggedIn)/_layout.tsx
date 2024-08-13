@@ -153,7 +153,18 @@ export default function TabLayout() {
           title: "Live Chat",
 
           header: ({ navigation, route, options }) => {
-            return <CustomHeader locked={true} backButton={true} nav={navigation} />;
+            return <CustomHeader locked={false} backButton={true} nav={navigation} />;
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="gallery"
+        options={{
+          href: null,
+          title: "Gallery",
+
+          header: ({ navigation, route, options }) => {
+            return <CustomHeader locked={false} backButton={true} nav={navigation} />;
           },
         }}
       />

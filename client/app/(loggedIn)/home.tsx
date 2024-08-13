@@ -51,13 +51,6 @@ export default function Home() {
           </Text>
         </Pressable>
       </Link>
-      <Link href="/confirm-picture-modal" asChild>
-        <Pressable style={styles.alignerChangeButton}>
-          <Text style={styles.alignerChangeText} lightColor="#fff" fontWeight="600">
-            {"THIS IS A TEST"}
-          </Text>
-        </Pressable>
-      </Link>
     </View>
   );
 }

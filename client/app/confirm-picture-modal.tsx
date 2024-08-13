@@ -12,6 +12,27 @@ import { useCurrentImageContext } from "@/components/currentImageContext";
 export default function ModalScreen() {
   const { image, clearImage } = useCurrentImageContext();
 
+  // Function to create or get the album
+  async function getOrCreateAlbum(albumName: string, asset: MediaLibrary.Asset): Promise<MediaLibrary.Album> {
+    const album = await MediaLibrary.getAlbumAsync(albumName);
+    if (!album) {
+      return await MediaLibrary.createAlbumAsync(albumName, asset, false);
+    }
+    return album;
+  }
+
+  // Function to save image to the album
+  async function saveImageToAlbum(uri: string, albumName: string): Promise<void> {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status === "granted") {
+      const asset = await MediaLibrary.createAssetAsync(uri);
+      const album = await getOrCreateAlbum(albumName, asset);
+      await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+    } else {
+      console.log("Permission to access media library denied");
+    }
+  }
+
   const toCamera = () => {
     console.log("Remove photo");
     clearImage();
@@ -20,6 +41,9 @@ export default function ModalScreen() {
 
   const savePhoto = () => {
     console.log("Save photo");
+    // Example usage
+    const imageUri = image.uri;
+    saveImageToAlbum(imageUri, "SCC");
     router.replace("/(loggedIn)/camera");
   };
 

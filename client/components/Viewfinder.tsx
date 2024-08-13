@@ -83,6 +83,7 @@ const Viewfinder: React.FC = () => {
 
   function openGallery() {
     setFacing((current) => (current === "back" ? "front" : "back"));
+    router.navigate("/gallery");
   }
 
   const takePicture = async () => {

@@ -32,7 +32,9 @@ export default function Support() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title}>Customer Support</Text>
+        <Text style={styles.title} fontWeight="700">
+          Customer Support
+        </Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text style={styles.content}>We want to make sure that you have the best experience from start to finish.</Text>
         <View style={styles.supportCards}>
@@ -40,6 +42,10 @@ export default function Support() {
           <LogoLinkCard text="Email Us" iconName="mail" link="mailto:info@smilecorrectclub.co.uk" linkType="mail" />
           <LogoLinkCard text="Live Chat" iconName="support" link="/liveChat" linkType="screen" />
         </View>
+
+        <Text style={styles.faqTitle} fontWeight="600">
+          Frequently asked questions
+        </Text>
 
         <Accordion
           buttonText={"How does Smile Correct Club work?"}
@@ -80,8 +86,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
-    fontFamily: "Poppins_Bold",
+  },
+  faqTitle: {
+    fontSize: 20,
+    marginBottom: 20,
+    marginTop: 30,
   },
   separator: {
     marginVertical: 30,

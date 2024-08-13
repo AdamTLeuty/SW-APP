@@ -5,6 +5,8 @@ import { Text } from "./Themed";
 import { View } from "./Themed";
 
 import { Pressable, StyleSheet, SafeAreaView, Button } from "react-native";
+import { useEffect } from "react";
+import { Icon } from "./Icon";
 
 interface Props {
   buttonText: String;
@@ -33,6 +35,32 @@ function AccordionItem({ isExpanded, children, viewKey, style, duration = 500 })
       >
         {children}
       </View>
+    </Animated.View>
+  );
+}
+
+function AccordionCross({ isExpanded, viewKey, style, duration = 500 }) {
+  const height = useSharedValue(0);
+
+  const derivedHeight = useDerivedValue(() =>
+    withTiming(height.value * Number(isExpanded.value), {
+      duration,
+    }),
+  );
+  const bodyStyle = useAnimatedStyle(() => ({
+    height: 30, //derivedHeight.value,
+  }));
+
+  return (
+    <Animated.View key={`accordionItem_${viewKey}`} style={[styles.animatedView, bodyStyle, style]}>
+      <Text
+        onLayout={(e) => {
+          height.value = e.nativeEvent.layout.height;
+        }}
+        style={styles.wrapper}
+      >
+        {"Cross here"}
+      </Text>
     </Animated.View>
   );
 }
@@ -73,14 +101,19 @@ const Accordion: React.FC<Props> = ({ buttonText, hiddenText }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Pressable onPress={onPress}>
-        <Text style={styles.accordionText} fontWeight="600">
-          {buttonText}
-        </Text>
+        <View style={styles.buttonTextHolder}>
+          <Icon width={"10"} height={"10"} color="black" style={styles.cross} iconName="cross" />
+          <Text style={styles.accordionText} fontWeight="600">
+            {buttonText}
+          </Text>
+        </View>
       </Pressable>
       <Parent open={open}>{hiddenText}</Parent>
     </SafeAreaView>
   );
 };
+
+//<AccordionCross style={styles.none} isExpanded={open} viewKey="Accordion" />
 
 const styles = StyleSheet.create({
   none: {},
@@ -138,6 +171,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "green",
+  },
+  cross: {
+    transform: [{ rotate: "45deg" }],
+  },
+  buttonTextHolder: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7.5,
   },
 });
 

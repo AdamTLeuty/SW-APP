@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     lineHeight: 29,
   },
   delayButtonActive: {
-    backgroundColor: "red",
+    backgroundColor: "#FF005C",
   },
   delayButtonInactive: {
     backgroundColor: "#F7F6F8",

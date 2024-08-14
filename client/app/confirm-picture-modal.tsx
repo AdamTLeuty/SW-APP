@@ -43,6 +43,7 @@ export default function ModalScreen() {
     console.log("Save photo");
     // Example usage
     const imageUri = image.uri;
+    console.log(image);
     saveImageToAlbum(imageUri, "SCC");
     router.replace("/(loggedIn)/camera");
   };

@@ -4,3 +4,6 @@ go.sum
 accessServer
 fromServer/
 retrieveFromServer
+.DS_Store
+excludeFromServer
+images/

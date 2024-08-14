@@ -14,6 +14,7 @@ type Album = {
 type Asset = {
   id: string;
   uri: string;
+  modificationTime: string;
 };
 
 // Define a type for the App component's state
@@ -25,6 +26,10 @@ type AppState = {
 export default function Gallery() {
   const [albums, setAlbums] = useState<AppState["albums"]>(null);
   const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
+
+  useEffect(() => {
+    getAlbums();
+  }, []);
 
   async function getAlbums() {
     if (permissionResponse?.status !== "granted") {
@@ -41,7 +46,6 @@ export default function Gallery() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Button onPress={getAlbums} title="Get albums" />
       <ScrollView>{albums && albums.map((album) => <AlbumEntry key={album.id} album={album} />)}</ScrollView>
     </SafeAreaView>
   );
@@ -59,21 +63,19 @@ function AlbumEntry({ album }: AlbumEntryProps) {
     async function getAlbumAssets() {
       const albumAssets = await MediaLibrary.getAssetsAsync({ album });
       setAssets(albumAssets.assets as Asset[]);
+      for (const asset in assets) {
+        console.log(assets[asset]);
+      }
     }
     getAlbumAssets();
   }, [album]);
 
   return (
     <View key={album.id} style={styles.albumContainer}>
-      <Text>
-        {album.title} - {album.assetCount ?? "no"} assets
-      </Text>
       <View style={styles.albumAssetsContainer}>{assets && assets.map((asset) => <GalleryImage asset={asset} />)}</View>
     </View>
   );
 }
-
-//<View style={styles.albumAssetsContainer}>{assets && assets.map((asset) => <GalleryImage />)}</View>
 
 const styles = StyleSheet.create({
   container: {

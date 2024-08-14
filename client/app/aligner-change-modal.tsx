@@ -60,7 +60,7 @@ const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setInd
         {"Tell us why you are delaying your Clear Aligner journey"}
       </Text>
       {delayReasons.map((reason, i) => (
-        <View>
+        <View key={i}>
           <CheckBox
             checked={selectedIndex === i}
             onPress={() => setIndex(i)}

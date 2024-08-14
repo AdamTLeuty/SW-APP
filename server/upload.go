@@ -82,6 +82,5 @@ func upload(c *gin.Context, db *sql.DB) {
 		c.String(http.StatusInternalServerError, "Error saving the file")
 		return
 	}
-
-	c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
+	c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully"})
 }

@@ -151,3 +151,5 @@ ehthumbs.db
 accessServer
 excludeFromServer
 sendToServer
+fromServer/
+retrieveFromServer

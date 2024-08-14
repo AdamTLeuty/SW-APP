@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Button, Text, SafeAreaView, ScrollView, StyleSheet, View, Platform } from "react-native";
+import { Button, SafeAreaView, ScrollView, StyleSheet, View, Platform } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { Image } from "expo-image";
 import GalleryImage from "@/components/galleryImage";
+import { Text } from "@/components/Themed";
 
 // Define types for Album and Asset
 type Album = {
@@ -40,13 +41,26 @@ export default function Gallery() {
     });
     const sccAlbum = await MediaLibrary.getAlbumAsync("SCC");
 
-    const theOnlyAlbumThatMatters: Album[] = [sccAlbum];
-    setAlbums(theOnlyAlbumThatMatters);
+    if (sccAlbum) {
+      const theOnlyAlbumThatMatters: Album[] = [sccAlbum];
+      setAlbums(theOnlyAlbumThatMatters);
+    } else {
+      // Handle the case where sccAlbum is null or undefined
+      console.warn("The album 'SCC' was not found.");
+    }
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>{albums && albums.map((album) => <AlbumEntry key={album.id} album={album} />)}</ScrollView>
+      {albums == null ? (
+        <View style={styles.warning}>
+          <Text style={styles.warningText} fontWeight="600">
+            No photos in gallery - take your first progress picture now!{" "}
+          </Text>
+        </View>
+      ) : (
+        <ScrollView>{albums && albums.map((album) => <AlbumEntry key={album.id} album={album} />)}</ScrollView>
+      )}
     </SafeAreaView>
   );
 }
@@ -106,5 +120,15 @@ const styles = StyleSheet.create({
     minWidth: 50,
     margin: 5,
     borderWidth: 1,
+  },
+  warning: {
+    flex: 1,
+    padding: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  warningText: {
+    textAlign: "center",
+    fontSize: 20,
   },
 });

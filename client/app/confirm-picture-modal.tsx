@@ -9,6 +9,8 @@ import * as MediaLibrary from "expo-media-library";
 
 import { useCurrentImageContext } from "@/components/currentImageContext";
 
+import { uploadImage } from "@/services/uploadImage";
+
 export default function ModalScreen() {
   const { image, clearImage } = useCurrentImageContext();
 
@@ -45,6 +47,7 @@ export default function ModalScreen() {
     const imageUri = image.uri;
     console.log(image);
     saveImageToAlbum(imageUri, "SCC");
+    uploadImage(imageUri);
     router.replace("/(loggedIn)/camera");
   };
 

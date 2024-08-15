@@ -29,7 +29,7 @@ export default function Progress() {
       <View style={styles.container}>
         <Text style={styles.title}>Aligner Progress</Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <Text style={styles.content}>We want to make sure that you have the best experience from start to finish.</Text>
+        <Text style={styles.content}>Keep up to date with your SCC aligner journey.</Text>
         <Calendar title="Calendar" rows={2} />
       </View>
     </ScrollView>

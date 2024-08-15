@@ -27,9 +27,11 @@ export default function Content() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Customer Support</Text>
+      <Text style={styles.title}>Content Creation</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text style={styles.content}>We want to make sure that you have the best experience from start to finish.</Text>
+      <Text style={styles.content} lightColor="#c0c0c0">
+        Coming soon...
+      </Text>
     </View>
   );
 }

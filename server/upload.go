@@ -83,4 +83,7 @@ func upload(c *gin.Context, db *sql.DB) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully"})
+
+	updateDrive()
+
 }

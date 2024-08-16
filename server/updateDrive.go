@@ -10,7 +10,7 @@ func updateDrive() {
 
 	arg0 := "copy"
 	arg1 := "images/"
-	arg2 := "remote:SCC-TEST"
+	arg2 := "remote:/'Smile Correct Club'/'App Uploads'"
 
 	cmd := exec.Command(app, arg0, arg1, arg2)
 	stdout, err := cmd.Output()

@@ -18,8 +18,10 @@ import { Pressable } from "react-native";
 
 //import { useRoute } from "@react-navigation/native";
 
+type Status = "loggedOut" | "impressionStage" | "alignerStage";
+
 export default function Home() {
-  const { isLoggedIn, logout } = useUserContext();
+  const { isLoggedIn, logout, nextStage } = useUserContext();
   //const routeTest = useRoute();
 
   useEffect(() => {
@@ -54,6 +56,19 @@ export default function Home() {
       <Text lightColor="black" style={styles.subheading} fontWeight="600">
         {"More features will be unlocked once we send you your aligners"}
       </Text>
+      <Text fontWeight="700" style={styles.subheading}>
+        {"Already have your aligners?"}
+      </Text>
+      <Pressable
+        onPress={() => {
+          nextStage();
+        }}
+        style={styles.impressionsButton}
+      >
+        <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="600">
+          {"Take me to the aligner stage!"}
+        </Text>
+      </Pressable>
     </View>
   );
 }

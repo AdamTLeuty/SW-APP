@@ -73,12 +73,12 @@ export default function RootLayout() {
 }
 
 const userStateChanged = (isLoggedIn: boolean, status: Status) => {
-  console.log("Testingggg");
-  console.log(isLoggedIn);
-  console.log(status);
-
   if (isLoggedIn) {
-    router.replace("/(impressionProcess)/home");
+    if (status == "impressionStage") {
+      router.replace("/(impressionProcess)/home");
+    } else if (status == "alignerStage") {
+      router.replace("/(loggedIn)/home");
+    }
   } else {
     router.replace("/");
   }

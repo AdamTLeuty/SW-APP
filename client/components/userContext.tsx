@@ -18,6 +18,7 @@ interface UserContextType {
   user: User | null;
   login: (userData: User) => void;
   logout: () => void;
+  nextStage: () => void;
 }
 
 // Create the context with an initial value
@@ -36,6 +37,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setStatus("impressionStage");
   };
 
+  const nextStage = () => {
+    setIsLoggedIn(true);
+    if (status == "impressionStage") {
+      console.log("Moving from impressions stage to aligner stage");
+      setStatus("alignerStage");
+    }
+  };
+
   const logout = () => {
     setIsLoggedIn(false);
     setUser(null);
@@ -43,7 +52,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setStatus("loggedOut");
   };
 
-  return <UserContext.Provider value={{ isLoggedIn, user, status, impressionJudgment, login, logout }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ isLoggedIn, user, status, impressionJudgment, login, logout, nextStage }}>{children}</UserContext.Provider>;
 };
 
 // Custom hook to use the UserContext

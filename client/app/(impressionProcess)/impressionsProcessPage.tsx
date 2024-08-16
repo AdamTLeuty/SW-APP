@@ -1,7 +1,9 @@
-import { Button, StyleSheet } from "react-native";
+import { Button, StyleSheet, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import { Text, View } from "@/components/Themed";
+
+import { Link } from "expo-router";
 
 export default function impressionsProcessPage() {
   return (
@@ -12,6 +14,13 @@ export default function impressionsProcessPage() {
           "Before sending back your impression kit we request that you take a photo of your newly created impressions. This is to ensure that your aligners are to a high enough standard for our team to create your aligners."
         }
       </Text>
+      <Link href="/(impressionProcess)/camera" asChild>
+        <Pressable style={styles.verifyButton}>
+          <Text style={styles.verifyButtonText} lightColor="#fff" fontWeight="600">
+            {"Verify your impressions"}
+          </Text>
+        </Pressable>
+      </Link>
     </View>
   );
 }
@@ -54,4 +63,18 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   content: {},
+  verifyButton: {
+    borderRadius: 47,
+    backgroundColor: "#FF005C",
+    paddingHorizontal: 39,
+    paddingVertical: 10,
+    width: "100%",
+    marginVertical: 36.5,
+    textAlign: "center",
+  },
+  verifyButtonText: {
+    fontSize: 18,
+    textAlign: "center",
+    lineHeight: 29,
+  },
 });

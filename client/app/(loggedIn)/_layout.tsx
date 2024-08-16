@@ -152,7 +152,7 @@ export default function TabLayout() {
         options={{
           href: null,
           title: "Live Chat",
-
+          lazy: false,
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} backButton={true} nav={navigation} />;
           },

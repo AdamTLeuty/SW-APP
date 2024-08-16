@@ -83,6 +83,7 @@ export default function TabLayout() {
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
         tabBarStyle: styles.tabBar,
+
         tabBarLabelStyle: styles.tabLabel,
       }}
     >
@@ -109,6 +110,14 @@ export default function TabLayout() {
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} backButton={true} nav={navigation} />;
           },
+        }}
+      />
+      <Tabs.Screen
+        name="camera"
+        options={{
+          href: null,
+          title: "Camera",
+          headerShown: false, // This hides the header
         }}
       />
     </Tabs>

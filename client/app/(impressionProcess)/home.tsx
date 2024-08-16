@@ -1,4 +1,4 @@
-import { Button, StyleSheet } from "react-native";
+import { Button, StyleSheet, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import { Link } from "expo-router";
@@ -39,37 +39,39 @@ export default function Home() {
   };
 
   return (
-    <View style={styles.container}>
-      <Button title="Sign Out" onPress={handleLogout} />
-      <Text style={styles.title} textBreakStrategy="balanced" lightColor="#000" fontWeight="800">
-        Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
-      </Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Progress text="Progress Bar" currentAlignerCount={25} totalAlignerCount={30} />
-      <Link href="/impressionsProcessPage" asChild>
-        <Pressable style={styles.impressionsButton}>
+    <ScrollView>
+      <View style={styles.container}>
+        <Button title="Sign Out" onPress={handleLogout} />
+        <Text style={styles.title} textBreakStrategy="balanced" lightColor="#000" fontWeight="800">
+          Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
+        </Text>
+        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <Progress text="Progress Bar" currentAlignerCount={25} totalAlignerCount={30} />
+        <Link href="/impressionsProcessPage" asChild>
+          <Pressable style={styles.impressionsButton}>
+            <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="600">
+              {"Take me to impressions progress"}
+            </Text>
+          </Pressable>
+        </Link>
+        <Text lightColor="black" style={styles.subheading} fontWeight="600">
+          {"More features will be unlocked once we send you your aligners"}
+        </Text>
+        <Text fontWeight="700" style={styles.subheading}>
+          {"Already have your aligners?"}
+        </Text>
+        <Pressable
+          onPress={() => {
+            nextStage();
+          }}
+          style={styles.impressionsButton}
+        >
           <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="600">
-            {"Take me to impressions progress"}
+            {"Take me to the aligner stage!"}
           </Text>
         </Pressable>
-      </Link>
-      <Text lightColor="black" style={styles.subheading} fontWeight="600">
-        {"More features will be unlocked once we send you your aligners"}
-      </Text>
-      <Text fontWeight="700" style={styles.subheading}>
-        {"Already have your aligners?"}
-      </Text>
-      <Pressable
-        onPress={() => {
-          nextStage();
-        }}
-        style={styles.impressionsButton}
-      >
-        <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="600">
-          {"Take me to the aligner stage!"}
-        </Text>
-      </Pressable>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 

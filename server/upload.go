@@ -82,8 +82,9 @@ func upload(c *gin.Context, db *sql.DB) {
 		c.String(http.StatusInternalServerError, "Error saving the file")
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully"})
 
 	updateDrive()
+
+	c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully"})
 
 }

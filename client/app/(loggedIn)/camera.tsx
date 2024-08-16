@@ -14,19 +14,6 @@ import Viewfinder from "@/components/Viewfinder";
 //import { useRoute } from "@react-navigation/native";
 
 export default function Camera() {
-  const { isLoggedIn, logout } = useUserContext();
-  //const routeTest = useRoute();
-
-  useEffect(() => {
-    //console.log("Current route:", routeTest.name);
-    if (!isLoggedIn) {
-      //console.log("Before the routing change");
-      console.log("The token is: " + getToken());
-      router.replace("/(tabs)");
-      //console.log("After the routing change");
-    }
-  }, [isLoggedIn]);
-
   return (
     <View style={styles.container}>
       <Viewfinder />

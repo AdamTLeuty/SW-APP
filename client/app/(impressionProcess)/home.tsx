@@ -19,8 +19,18 @@ import { Pressable } from "react-native";
 //import { useRoute } from "@react-navigation/native";
 
 export default function Home() {
-  const { logout } = useUserContext();
+  const { isLoggedIn, logout } = useUserContext();
   //const routeTest = useRoute();
+
+  useEffect(() => {
+    //console.log("Current route:", routeTest.name);
+    if (!isLoggedIn) {
+      //console.log("Before the routing change");
+      console.log("The token is: " + getToken());
+      router.replace("/(tabs)");
+      //console.log("After the routing change");
+    }
+  }, [isLoggedIn]);
 
   const handleLogout = async () => {
     logout();
@@ -34,13 +44,16 @@ export default function Home() {
       </Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Progress text="Progress Bar" currentAlignerCount={25} totalAlignerCount={30} />
-      <Link href="/aligner-change-modal" asChild>
-        <Pressable style={styles.alignerChangeButton}>
-          <Text style={styles.alignerChangeText} lightColor="#fff" fontWeight="600">
-            {"Time to change your aligners"}
+      <Link href="/impressionsProcessPage" asChild>
+        <Pressable style={styles.impressionsButton}>
+          <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="600">
+            {"Take me to impressions progress"}
           </Text>
         </Pressable>
       </Link>
+      <Text lightColor="black" style={styles.subheading} fontWeight="600">
+        {"More features will be unlocked once we send you your aligners"}
+      </Text>
     </View>
   );
 }
@@ -63,18 +76,23 @@ const styles = StyleSheet.create({
     height: 1,
     width: "80%",
   },
-  alignerChangeButton: {
+  impressionsButton: {
     borderRadius: 47,
-    backgroundColor: "#FF005C",
+    backgroundColor: "#5700ff",
     paddingHorizontal: 39,
     paddingVertical: 10,
     width: "100%",
     marginVertical: 36.5,
     textAlign: "center",
   },
-  alignerChangeText: {
+  impressionsButtonText: {
     fontSize: 18,
     textAlign: "center",
     lineHeight: 29,
+  },
+  subheading: {
+    fontSize: 18,
+    lineHeight: 27,
+    textAlign: "center",
   },
 });

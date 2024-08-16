@@ -1,13 +1,12 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { UserProvider, useUserContext } from "@/components/userContext";
 import { ImageProvider, useCurrentImageContext } from "@/components/currentImageContext";
-
 import { useColorScheme } from "@/components/useColorScheme";
 
 import { useRoute } from "@react-navigation/native";
@@ -23,6 +22,8 @@ export const unstable_settings = {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+type Status = "loggedOut" | "impressionStage" | "alignerStage";
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -71,19 +72,32 @@ export default function RootLayout() {
   );
 }
 
+const userStateChanged = (isLoggedIn: boolean, status: Status) => {
+  console.log("Testingggg");
+  console.log(isLoggedIn);
+  console.log(status);
+
+  if (isLoggedIn) {
+    router.replace("/(impressionProcess)/home");
+  } else {
+    router.replace("/");
+  }
+};
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
-  const { isLoggedIn } = useUserContext();
+  const { isLoggedIn, status } = useUserContext();
 
-  //const myTestRoute = useRoute();
+  useEffect(() => {
+    console.log("Logged in?: " + isLoggedIn);
+    userStateChanged(isLoggedIn, status);
+    () => {
+      console.log("Testing again");
+    };
+  }, [isLoggedIn, status]);
 
-  /*useEffect(() => {
-    console.log("The current route is:" + myTestRoute.name);
-    }, [useRoute]);*/
-  //console.log("Is logged in: " + isLoggedIn);
-
-  if (isLoggedIn) {
+  if (status == "alignerStage") {
     //console.log("Is logged in!!");
     return (
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -92,6 +106,15 @@ function RootLayoutNav() {
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           <Stack.Screen name="aligner-change-modal" options={{ presentation: "modal", headerShown: false }} />
           <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
+        </Stack>
+      </ThemeProvider>
+    );
+  } else if (status == "impressionStage") {
+    return (
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(impressionProcess)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
         </Stack>
       </ThemeProvider>
     );

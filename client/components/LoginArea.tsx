@@ -25,11 +25,7 @@ const LoginArea: React.FC = () => {
 
   useEffect(() => {
     //console.log("Current route:" + routeTest.name);
-    if (isLoggedIn) {
-      //console.log("Before the routing change");
-      router.replace("/(loggedIn)/home");
-      //console.log("After the routing change");
-    } else {
+    if (!isLoggedIn) {
       console.log("Not logged in");
       const token = async () => await getToken();
       if (token != null) {

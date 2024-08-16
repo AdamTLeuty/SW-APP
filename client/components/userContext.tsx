@@ -8,8 +8,13 @@ interface User {
   email: string;
 }
 
+type Status = "loggedOut" | "impressionStage" | "alignerStage";
+type ImpressionJudgment = null | "good" | "bad";
+
 interface UserContextType {
   isLoggedIn: boolean;
+  status: Status;
+  impressionJudgment: ImpressionJudgment;
   user: User | null;
   login: (userData: User) => void;
   logout: () => void;
@@ -21,20 +26,24 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 // Create a provider component
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [status, setStatus] = useState<Status>("loggedOut");
+  const [impressionJudgment, setImpressionJudgment] = useState<ImpressionJudgment>(null);
   const [user, setUser] = useState<User | null>(null);
 
   const login = (userData: User) => {
     setIsLoggedIn(true);
     setUser(userData);
+    setStatus("impressionStage");
   };
 
   const logout = () => {
     setIsLoggedIn(false);
     setUser(null);
     deleteToken();
+    setStatus("loggedOut");
   };
 
-  return <UserContext.Provider value={{ isLoggedIn, user, login, logout }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ isLoggedIn, user, status, impressionJudgment, login, logout }}>{children}</UserContext.Provider>;
 };
 
 // Custom hook to use the UserContext

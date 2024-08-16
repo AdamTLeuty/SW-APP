@@ -11,19 +11,6 @@ import { getToken } from "@/services/tokenStorage";
 import Calendar from "@/components/Calendar";
 
 export default function Progress() {
-  const { isLoggedIn, logout } = useUserContext();
-  //const routeTest = useRoute();
-
-  useEffect(() => {
-    //console.log("Current route:", routeTest.name);
-    if (!isLoggedIn) {
-      //console.log("Before the routing change");
-      console.log("The token is: " + getToken());
-      router.replace("/(tabs)");
-      //console.log("After the routing change");
-    }
-  }, [isLoggedIn]);
-
   return (
     <ScrollView>
       <View style={styles.container}>

@@ -1,6 +1,8 @@
 import { Button, StyleSheet, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 
+import { useRef } from "react";
+
 import { Link } from "expo-router";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
@@ -17,6 +19,8 @@ import Progress from "@/components/progress";
 import { Pressable } from "react-native";
 
 import { Status } from "@/components/userContext";
+
+//import { Audio, Video } from "expo-av";
 
 //import { useRoute } from "@react-navigation/native";
 

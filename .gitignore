@@ -146,6 +146,8 @@ ehthumbs.db
 
 #Do not include source SVGs
 *.svg
+#Video Source files
+*.mp4
 
 #Server access shell scripts
 accessServer

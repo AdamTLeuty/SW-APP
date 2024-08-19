@@ -9,7 +9,6 @@ import { UserProvider, useUserContext } from "@/components/userContext";
 import { ImageProvider, useCurrentImageContext } from "@/components/currentImageContext";
 import { useColorScheme } from "@/components/useColorScheme";
 
-import { useRoute } from "@react-navigation/native";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -23,7 +22,7 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-type Status = "loggedOut" | "impressionStage" | "alignerStage";
+import { Status } from "@/components/userContext";
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -90,11 +89,7 @@ function RootLayoutNav() {
   const { isLoggedIn, status } = useUserContext();
 
   useEffect(() => {
-    console.log("Logged in?: " + isLoggedIn);
     userStateChanged(isLoggedIn, status);
-    () => {
-      console.log("Testing again");
-    };
   }, [isLoggedIn, status]);
 
   if (status == "alignerStage") {
@@ -115,6 +110,7 @@ function RootLayoutNav() {
         <Stack>
           <Stack.Screen name="(impressionProcess)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
         </Stack>
       </ThemeProvider>
     );

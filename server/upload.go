@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -17,6 +18,7 @@ type UploadData struct {
 	Email string `json:"email"`
 	Token string `json:"token"`
 	Date  string `json:"date"`
+	Type  string `json:"type"`
 }
 
 func upload(c *gin.Context, db *sql.DB) {
@@ -74,7 +76,22 @@ func upload(c *gin.Context, db *sql.DB) {
 	newFilename := fmt.Sprintf("%s_%d%s", base, time.Now().UnixNano(), ext)
 
 	// Define the destination path where the file should be saved
-	dst := "./images/" + newFilename
+	var dstFolder string
+
+	if uploadData.Type == "progress" {
+		dstFolder = "./images/progressPictures/" + uploadData.Email + "/"
+	} else {
+		dstFolder = "./images/impressionVerification/" + uploadData.Email + "/"
+	}
+
+	// Create the directory if it doesn't exist
+	if err := os.MkdirAll(dstFolder, os.ModePerm); err != nil {
+		log.Println("Error creating directory:", err)
+		c.String(http.StatusInternalServerError, "Error creating directory")
+		return
+	}
+
+	dst := filepath.Join(dstFolder, newFilename)
 
 	// Upload the file to the specific destination
 	if err := c.SaveUploadedFile(file, dst); err != nil {

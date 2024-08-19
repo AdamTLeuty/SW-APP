@@ -11,8 +11,11 @@ import { useCurrentImageContext } from "@/components/currentImageContext";
 
 import { uploadImage } from "@/services/uploadImage";
 
+import { useUserContext } from "@/components/userContext";
+
 export default function ModalScreen() {
   const { image, clearImage } = useCurrentImageContext();
+  const { status } = useUserContext();
 
   // Function to create or get the album
   async function getOrCreateAlbum(albumName: string, asset: MediaLibrary.Asset): Promise<MediaLibrary.Album> {
@@ -38,7 +41,8 @@ export default function ModalScreen() {
   const toCamera = () => {
     console.log("Remove photo");
     clearImage();
-    router.replace("/(loggedIn)/camera");
+    //router.replace("/camera");
+    router.back();
   };
 
   const savePhoto = () => {
@@ -47,8 +51,9 @@ export default function ModalScreen() {
     const imageUri = image.uri;
     console.log(image);
     saveImageToAlbum(imageUri, "SCC");
-    uploadImage(imageUri);
-    router.replace("/(loggedIn)/camera");
+    uploadImage(imageUri, status);
+    //router.replace("/camera");
+    router.back();
   };
 
   return (

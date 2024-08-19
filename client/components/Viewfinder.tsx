@@ -6,8 +6,6 @@ import { Text, View, TextInput } from "./Themed";
 
 import { CameraView, useCameraPermissions, CameraType } from "expo-camera";
 
-//import { useRoute } from "@react-navigation/native";
-
 import { router } from "expo-router";
 
 import { Svg, Path, Rect, Circle, Ellipse } from "react-native-svg";
@@ -56,7 +54,7 @@ const Viewfinder: React.FC = () => {
   const cameraRef = useRef(null);
   const [photo, setPhoto] = useState(null);
 
-  const { hasCurrentImage, newImage } = useCurrentImageContext();
+  const { newImage } = useCurrentImageContext();
 
   if (!permission) {
     // Camera permissions are still loading.

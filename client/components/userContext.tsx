@@ -8,7 +8,7 @@ interface User {
   email: string;
 }
 
-type Status = "loggedOut" | "impressionStage" | "alignerStage";
+export type Status = "loggedOut" | "impressionStage" | "alignerStage";
 type ImpressionJudgment = null | "good" | "bad";
 
 interface UserContextType {

@@ -16,9 +16,9 @@ import Progress from "@/components/progress";
 
 import { Pressable } from "react-native";
 
-//import { useRoute } from "@react-navigation/native";
+import { Status } from "@/components/userContext";
 
-type Status = "loggedOut" | "impressionStage" | "alignerStage";
+//import { useRoute } from "@react-navigation/native";
 
 export default function Home() {
   const { isLoggedIn, logout, nextStage } = useUserContext();

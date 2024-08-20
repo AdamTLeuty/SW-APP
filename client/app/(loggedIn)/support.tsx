@@ -19,7 +19,7 @@ export default function Support() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title} fontWeight="700">
+        <Text style={styles.title} fontWeight="800">
           Customer Support
         </Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 25,
   },
   faqTitle: {
     fontSize: 20,
@@ -96,5 +96,8 @@ const styles = StyleSheet.create({
     columnGap: 10,
     //flex: 1,
   },
-  content: {},
+  content: {
+    paddingBottom: 22,
+    textAlign: "center",
+  },
 });

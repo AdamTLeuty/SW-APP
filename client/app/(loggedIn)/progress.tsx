@@ -14,7 +14,9 @@ export default function Progress() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title}>Aligner Progress</Text>
+        <Text style={styles.title} fontWeight="800">
+          Aligner Progress
+        </Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text style={styles.content}>Keep up to date with your SCC aligner journey.</Text>
         <Calendar title="Calendar" rows={2} />
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
     fontFamily: "Poppins_Bold",
   },

@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 8,
     justifyContent: "center",
+    paddingTop: 10,
     ...Platform.select({
       android: {
         paddingTop: 40,
@@ -103,8 +104,7 @@ const styles = StyleSheet.create({
     }),
   },
   albumContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 12,
+    padding: 20,
     gap: 4,
   },
   albumAssetsContainer: {

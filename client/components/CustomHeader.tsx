@@ -14,17 +14,17 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
 
   return (
     <View style={styles.headerContainer}>
-      <View style={styles.buttonContainer}>
+      <View style={[styles.buttonContainer, { justifyContent: "flex-start" }]}>
         {backButton ? (
           <TouchableOpacity activeOpacity={0.5} onPress={goBack}>
-            <Icon iconName="back-arrow" />
+            <Icon iconName="back-arrow" color="#5700FF" />
           </TouchableOpacity>
         ) : null}
       </View>
-      <View style={styles.buttonContainer}>
+      <View style={[styles.buttonContainer]}>
         <LogoTitle style={styles.logo} {...props} locked={locked} />
       </View>
-      <View style={styles.buttonContainer}>
+      <View style={[styles.buttonContainer, { justifyContent: "flex-end" }]}>
         <TouchableOpacity activeOpacity={0.5}>
           <Icon color="#BDBDBD" iconName="three-dots" />
         </TouchableOpacity>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     backgroundColor: "#ffffff",
-    padding: 10,
+    padding: 20,
     paddingTop: "20%",
   },
   buttonContainer: {

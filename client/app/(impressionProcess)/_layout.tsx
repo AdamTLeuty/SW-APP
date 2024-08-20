@@ -1,6 +1,6 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
+import { Link, Tabs, Stack } from "expo-router";
 import { Pressable, Image, StyleSheet } from "react-native";
 
 import Colors from "@/constants/Colors";
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     //backgroundColor: "pink",
   },
 });
-
+/*
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
@@ -121,5 +121,62 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+  );
+}
+*/
+
+export default function TabLayout() {
+  const colorScheme = useColorScheme();
+
+  const activeColor = Colors[colorScheme ?? "light"].tint;
+  const inactiveColor = Colors[colorScheme ?? "light"].tabIconDefault;
+
+  return (
+    <Stack
+      screenOptions={{
+        tabBarActiveTintColor: activeColor,
+        tabBarInactiveTintColor: activeColor,
+        // Disable the static render of the header on web
+        // to prevent a hydration error in React Navigation v6.
+        headerShown: useClientOnlyValue(false, true),
+        tabBarStyle: styles.tabBar,
+
+        tabBarLabelStyle: styles.tabLabel,
+      }}
+    >
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "Home",
+          tabBarBadgeStyle: styles.trayIcon,
+
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon iconName="home" width="30" color={focused ? inactiveColor : activeColor} backgroundColor={focused ? activeColor : inactiveColor} focused={focused} />
+          ),
+          header: ({ navigation, route, options }) => {
+            return <CustomHeader locked={false} />;
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="impressionsProcessPage"
+        options={{
+          href: null,
+          title: "impressionsProcessPage",
+
+          header: ({ navigation, route, options }) => {
+            return <CustomHeader locked={false} backButton={true} nav={navigation} />;
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="camera"
+        options={{
+          href: null,
+          title: "Camera",
+          headerShown: false, // This hides the header
+        }}
+      />
+    </Stack>
   );
 }

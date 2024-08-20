@@ -1,4 +1,4 @@
-import { Button, StyleSheet, ScrollView } from "react-native";
+import { Button, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import { useRef } from "react";
@@ -7,7 +7,7 @@ import { Link } from "expo-router";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
-import { Text, View } from "@/components/Themed";
+import { Text, View, ScrollView } from "@/components/Themed";
 
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
@@ -45,41 +45,43 @@ export default function Home() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Button title="Sign Out" onPress={handleLogout} />
         <Text style={styles.title} textBreakStrategy="balanced" lightColor="#000" fontWeight="800">
           Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
         </Text>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <Progress text="Progress Bar" currentAlignerCount={25} totalAlignerCount={30} />
+
         <Link href="/impressionsProcessPage" asChild>
           <Pressable style={styles.impressionsButton}>
-            <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="600">
-              {"Take me to impressions progress"}
+            <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="800">
+              {"Impressions tutorial"}
             </Text>
           </Pressable>
         </Link>
-        <Text lightColor="black" style={styles.subheading} fontWeight="600">
+        <Text lightColor="black" style={styles.body} fontWeight="400">
           {"More features will be unlocked once we send you your aligners"}
         </Text>
-        <Text fontWeight="700" style={styles.subheading}>
+        <Text fontWeight="600" style={styles.subheading}>
           {"Already have your aligners?"}
         </Text>
         <Pressable
           onPress={() => {
             nextStage();
           }}
-          style={styles.impressionsButton}
+          style={styles.homeButton}
         >
-          <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="600">
+          <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="800">
             {"Take me to the aligner stage!"}
           </Text>
         </Pressable>
+        <Button title="Sign Out" onPress={handleLogout} />
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  ScrollViewStyle: {
+    backgroundColor: "red",
+  },
   container: {
     flex: 1,
     alignItems: "center",
@@ -88,22 +90,30 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
-    fontWeight: "bold",
-    fontFamily: "Poppins_Bold",
     textAlign: "center",
+    marginBottom: 22,
   },
   separator: {
-    marginVertical: 30,
+    marginVertical: 22,
     height: 1,
     width: "80%",
   },
   impressionsButton: {
     borderRadius: 47,
-    backgroundColor: "#5700ff",
+    backgroundColor: "#FF005C",
     paddingHorizontal: 39,
     paddingVertical: 10,
     width: "100%",
-    marginVertical: 36.5,
+    marginBottom: 22,
+    textAlign: "center",
+  },
+  homeButton: {
+    borderRadius: 47,
+    backgroundColor: "#5700FF",
+    paddingHorizontal: 39,
+    paddingVertical: 10,
+    width: "100%",
+    marginBottom: 22,
     textAlign: "center",
   },
   impressionsButtonText: {
@@ -115,5 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 27,
     textAlign: "center",
+    marginBottom: 22,
   },
+  body: { fontSize: 14, lineHeight: 21, textAlign: "center", marginBottom: 22 },
 });

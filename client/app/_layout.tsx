@@ -128,6 +128,7 @@ function RootLayoutNav() {
           <Stack.Screen name="(impressionProcess)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
+          <Stack.Screen name="impressions_result" options={{ presentation: "modal", headerShown: false }} />
         </Stack>
       </ThemeProvider>
     );

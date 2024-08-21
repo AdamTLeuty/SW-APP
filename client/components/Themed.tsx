@@ -14,8 +14,13 @@ type ThemeProps = {
   fontWeight?: string;
 };
 
+type ScrollViewPropsSpecific = {
+  contentContainerStyle?: object;
+};
+
 export type TextProps = ThemeProps & DefaultText["props"];
 export type ViewProps = ThemeProps & DefaultView["props"];
+export type ScrollViewProps = ScrollViewPropsSpecific & ThemeProps & DefaultView["props"];
 export type TextInputProps = ThemeProps & DefaultTextInput["props"];
 
 function chooseFont(fontWeight?: string): string {
@@ -81,8 +86,8 @@ export function View(props: ViewProps) {
   return <DefaultView style={[defaultStyle, style]} {...otherProps} />;
 }
 
-export function ScrollView(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
+export function ScrollView(props: ScrollViewProps) {
+  const { style, lightColor, darkColor, contentContainerStyle, ...otherProps } = props;
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "background");
 
   const defaultStyle = {
@@ -91,7 +96,7 @@ export function ScrollView(props: ViewProps) {
     // Add other default styles here
   };
 
-  return <DefaultScrollView style={[defaultStyle, style]} {...otherProps} />;
+  return <DefaultScrollView style={[defaultStyle, style]} contentContainerStyle={contentContainerStyle} {...otherProps} />;
 }
 
 export function TextInput(

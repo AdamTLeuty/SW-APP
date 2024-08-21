@@ -63,6 +63,7 @@ export default function Home() {
         <Text fontWeight="600" style={styles.subheading}>
           {"Already have your aligners?"}
         </Text>
+
         <Pressable
           onPress={() => {
             nextStage();
@@ -73,6 +74,14 @@ export default function Home() {
             {"Take me to the aligner stage!"}
           </Text>
         </Pressable>
+
+        <Link href="/impressions_result" asChild>
+          <Pressable style={styles.homeButton}>
+            <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="800">
+              {"Impression check results"}
+            </Text>
+          </Pressable>
+        </Link>
         <Button title="Sign Out" onPress={handleLogout} />
       </View>
     </ScrollView>

@@ -48,6 +48,7 @@ export default function Home() {
         <Text style={styles.title} textBreakStrategy="balanced" lightColor="#000" fontWeight="800">
           Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
         </Text>
+        <View style={styles.separator} />
 
         <Link href="/impressionsProcessPage" asChild>
           <Pressable style={styles.impressionsButton}>

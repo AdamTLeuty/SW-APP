@@ -8,6 +8,23 @@ import { Link } from "expo-router";
 
 import Accordion from "@/components/accordion";
 
+const VideoPlayer = () => {
+  const videoUri = "https://cdn.shopify.com/videos/c/o/v/096c48f55f1849fdb131bc61dcf6d627.mp4";
+  //const poster = require("@/assets/images/content.png");
+  return (
+    <Video
+      source={{ uri: videoUri }}
+      shouldPlay={true}
+      //usePoster={true}
+      //posterSource={poster}
+      posterStyle={styles.poster}
+      useNativeControls
+      resizeMode={"contain"}
+      style={styles.video}
+    />
+  );
+};
+
 export default function impressionsProcessPage() {
   return (
     <ScrollView>
@@ -70,18 +87,12 @@ export default function impressionsProcessPage() {
             "After your free e-consultation with one of our experts, we’ll send your at-home impression kit straight to your door. Use our easy-to-follow video guide to provide your impressions. If you’re eligible, we’ll create your moulds, manufacture your aligners, and send them to you within 2-3 weeks of receiving your impressions. They’ll be posted straight to your door, and your smile journey can begin right away."
           }
         />
+
+        <View style={styles.separator} />
       </View>
     </ScrollView>
   );
 }
-
-const VideoPlayer = () => {
-  const videoUri = require("@/assets/video/popeye_i_dont_scare_512kb.mp4");
-  //const videoUri: string = "https://ia802701.us.archive.org/8/items/popeye_i_dont_scare/popeye_i_dont_scare_512kb.mp4"
-  console.log("video???");
-  const poster = require("@/assets/images/content.png");
-  return <Video source={videoUri} shouldPlay={true} usePoster={true} posterSource={poster} posterStyle={styles.poster} useNativeControls resizeMode={"contain"} style={styles.video} />;
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -154,5 +165,10 @@ const styles = StyleSheet.create({
     lineHeight: 27,
     textAlign: "center",
     marginBottom: 22,
+  },
+  separator: {
+    marginVertical: 30,
+    height: 1,
+    width: "80%",
   },
 });

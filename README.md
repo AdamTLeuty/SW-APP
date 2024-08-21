@@ -23,3 +23,7 @@ Documentation for this can be found here:
 -  [Rclone - Remote setup](https://rclone.org/remote_setup/)
 
 I have found that authorising on a local machine with a browser, then copying the `rclone.conf` file to the headless machine running the auth server, to get around Google's OAuth requirements.
+
+## Known Issues
+
+- When the custom accordion component is at the bottom of a ScrollView, the scrolling behaviour breaks on iOS

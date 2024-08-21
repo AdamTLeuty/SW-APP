@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"database/sql"
 	"fmt"
+	"os"
 
 	"log"
 	"net/http"
@@ -110,17 +112,47 @@ func main() {
 	}
 	statement.Exec()
 
-	router := setupRouter(db)
-	s := &http.Server{
-		Addr:           ":8080",
-		Handler:        router,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
+	go func() {
+		router := setupRouter(db)
+		s := &http.Server{
+			Addr:           ":8080",
+			Handler:        router,
+			ReadTimeout:    10 * time.Second,
+			WriteTimeout:   10 * time.Second,
+			MaxHeaderBytes: 1 << 20,
+		}
+
+		fmt.Println("Starting server on port 8080...")
+		if err := s.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	go serverSideControls()
+
+	select {}
+
+}
+
+func serverSideControls() {
+
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		fmt.Println("---Admin control centre---")
+		fmt.Println("Press a key to perform an admin action: ")
+		input, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Printf("Error reading input: %v\n", err)
+			continue
+		}
+
+		switch input[0] {
+		case 'q':
+			fmt.Println("Quitting...")
+			os.Exit(0)
+		default:
+			fmt.Println("Pressed a button")
+		}
 	}
 
-	fmt.Println("Starting server on port 8080...")
-	if err := s.ListenAndServe(); err != nil {
-		log.Fatal(err)
-	}
 }

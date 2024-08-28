@@ -150,6 +150,9 @@ func serverSideControls() {
 		case 'q':
 			fmt.Println("Quitting...")
 			os.Exit(0)
+		case 'e':
+			sendEmail()
+			fmt.Println("Sending an email")
 		default:
 			fmt.Println("Pressed a button")
 		}

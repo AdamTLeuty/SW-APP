@@ -1,6 +1,6 @@
 #!/bin/bash
 clear;
+#Sources the email provider environment variables
+source ./sendgrid.env;
 go build -o main .;
 ./main;
-
-

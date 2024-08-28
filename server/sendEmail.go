@@ -1,52 +1,51 @@
+// using SendGrid's Go Library
+// https://github.com/sendgrid/sendgrid-go
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
-	"time"
+	"os"
 
-	"github.com/mailgun/mailgun-go/v4"
+	"github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 func sendEmail() {
+	from := mail.NewEmail("Example User", "auth@app.smilecorrectclub.co.uk")
 
-	var yourDomain string = "app-auth.smilewhite.co.uk"
+	to := mail.NewEmail("Example User", "adam.leuty@smilewhite.co.uk")
 
-	//var privateAPIKey string = "REMOVED"
-	var privateAPIKey string = "REMOVED"
+	// Create a new message
+	message := mail.NewV3Mail()
 
-	// Create an instance of the Mailgun Client
-	mg := mailgun.NewMailgun(yourDomain, privateAPIKey)
+	// Set the from email
+	message.SetFrom(from)
 
-	//When you have an EU-domain, you must specify the endpoint:
-	mg.SetAPIBase("https://api.eu.mailgun.net/v3")
+	// Add the recipient
+	personalizations := mail.NewPersonalization()
+	personalizations.AddTos(to)
 
-	sender := "sender@app-auth.smilewhite.co.uk"
-	subject := "Fancy subject!"
-	body := "Hello from Mailgun Go!"
-	recipient := "adam.leuty@smilewhite.co.uk"
+	// Add dynamic template data (must match the variables used in the template)
+	personalizations.SetDynamicTemplateData("name", "Testy")
+	personalizations.SetDynamicTemplateData("auth_code", "234567")
 
-	// The message object allows you to add attachments and Bcc recipients
-	message := mg.NewMessage(sender, subject, body, recipient)
+	message.AddPersonalizations(personalizations)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancel()
+	// Set the dynamic template ID
+	message.SetTemplateID(os.Getenv("SENDGRID_AUTH_TEMPLATE_ID"))
 
-	// Send the message with a 10 second timeout
-	resp, id, err := mg.Send(ctx, message)
+	// Create the SendGrid client
+	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 
+	// Send the email
+	response, err := client.Send(message)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	fmt.Printf("ID: %s Resp: %s\n", id, resp)
-
-	if err == nil {
-		fmt.Println("Email sent successfully!")
-		fmt.Println(id)
 	} else {
-		fmt.Println(err)
+		fmt.Println(response.StatusCode)
+		fmt.Println(response.Body)
+		fmt.Println(response.Headers)
 	}
 
 }

@@ -26,21 +26,6 @@ import { Status } from "@/components/userContext";
 
 export default function Home() {
   const { isLoggedIn, logout, nextStage } = useUserContext();
-  //const routeTest = useRoute();
-
-  useEffect(() => {
-    //console.log("Current route:", routeTest.name);
-    if (!isLoggedIn) {
-      //console.log("Before the routing change");
-      console.log("The token is: " + getToken());
-      router.replace("/(tabs)");
-      //console.log("After the routing change");
-    }
-  }, [isLoggedIn]);
-
-  const handleLogout = async () => {
-    logout();
-  };
 
   return (
     <ScrollView>
@@ -82,7 +67,6 @@ export default function Home() {
             </Text>
           </Pressable>
         </Link>
-        <Button title="Sign Out" onPress={handleLogout} />
       </View>
     </ScrollView>
   );

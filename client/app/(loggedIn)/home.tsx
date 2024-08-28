@@ -20,13 +20,6 @@ import { Pressable } from "react-native";
 //import { useRoute } from "@react-navigation/native";
 
 export default function Home() {
-  const { logout } = useUserContext();
-  //const routeTest = useRoute();
-
-  const handleLogout = async () => {
-    logout();
-  };
-
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -47,7 +40,6 @@ export default function Home() {
         <Link href="/content">
           <Content_Link />
         </Link>
-        <Button title="Sign Out" onPress={handleLogout} />
       </View>
     </ScrollView>
   );

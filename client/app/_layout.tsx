@@ -12,6 +12,7 @@ import * as Font from "expo-font";
 import { View } from "@/components/Themed";
 import { InteractionManager } from "react-native";
 
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -80,11 +81,13 @@ export default function RootLayout() {
   }
 
   return (
-    <UserProvider>
-      <ImageProvider>
-        <RootLayoutNav />
-      </ImageProvider>
-    </UserProvider>
+    <ActionSheetProvider>
+      <UserProvider>
+        <ImageProvider>
+          <RootLayoutNav />
+        </ImageProvider>
+      </UserProvider>
+    </ActionSheetProvider>
   );
 }
 

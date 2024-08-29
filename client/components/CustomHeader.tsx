@@ -23,12 +23,18 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
     const options = isLoggedIn ? ["Sign Out", "Cancel"] : ["Cancel"];
     const destructiveButtonIndex = isLoggedIn ? 0 : 1;
     const cancelButtonIndex = isLoggedIn ? 1 : 0;
+    const cancelButtonTintColor = "#5700FF";
+    const destructiveColor = "#FF005C";
+    //const title = "Settings";
 
     showActionSheetWithOptions(
       {
         options,
         cancelButtonIndex,
         destructiveButtonIndex,
+        cancelButtonTintColor,
+        destructiveColor,
+        //title,
       },
       (selectedIndex: number) => {
         switch (selectedIndex) {

@@ -11,10 +11,10 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func sendEmail() {
+func sendEmail(email string, authCode string) {
 	from := mail.NewEmail("Example User", "auth@app.smilecorrectclub.co.uk")
 
-	to := mail.NewEmail("Example User", "adam.leuty@smilewhite.co.uk")
+	to := mail.NewEmail("Example User", email)
 
 	// Create a new message
 	message := mail.NewV3Mail()
@@ -28,7 +28,7 @@ func sendEmail() {
 
 	// Add dynamic template data (must match the variables used in the template)
 	personalizations.SetDynamicTemplateData("name", "Testy")
-	personalizations.SetDynamicTemplateData("auth_code", "234567")
+	personalizations.SetDynamicTemplateData("auth_code", authCode)
 
 	message.AddPersonalizations(personalizations)
 

@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"math/rand/v2"
 
 	"net/http"
 
@@ -51,20 +52,24 @@ func register(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	stmt, err := db.Prepare("INSERT INTO users(email, password) VALUES(?, ?)")
+	authCode := fmt.Sprintf("%06d", rand.IntN(999999))
+	fmt.Println("Authcode generated: ", authCode)
+
+	stmt, err := db.Prepare("INSERT INTO users(email, password, verified, authcode) VALUES(?, ?, ?, ?)")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to prepare database statement"})
 		return
 	}
-	_, err = stmt.Exec(user.Email, hashedPassword)
+	_, err = stmt.Exec(user.Email, hashedPassword, false, authCode)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute database statement"})
 		return
 	}
 
-	//sendEmail()
 	token, err := createToken(user.Email)
 
 	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully", "token": token})
+
+	sendEmail(user.Email, authCode)
 
 }

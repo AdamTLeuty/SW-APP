@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"time"
 
+	"math/rand/v2"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
@@ -106,7 +108,7 @@ func main() {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT)")
+	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, verified INTEGER, authcode INTEGER)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -151,8 +153,12 @@ func serverSideControls() {
 			fmt.Println("Quitting...")
 			os.Exit(0)
 		case 'e':
-			sendEmail()
+			sendEmail("test@gmail.com", "987654")
 			fmt.Println("Sending an email")
+		case 'r':
+			//Generate a random number, padded by zeros
+			s := fmt.Sprintf("%04d", rand.IntN(9999))
+			fmt.Println(s)
 		default:
 			fmt.Println("Pressed a button")
 		}

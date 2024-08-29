@@ -92,6 +92,9 @@ func setupRouter(db *sql.DB) *gin.Engine {
 	router.POST("/api/uploadImage", func(c *gin.Context) {
 		upload(c, db)
 	})
+	router.POST("/api/verifyEmail", LogAccess(), func(c *gin.Context) {
+		verifyEmail(c, db)
+	})
 
 	/*
 		   router.POST("/api/upload", LogAccess(), func(c *gin.Context) {
@@ -130,13 +133,13 @@ func main() {
 		}
 	}()
 
-	go serverSideControls()
+	go serverSideControls(db)
 
 	select {}
 
 }
 
-func serverSideControls() {
+func serverSideControls(db *sql.DB) {
 
 	reader := bufio.NewReader(os.Stdin)
 	for {
@@ -155,6 +158,10 @@ func serverSideControls() {
 		case 'e':
 			sendEmail("test@gmail.com", "987654")
 			fmt.Println("Sending an email")
+		case 'u':
+			updateDrive()
+		case 'i':
+			setUserEmailVerified(db, "Test@gmail.com")
 		case 'r':
 			//Generate a random number, padded by zeros
 			s := fmt.Sprintf("%04d", rand.IntN(9999))

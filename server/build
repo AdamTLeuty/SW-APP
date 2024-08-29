@@ -3,9 +3,15 @@ clear;
 #Sources the email provider environment variables
 source ./sendgrid.env;
 #Builds the server
-printf "\n\nBuilding the server binary...";
-go build -o main .;
-printf "\n\n";
-#Runs the server
-printf "\n\nRunning the server binary...";
-./main;
+echo "Building the server binary...";
+go build -o main .
+if [ $? -ne 0 ]; then
+    echo "Build failed!"
+else
+    echo "Build succeeded!"
+
+    #Runs the server
+    echo "Running the server binary...";
+    ./main;
+
+fi

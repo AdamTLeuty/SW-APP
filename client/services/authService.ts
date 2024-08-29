@@ -2,8 +2,8 @@
 
 import axios from "axios";
 
-const BASE_URL = "https://app-auth.smilewhite.co.uk";
-//const BASE_URL = "http://localhost:8080";
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+console.log(BASE_URL);
 
 const authService = axios.create({
   baseURL: BASE_URL,

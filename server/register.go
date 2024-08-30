@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"math/rand/v2"
 
 	"net/http"
 
@@ -52,8 +51,8 @@ func register(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	authCode := fmt.Sprintf("%06d", rand.IntN(999999))
-	fmt.Println("Authcode generated: ", authCode)
+	//Generate an authcode
+	authCode := generateAuthCode()
 
 	stmt, err := db.Prepare("INSERT INTO users(email, password, verified, authcode) VALUES(?, ?, ?, ?)")
 	if err != nil {

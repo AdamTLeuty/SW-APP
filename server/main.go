@@ -65,6 +65,12 @@ func emailInHubspot(email string) bool {
 
 }
 
+func generateAuthCode() string {
+	authCode := fmt.Sprintf("%06d", rand.IntN(999999))
+	fmt.Println("Authcode generated: ", authCode)
+	return authCode
+}
+
 func checkEmailExists(db *sql.DB, email string) (bool, error) {
 	var exists bool
 
@@ -94,6 +100,9 @@ func setupRouter(db *sql.DB) *gin.Engine {
 	})
 	router.POST("/api/verifyEmail", LogAccess(), func(c *gin.Context) {
 		verifyEmail(c, db)
+	})
+	router.POST("/api/resendVerifyEmail", LogAccess(), func(c *gin.Context) {
+		resendVerifyEmail(c, db)
 	})
 
 	/*

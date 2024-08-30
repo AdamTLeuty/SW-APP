@@ -11,7 +11,7 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func sendEmail(email string, authCode string) {
+func sendEmail(email string, authCode string) error {
 	from := mail.NewEmail("Example User", "auth@app.smilecorrectclub.co.uk")
 
 	to := mail.NewEmail("Example User", email)
@@ -42,10 +42,12 @@ func sendEmail(email string, authCode string) {
 	response, err := client.Send(message)
 	if err != nil {
 		log.Fatal(err)
+		return err
 	} else {
 		fmt.Println(response.StatusCode)
 		fmt.Println(response.Body)
 		fmt.Println(response.Headers)
+		return nil
 	}
 
 }

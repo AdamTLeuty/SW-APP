@@ -50,6 +50,18 @@ export default function TabLayout() {
           },
         }}
       />
+      <Tabs.Screen
+        name="verify"
+        options={{
+          href: null,
+          title: "Verify",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+
+          header: ({ navigation, route, options }) => {
+            return <CustomHeader locked={true} backButton={true} nav={navigation} />;
+          },
+        }}
+      />
     </Tabs>
   );
 }

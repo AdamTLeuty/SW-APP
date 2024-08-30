@@ -2,46 +2,37 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button, Pressable, StyleSheet, Animated } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
-import { registerNewUser, loginExistingUser } from "../services/authService";
+import { registerNewUser, loginExistingUser, verifyEmail } from "../services/authService";
 import { storeToken } from "../services/tokenStorage";
-import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { ScreenStackHeaderCenterView } from "react-native-screens";
+import { useUserContext } from "@/components/userContext";
 
 import { useThemeColor } from "./Themed";
 
-//import { useRoute } from "@react-navigation/native";
-
-const RegisterArea: React.FC = () => {
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [passwordConfirm, setPasswordConfirm] = useState<string>("");
+const VerifyArea: React.FC = () => {
+  const [authcode, setAuthcode] = useState<string>("");
   const [response, setResponse] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { register } = useUserContext();
-
-  const goToVerifyScreen = () => {
-    router.replace("/(tabs)/verify");
-  };
+  const { isLoggedIn, login, user } = useUserContext();
 
   const handleRegister = async () => {
     try {
-      if (password === passwordConfirm) {
+      if (authcode.length > 5) {
         //const userData = await getUserByEmail(email);
-        const registerResponse = await registerNewUser(email, password, register);
-        //console.log(registerResponse);
-        setResponse(registerResponse ? registerResponse.message : null);
-        router.replace("/(tabs)/verify");
-        registerResponse ? console.log(registerResponse.token ? registerResponse.token : "NO TOKEN") : null;
+        const email = user?.email;
+        console.log(email);
+        const verifyResponse = await verifyEmail(email, authcode, login);
+        //console.log(verifyResponse);
+        setResponse(verifyResponse ? verifyResponse.message : null);
+        verifyResponse ? console.log(verifyResponse.token ? verifyResponse.token : "NO TOKEN") : null;
         setError(null);
         //console.log("The response is: " + response);
       } else {
         throw {
           response: {
             data: {
-              error: "Passwords must match",
+              error: "Your auth code is 6 digits long, please check your email again",
             },
           },
         };
@@ -74,67 +65,19 @@ const RegisterArea: React.FC = () => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="*Username"
+        placeholder="Eg. 123456"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
         lightColor={"#5700FF"}
         darkColor={"FFFFFF"}
         lightBgColor="#F7F6F8"
         darkBgColor="#5700FF"
-        value={username}
-        onChangeText={setUsername}
+        value={authcode}
+        onChangeText={setAuthcode}
       />
-
-      <TextInput
-        style={styles.input}
-        placeholder="*Email"
-        placeHolderTextColorLight={"#BDBDBD"}
-        placeHolderTextColorDark={"#FFFFFF"}
-        lightColor={"#5700FF"}
-        darkColor={"FFFFFF"}
-        lightBgColor="#F7F6F8"
-        darkBgColor="#5700FF"
-        value={email}
-        onChangeText={setEmail}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="*Password"
-        placeHolderTextColorLight={"#BDBDBD"}
-        placeHolderTextColorDark={"#FFFFFF"}
-        lightColor={"#5700FF"}
-        darkColor={"FFFFFF"}
-        lightBgColor="#F7F6F8"
-        darkBgColor="#5700FF"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="*Password"
-        placeHolderTextColorLight={"#BDBDBD"}
-        placeHolderTextColorDark={"#FFFFFF"}
-        lightColor={"#5700FF"}
-        darkColor={"FFFFFF"}
-        lightBgColor="#F7F6F8"
-        darkBgColor="#5700FF"
-        value={passwordConfirm}
-        onChangeText={setPasswordConfirm}
-        secureTextEntry={true}
-      />
-
       <Animated.View style={{ transform: [{ scale }] }}>
         <Pressable style={styles.loginButton} onPress={handleRegister} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-          <Text style={styles.loginButtonText}>Register</Text>
-        </Pressable>
-      </Animated.View>
-
-      <Animated.View style={{ transform: [{ scale }] }}>
-        <Pressable style={styles.loginButton} onPress={goToVerifyScreen} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-          <Text style={styles.loginButtonText}>Register</Text>
+          <Text style={styles.loginButtonText}>Submit</Text>
         </Pressable>
       </Animated.View>
 
@@ -196,4 +139,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterArea;
+export default VerifyArea;

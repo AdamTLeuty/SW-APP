@@ -27,7 +27,7 @@ interface ResponseMessage {
   token: string;
 }
 
-export const registerNewUser = async (email: string, password: string, login: (userData: { name: string; email: string }) => void): Promise<ResponseMessage | null> => {
+export const registerNewUser = async (email: string, password: string, register: (userData: { name: string; email: string }) => void): Promise<ResponseMessage | null> => {
   try {
     const response = await authService.post(
       `/api/register`,
@@ -44,7 +44,7 @@ export const registerNewUser = async (email: string, password: string, login: (u
 
     const mockUserData = { name: "John Doe", email: email };
     //console.log("Before the login state call");
-    login(mockUserData);
+    register(mockUserData);
 
     for (let key in response.data) {
       if (response.data.hasOwnProperty(key)) {
@@ -122,6 +122,37 @@ export const loginExistingUserWithToken = async (token: string, login: (userData
 
     const mockUserData = { name: "John Doe", email: userEmail };
     login(mockUserData);
+
+    return { message: response.data.message, token: response.data.token };
+  } catch (error) {
+    console.error("Error fetching user data from auth server:", error);
+    throw error;
+  }
+};
+
+export const verifyEmail = async (email: string, authcode: string, login: (userData: { name: string; email: string }) => void): Promise<ResponseMessage | null> => {
+  try {
+    const response = await authService.post(
+      `/api/verifyEmail`,
+      {
+        email: email,
+        authcode: authcode,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    const mockUserData = { name: "John Doe", email: email };
+    login(mockUserData);
+
+    for (let key in response.data) {
+      if (response.data.hasOwnProperty(key)) {
+        console.log(key + ": " + response.data[key]);
+      }
+    }
 
     return { message: response.data.message, token: response.data.token };
   } catch (error) {

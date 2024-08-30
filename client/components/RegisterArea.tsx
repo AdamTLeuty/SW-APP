@@ -132,12 +132,6 @@ const RegisterArea: React.FC = () => {
         </Pressable>
       </Animated.View>
 
-      <Animated.View style={{ transform: [{ scale }] }}>
-        <Pressable style={styles.loginButton} onPress={goToVerifyScreen} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-          <Text style={styles.loginButtonText}>Register</Text>
-        </Pressable>
-      </Animated.View>
-
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {response ? <Text style={styles.userInfo}>{response}</Text> : null}
     </View>

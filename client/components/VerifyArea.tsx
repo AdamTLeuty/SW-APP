@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button, Pressable, StyleSheet, Animated } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
-import { registerNewUser, loginExistingUser, verifyEmail } from "../services/authService";
+import { registerNewUser, loginExistingUser, verifyEmail, requestNewAuthCode } from "../services/authService";
 import { storeToken } from "../services/tokenStorage";
 import { router } from "expo-router";
 import { ScreenStackHeaderCenterView } from "react-native-screens";
@@ -14,20 +14,18 @@ const VerifyArea: React.FC = () => {
   const [authcode, setAuthcode] = useState<string>("");
   const [response, setResponse] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [awaitingResponse, setAwaitingResponse] = useState<boolean>(false);
   const { isLoggedIn, login, user } = useUserContext();
 
-  const handleRegister = async () => {
+  const handleVerify = async () => {
     try {
       if (authcode.length > 5) {
-        //const userData = await getUserByEmail(email);
-        const email = user?.email;
+        const email = user?.email ? user.email : "";
         console.log(email);
-        const verifyResponse = await verifyEmail(email, authcode, login);
-        //console.log(verifyResponse);
+        const verifyResponse = await verifyEmail(email ? email : "", authcode, login);
         setResponse(verifyResponse ? verifyResponse.message : null);
         verifyResponse ? console.log(verifyResponse.token ? verifyResponse.token : "NO TOKEN") : null;
         setError(null);
-        //console.log("The response is: " + response);
       } else {
         throw {
           response: {
@@ -61,8 +59,31 @@ const VerifyArea: React.FC = () => {
     }).start();
   };
 
+  const handleResend = async () => {
+    try {
+      console.log("Asking server to resend verification email");
+      setAwaitingResponse(true);
+      const email = user?.email ? user.email : "";
+      console.log(email);
+      const verifyResponse = await requestNewAuthCode(email ? email : "");
+      setResponse(verifyResponse ? verifyResponse.message : null);
+      setError(null);
+      setTimeout(() => {
+        setAwaitingResponse(false);
+      }, 500);
+    } catch (err) {
+      console.error(err);
+      const errorMessage = (err as any)?.response?.data?.error;
+      setError(typeof errorMessage == "string" ? errorMessage : "Failed to request new confirmation email");
+      setResponse(null);
+      setTimeout(() => {
+        setAwaitingResponse(false);
+      }, 500);
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, awaitingResponse ? styles.disabled : null]}>
       <TextInput
         style={styles.input}
         placeholder="Eg. 123456"
@@ -76,10 +97,16 @@ const VerifyArea: React.FC = () => {
         onChangeText={setAuthcode}
       />
       <Animated.View style={{ transform: [{ scale }] }}>
-        <Pressable style={styles.loginButton} onPress={handleRegister} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+        <Pressable style={styles.loginButton} onPress={handleVerify} onPressIn={handlePressIn} onPressOut={handlePressOut}>
           <Text style={styles.loginButtonText}>Submit</Text>
         </Pressable>
       </Animated.View>
+
+      <Text style={styles.orText}> {"or"}</Text>
+
+      <Pressable onPress={handleResend}>
+        <Text style={styles.resendText}>Resend confirmation email</Text>
+      </Pressable>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {response ? <Text style={styles.userInfo}>{response}</Text> : null}
@@ -91,6 +118,9 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     width: "100%",
+  },
+  disabled: {
+    opacity: 0.5,
   },
   input: {
     marginBottom: 10,
@@ -130,7 +160,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: "100%",
   },
-  registerText: {
+  resendText: {
     textAlign: "center",
     fontSize: 16,
     textDecorationStyle: "solid",

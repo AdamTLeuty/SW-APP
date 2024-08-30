@@ -20,7 +20,7 @@ const LoginArea: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [response, setResponse] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { isLoggedIn, login } = useUserContext();
+  const { isLoggedIn, login, tentativeLogin } = useUserContext();
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -31,20 +31,6 @@ const LoginArea: React.FC = () => {
       }
     }
   }, [isLoggedIn]);
-
-  const handleRegister = async () => {
-    try {
-      const registerResponse = await registerNewUser(email, password);
-      setResponse(registerResponse ? registerResponse.message : null);
-      registerResponse ? console.log(registerResponse.token ? registerResponse.token : "NO TOKEN") : null;
-      setError(null);
-    } catch (err) {
-      console.error(err);
-      const errorMessage = (err as any)?.response?.data?.error;
-      setError(typeof errorMessage == "string" ? errorMessage : "Registration FAILED :(");
-      setResponse(null);
-    }
-  };
 
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -64,7 +50,7 @@ const LoginArea: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const loginResponse = await loginExistingUser(email, password, login);
+      const loginResponse = await loginExistingUser(email, password, login, tentativeLogin);
       setResponse(loginResponse ? loginResponse.message : null);
       loginResponse ? console.log(loginResponse.token ? loginResponse.token : "NO TOKEN") : null;
       loginResponse ? storeToken(loginResponse.token) : null;

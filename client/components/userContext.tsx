@@ -17,7 +17,7 @@ interface UserContextType {
   impressionJudgment: ImpressionJudgment;
   user: User | null;
   login: (userData: User) => void;
-  register: (userData: User) => void;
+  tentativeLogin: (userData: User) => void;
   logout: () => void;
   nextStage: () => void;
 }
@@ -39,10 +39,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     console.log("Just logged in: " + user?.email);
   };
 
-  const register = (userData: User) => {
+  const tentativeLogin = (userData: User) => {
     setUser(userData);
     setIsLoggedIn(false);
-    console.log("Just registered: " + user?.email);
+    console.log("Just tentatively logged in: " + user?.email);
   };
 
   const nextStage = () => {
@@ -60,7 +60,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setStatus("loggedOut");
   };
 
-  return <UserContext.Provider value={{ isLoggedIn, user, status, impressionJudgment, login, logout, nextStage, register }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ isLoggedIn, user, status, impressionJudgment, login, logout, nextStage, tentativeLogin }}>{children}</UserContext.Provider>;
 };
 
 // Custom hook to use the UserContext

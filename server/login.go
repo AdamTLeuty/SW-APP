@@ -33,6 +33,16 @@ func login(c *gin.Context, db *sql.DB) {
 		return
 	}
 
+	verified, err := checkUserEmailVerified(db, loginDetails.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "There has been an issue verifying your email. Please try again, or contact support"})
+		return
+	}
+	if !verified {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Your email has not yet been verified"})
+		return
+	}
+
 	token, err := createToken(loginDetails.Email)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully", "token": token})
@@ -68,5 +78,25 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 		c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully", "email": claimValue})
 
 	}
+
+}
+
+func checkUserEmailVerified(db *sql.DB, email string) (bool, error) {
+
+	//Check if user is verified
+	//Find the authcode for the given user
+	row, err := db.Query("SELECT verified FROM users WHERE email = ?", email)
+	if err != nil {
+		return false, err
+	}
+	defer row.Close()
+	row.Next()
+	var verified bool
+	readErr := row.Scan(&verified)
+	if readErr != nil {
+		return false, readErr
+	}
+
+	return verified, err
 
 }

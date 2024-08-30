@@ -48,32 +48,21 @@ func verifyEmail(c *gin.Context, db *sql.DB) {
 
 	//Check if user is already verified
 	//Find the authcode for the given user
-	row, err := db.Query("SELECT verified FROM users WHERE email = ?", verifyData.Email)
+
+	verified, err := checkUserEmailVerified(db, verifyData.Email)
 	if err != nil {
 		log.Fatal(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not find authcode in database"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not verify user"})
 		return
 	}
-	defer row.Close()
-	row.Next()
-	var verified bool
-	readErr := row.Scan(&verified)
-	if readErr != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB Read Error"})
-		log.Fatal(readErr)
-		return
-	}
-
 	if verified {
 		//The user's email is already verified
 		c.JSON(http.StatusConflict, gin.H{"error": "User already verified"})
 		return
 	}
 
-	row.Close()
-
 	//Find the authcode for the given user
-	row, err = db.Query("SELECT authcode FROM users WHERE email = ?", verifyData.Email)
+	row, err := db.Query("SELECT authcode FROM users WHERE email = ?", verifyData.Email)
 	if err != nil {
 		log.Fatal(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not find authcode in database"})
@@ -82,7 +71,7 @@ func verifyEmail(c *gin.Context, db *sql.DB) {
 	defer row.Close()
 	row.Next()
 	var authcode int
-	readErr = row.Scan(&authcode)
+	readErr := row.Scan(&authcode)
 	if readErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB Read Error"})
 		log.Fatal(readErr)

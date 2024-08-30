@@ -21,10 +21,8 @@ const LoginArea: React.FC = () => {
   const [response, setResponse] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { isLoggedIn, login } = useUserContext();
-  //const routeTest = useRoute();
 
   useEffect(() => {
-    //console.log("Current route:" + routeTest.name);
     if (!isLoggedIn) {
       console.log("Not logged in");
       const token = async () => await getToken();
@@ -36,13 +34,10 @@ const LoginArea: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      //const userData = await getUserByEmail(email);
       const registerResponse = await registerNewUser(email, password);
-      //console.log(registerResponse);
       setResponse(registerResponse ? registerResponse.message : null);
       registerResponse ? console.log(registerResponse.token ? registerResponse.token : "NO TOKEN") : null;
       setError(null);
-      //console.log("The response is: " + response);
     } catch (err) {
       console.error(err);
       const errorMessage = (err as any)?.response?.data?.error;
@@ -77,6 +72,11 @@ const LoginArea: React.FC = () => {
     } catch (err) {
       console.error(err + " ... " + typeof err);
       const errorMessage = (err as any)?.response?.data?.error;
+      const status = (err as any)?.response?.status;
+      if (status == 403) {
+        //Email has not been verified, go to verification screen
+        router.navigate("/(tabs)/verify");
+      }
       setError(typeof errorMessage == "string" ? errorMessage : "Login FAILED :(");
       setResponse(null);
     }

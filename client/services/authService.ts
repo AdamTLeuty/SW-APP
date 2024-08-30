@@ -25,6 +25,7 @@ interface HubSpotUser {
 interface ResponseMessage {
   message: string;
   token: string;
+  status: number;
 }
 
 export const registerNewUser = async (email: string, password: string, register: (userData: { name: string; email: string }) => void): Promise<ResponseMessage | null> => {
@@ -55,7 +56,7 @@ export const registerNewUser = async (email: string, password: string, register:
 
     console.log("Response Message: " + response.data.message);
 
-    return { message: response.data.message, token: response.data.token };
+    return { message: response.data.message, token: response.data.token, status: response.status };
 
     //Object.keys(response.data.properties).length > 0 ? response.data.properties : null;
     //return response.data.properties;
@@ -123,7 +124,7 @@ export const loginExistingUserWithToken = async (token: string, login: (userData
     const mockUserData = { name: "John Doe", email: userEmail };
     login(mockUserData);
 
-    return { message: response.data.message, token: response.data.token };
+    return { message: response.data.message, token: response.data.token, status: response.status };
   } catch (error) {
     console.error("Error fetching user data from auth server:", error);
     throw error;
@@ -154,7 +155,7 @@ export const verifyEmail = async (email: string, authcode: string, login: (userD
       }
     }
 
-    return { message: response.data.message, token: response.data.token };
+    return { message: response.data.message, token: response.data.token, status: response.status };
   } catch (error) {
     console.error("Error fetching user data from auth server:", error);
     throw error;

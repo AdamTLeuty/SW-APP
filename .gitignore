@@ -131,6 +131,8 @@ golangci-lint-output.json
 
 # Environment variable files
 .env
+sendgrid.env
+api.env
 
 # Go mod and sum files should be tracked
 # Uncomment the following lines if you want to exclude these files
@@ -155,3 +157,6 @@ excludeFromServer
 sendToServer
 fromServer/
 retrieveFromServer
+
+#UGC
+server/images/

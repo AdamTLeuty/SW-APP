@@ -28,11 +28,17 @@ interface ResponseMessage {
   status: number;
 }
 
-export const registerNewUser = async (email: string, password: string, tentativeLogin: (userData: { name: string; email: string }) => void): Promise<ResponseMessage | null> => {
+export const registerNewUser = async (
+  username: string,
+  email: string,
+  password: string,
+  tentativeLogin: (userData: { name: string; email: string }) => void,
+): Promise<ResponseMessage | null> => {
   try {
     const response = await authService.post(
       `/api/register`,
       {
+        username: username,
         email: email,
         password: password,
       },
@@ -43,7 +49,7 @@ export const registerNewUser = async (email: string, password: string, tentative
       },
     );
 
-    const mockUserData = { name: "John Doe", email: email };
+    const mockUserData = { name: username, email: email };
     //console.log("Before the login state call");
     tentativeLogin(mockUserData);
 

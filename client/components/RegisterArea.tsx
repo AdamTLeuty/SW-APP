@@ -20,7 +20,7 @@ const RegisterArea: React.FC = () => {
   const [passwordConfirm, setPasswordConfirm] = useState<string>("");
   const [response, setResponse] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { register } = useUserContext();
+  const { tentativeLogin } = useUserContext();
 
   const goToVerifyScreen = () => {
     router.replace("/(tabs)/verify");
@@ -28,20 +28,29 @@ const RegisterArea: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      if (password === passwordConfirm) {
-        //const userData = await getUserByEmail(email);
-        const registerResponse = await registerNewUser(email, password, register);
-        //console.log(registerResponse);
-        setResponse(registerResponse ? registerResponse.message : null);
-        router.replace("/(tabs)/verify");
-        registerResponse ? console.log(registerResponse.token ? registerResponse.token : "NO TOKEN") : null;
-        setError(null);
-        //console.log("The response is: " + response);
+      if (username.replace(/\s/g, "").length) {
+        //Check whether string is empty/just whitespace
+        if (password === passwordConfirm) {
+          const registerResponse = await registerNewUser(username, email, password, tentativeLogin);
+          setResponse(registerResponse ? registerResponse.message : null);
+          router.replace("/(tabs)/verify");
+          registerResponse ? console.log(registerResponse.token ? registerResponse.token : "NO TOKEN") : null;
+          setError(null);
+          //console.log("The response is: " + response);
+        } else {
+          throw {
+            response: {
+              data: {
+                error: "Passwords must match",
+              },
+            },
+          };
+        }
       } else {
         throw {
           response: {
             data: {
-              error: "Passwords must match",
+              error: "Username cannot be blank",
             },
           },
         };

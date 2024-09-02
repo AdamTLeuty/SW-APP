@@ -19,6 +19,7 @@ import (
 
 type User struct {
 	ID       int    `json:"id"`
+	Username string `json:"username,omitempty"`
 	Email    string `json:"email"`
 	Password string `json:"password,omitempty"`
 }
@@ -105,11 +106,6 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		resendVerifyEmail(c, db)
 	})
 
-	/*
-		   router.POST("/api/upload", LogAccess(), func(c *gin.Context) {
-				upload(c, db)
-			})*/
-
 	return router
 }
 
@@ -120,7 +116,7 @@ func main() {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, verified INTEGER, authcode INTEGER)")
+	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER)")
 	if err != nil {
 		log.Fatal(err)
 	}

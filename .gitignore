@@ -161,3 +161,4 @@ retrieveFromServer
 #UGC
 server/images/
 users.db
+server/users.db

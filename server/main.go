@@ -96,7 +96,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 	router.POST("/api/loginWithToken", LogAccess(), func(c *gin.Context) {
 		loginWithToken(c, db)
 	})
-	router.POST("/api/uploadImage", func(c *gin.Context) {
+	router.POST("/api/uploadImage", checkEmailAndTokenMatch(), func(c *gin.Context) {
 		upload(c, db)
 	})
 	router.POST("/api/verifyEmail", LogAccess(), func(c *gin.Context) {

@@ -2,7 +2,7 @@
  * Learn more about Light and Dark modes:
  * https://docs.expo.io/guides/color-schemes/
  */
-
+import React from "react";
 import { Text as DefaultText, View as DefaultView, TextInput as DefaultTextInput, Button as DefaultButton, ButtonProps, ScrollView as DefaultScrollView } from "react-native";
 
 import Colors from "@/constants/Colors";
@@ -109,11 +109,11 @@ export function TextInput(
     placeHolderTextColorDark?: string;
   },
 ) {
-  const { style, lightColor, darkColor, lightBgColor, darkBgColor, placeHolderTextColorLight, placeHolderTextColorDark, ...otherProps } = props;
+  const { style, lightColor, darkColor, lightBgColor, darkBgColor, placeHolderTextColorLight, placeHolderTextColorDark, autoCapitalize, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
   const backgroundColor = useThemeColor({ light: lightBgColor, dark: darkBgColor }, "background");
   const placeholderTextColor = useThemeColor({ light: placeHolderTextColorLight, dark: placeHolderTextColorDark }, "background");
-
+  const autocapitalize = props.autoCapitalize ? props.autoCapitalize : "none";
   const defaultStyle = {
     color: color,
     backgroundColor: backgroundColor,
@@ -121,5 +121,5 @@ export function TextInput(
     // Add other default styles here
   };
 
-  return <DefaultTextInput style={[defaultStyle, style]} placeholderTextColor={placeholderTextColor} {...otherProps} />;
+  return <DefaultTextInput autoCapitalize={autocapitalize} style={[defaultStyle, style]} placeholderTextColor={placeholderTextColor} {...otherProps} />;
 }

@@ -92,6 +92,7 @@ const RegisterArea: React.FC = () => {
         darkBgColor="#5700FF"
         value={username}
         onChangeText={setUsername}
+        autoCapitalize="words"
       />
 
       <TextInput

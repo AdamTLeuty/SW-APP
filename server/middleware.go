@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -135,4 +137,50 @@ func AuthoriseImageUpload() gin.HandlerFunc {
 		// Continue to the handler
 		c.Next()
 	}
+}
+
+func LowercaseEmail() gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+
+		fmt.Println("Changing the email to be lowercase")
+
+		// Read the request body
+		bodyBytes, err := io.ReadAll(c.Request.Body)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+			c.Abort()
+			return
+		}
+
+		var dataToCheck map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &dataToCheck); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if dataToCheck["email"] == nil {
+			//The email is missing from the data - this is ~bad~
+			c.JSON(http.StatusBadRequest, gin.H{"error": "There is no email"})
+			c.Abort()
+			return
+		}
+
+		//Set email to be lowercase
+		dataToCheck["email"] = strings.ToLower(dataToCheck["email"].(string))
+		c.Set("email", dataToCheck["email"])
+
+		modifiedBodyBytes, err := json.Marshal(dataToCheck)
+		if err != nil {
+			c.AbortWithStatusJSON(500, gin.H{"error": "Failed to marshal JSON"})
+			return
+		}
+
+		// Restore the io.ReadCloser to its original state, with email modified
+		c.Request.Body = io.NopCloser(bytes.NewBuffer(modifiedBodyBytes))
+
+		// Continue to the handler
+		c.Next()
+	}
+
 }

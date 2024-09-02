@@ -87,22 +87,22 @@ func checkEmailExists(db *sql.DB, email string) (bool, error) {
 func setupRouter(db *sql.DB) *gin.Engine {
 	router := gin.Default()
 
-	router.POST("/api/register", LogAccess(), func(c *gin.Context) {
+	router.POST("/api/register", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
 		register(c, db)
 	})
-	router.POST("/api/login", LogAccess(), func(c *gin.Context) {
+	router.POST("/api/login", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
 		login(c, db)
 	})
-	router.POST("/api/loginWithToken", LogAccess(), func(c *gin.Context) {
+	router.POST("/api/loginWithToken", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
 		loginWithToken(c, db)
 	})
 	router.POST("/api/uploadImage", checkEmailAndTokenMatch(), func(c *gin.Context) {
 		upload(c, db)
 	})
-	router.POST("/api/verifyEmail", LogAccess(), func(c *gin.Context) {
+	router.POST("/api/verifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
 		verifyEmail(c, db)
 	})
-	router.POST("/api/resendVerifyEmail", LogAccess(), func(c *gin.Context) {
+	router.POST("/api/resendVerifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
 		resendVerifyEmail(c, db)
 	})
 

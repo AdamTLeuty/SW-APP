@@ -54,12 +54,12 @@ func register(c *gin.Context, db *sql.DB) {
 	//Generate an authcode
 	authCode := generateAuthCode()
 
-	stmt, err := db.Prepare("INSERT INTO users(email, password, username, verified, authcode) VALUES(?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO users(email, password, username, verified, authcode, stage) VALUES(?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to prepare database statement"})
 		return
 	}
-	_, err = stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode)
+	_, err = stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, "impression")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute database statement"})
 		return

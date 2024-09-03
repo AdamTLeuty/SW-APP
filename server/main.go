@@ -105,7 +105,12 @@ func setupRouter(db *sql.DB) *gin.Engine {
 	router.POST("/api/resendVerifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
 		resendVerifyEmail(c, db)
 	})
-
+	router.GET("/api/userData", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
+		getUserData(c, db)
+	})
+	router.POST("/api/userData", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
+		setUserData(c, db)
+	})
 	return router
 }
 
@@ -116,7 +121,7 @@ func main() {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER)")
+	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER, stage TEXT)")
 	if err != nil {
 		log.Fatal(err)
 	}

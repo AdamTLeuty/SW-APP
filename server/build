@@ -3,6 +3,7 @@ clear;
 #Sources the email provider environment variables
 source ./env/sendgrid.env
 source ./env/hubspot.env
+source ./env/.env
 #Builds the server
 echo "Building the server binary...";
 go build -o main .
@@ -14,5 +15,4 @@ else
     #Runs the server
     echo "Running the server binary...";
     ./main;
-
 fi

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -38,15 +39,25 @@ func sendEmail(email string, authCode string) error {
 	// Create the SendGrid client
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 
-	// Send the email
-	response, err := client.Send(message)
+	sendEmail, err := strconv.ParseBool(os.Getenv("SEND_EMAIL"))
 	if err != nil {
-		log.Fatal(err)
 		return err
+	}
+	if sendEmail {
+		// Send the email
+		response, err := client.Send(message)
+		if err != nil {
+			log.Fatal(err)
+			return err
+		} else {
+			fmt.Println(response.StatusCode)
+			fmt.Println(response.Body)
+			fmt.Println(response.Headers)
+			return nil
+		}
 	} else {
-		fmt.Println(response.StatusCode)
-		fmt.Println(response.Body)
-		fmt.Println(response.Headers)
+		//Do not send the email
+		fmt.Println("Did not send confirmation email, as environment flag SEND_EMAIL set to false")
 		return nil
 	}
 

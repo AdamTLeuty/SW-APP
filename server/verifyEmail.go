@@ -83,11 +83,17 @@ func verifyEmail(c *gin.Context, db *sql.DB) {
 	//Check the authcodes match
 	if strconv.Itoa(authcode) == verifyData.AuthCode {
 		fmt.Println("The auth codes match")
-		c.JSON(http.StatusOK, gin.H{"message": "Accessed the email confirmation endpoint"})
+		token, err := createToken(verifyData.Email)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error - please try again later"})
+		}
+		c.JSON(http.StatusOK, gin.H{"message": "Accessed the email confirmation endpoint", "token": token})
 		setUserEmailVerified(db, verifyData.Email)
+		return
 	} else {
 		fmt.Println("The auth codes do not match")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Incorrect Auth Code"})
+		return
 	}
 }
 

@@ -26,6 +26,9 @@ const VerifyArea: React.FC = () => {
         setResponse(verifyResponse ? verifyResponse.message : null);
         verifyResponse ? console.log(verifyResponse.token ? verifyResponse.token : "NO TOKEN") : null;
         setError(null);
+        if (verifyResponse) {
+          storeToken(verifyResponse.token);
+        }
       } else {
         throw {
           response: {

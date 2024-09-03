@@ -133,6 +133,7 @@ golangci-lint-output.json
 .env
 sendgrid.env
 api.env
+server/env/*
 
 # Go mod and sum files should be tracked
 # Uncomment the following lines if you want to exclude these files

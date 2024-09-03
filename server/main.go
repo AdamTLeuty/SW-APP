@@ -38,7 +38,7 @@ func emailInHubspot(email string) bool {
 
 	BASE_URL := "https://api.hubapi.com"
 
-	HUBSPOT_ACCESS_TOKEN := "REMOVED"
+	HUBSPOT_ACCESS_TOKEN := os.Getenv("HUBSPOT_API_KEY")
 
 	fmt.Println("Checking the email is correct...")
 

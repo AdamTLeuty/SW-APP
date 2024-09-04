@@ -105,10 +105,10 @@ func setupRouter(db *sql.DB) *gin.Engine {
 	router.POST("/api/resendVerifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
 		resendVerifyEmail(c, db)
 	})
-	router.GET("/api/userData", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
+	router.GET("/api/userData", func(c *gin.Context) {
 		getUserData(c, db)
 	})
-	router.POST("/api/userData", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
+	router.POST("/api/userData", func(c *gin.Context) {
 		setUserData(c, db)
 	})
 	return router

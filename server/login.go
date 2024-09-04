@@ -85,7 +85,14 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 	fmt.Println("The decoded claim is: ", claimValue)
 	fmt.Println("The error from the token verification is: ", err)
 
-	token = createToken(claimValue)
+	token, err = createToken(claimValue.(string))
+
+	fmt.Println(claimValue.(string))
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error - please try again later"})
+		return
+	}
 
 	if err != nil {
 

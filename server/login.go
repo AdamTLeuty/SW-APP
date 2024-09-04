@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"net/http"
@@ -49,18 +50,33 @@ func login(c *gin.Context, db *sql.DB) {
 }
 
 type tokenLoginDetails struct {
-	Token string `json:"token"`
 	Email string `json;"email"`
 }
 
+type Header struct {
+	Authorization string `header:"Authorization" binding:"required"`
+}
+
 func loginWithToken(c *gin.Context, db *sql.DB) {
+
+	var h Header
+	if err := c.BindHeader(&h); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(h.Authorization)
+	token := strings.Replace(h.Authorization, "Bearer ", "", 1)
+	fmt.Println("Token", token)
+	fmt.Println(token)
+
 	var tokenLoginDetails tokenLoginDetails
 	if err := c.ShouldBindJSON(&tokenLoginDetails); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	claimValue, err := verifyToken(tokenLoginDetails.Token)
+	claimValue, err := verifyToken(token)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 	} else {
@@ -69,13 +85,15 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 	fmt.Println("The decoded claim is: ", claimValue)
 	fmt.Println("The error from the token verification is: ", err)
 
+	token = createToken(claimValue)
+
 	if err != nil {
 
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err})
 
 	} else {
 
-		c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully", "email": claimValue})
+		c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully", "email": claimValue, "token": token})
 
 	}
 

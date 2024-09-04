@@ -82,6 +82,7 @@ main.exe
 *.prof
 *.so
 *.swp
+*.db-journal
 
 # Output of the dep command
 /vendor/
@@ -163,3 +164,6 @@ retrieveFromServer
 server/images/
 users.db
 server/users.db
+
+
+.commands

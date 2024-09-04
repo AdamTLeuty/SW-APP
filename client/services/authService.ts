@@ -1,9 +1,9 @@
 // services/hubspotService.ts
 
 import axios from "axios";
+import { storeToken } from "./tokenStorage";
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
-console.log(BASE_URL);
 
 const authService = axios.create({
   baseURL: BASE_URL,
@@ -49,6 +49,8 @@ export const registerNewUser = async (
       },
     );
 
+    storeToken(response.data.token);
+
     const mockUserData = { name: username, email: email };
     //console.log("Before the login state call");
     tentativeLogin(mockUserData);
@@ -92,6 +94,8 @@ export const loginExistingUser = async (
       },
     );
 
+    storeToken(response.data.token);
+
     const mockUserData = { name: "John Doe", email: email };
     //console.log("Before the login state call");
     login(mockUserData);
@@ -128,6 +132,8 @@ export const loginExistingUserWithToken = async (token: string, login: (userData
         },
       },
     );
+
+    storeToken(response.data.token);
 
     for (let key in response.data) {
       if (response.data.hasOwnProperty(key)) {
@@ -184,6 +190,34 @@ export const requestNewAuthCode = async (email: string): Promise<ResponseMessage
       `/api/resendVerifyEmail`,
       {
         email: email,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    for (let key in response.data) {
+      if (response.data.hasOwnProperty(key)) {
+        console.log(key + ": " + response.data[key]);
+      }
+    }
+
+    return { message: response.data.message, token: response.data.token, status: response.status };
+  } catch (error) {
+    console.error("Error fetching user data from auth server:", error);
+    throw error;
+  }
+};
+
+export const checkUserStatus = async (email: string, token: string): Promise<ResponseMessage | null> => {
+  try {
+    const response = await authService.get(
+      `/api/userData`,
+      {
+        email: email,
+        token: token,
       },
       {
         headers: {

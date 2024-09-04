@@ -34,7 +34,7 @@ const RegisterArea: React.FC = () => {
           const registerResponse = await registerNewUser(username, email, password, tentativeLogin);
           setResponse(registerResponse ? registerResponse.message : null);
           router.replace("/(tabs)/verify");
-          registerResponse ? console.log(registerResponse.token ? registerResponse.token : "NO TOKEN") : null;
+          //registerResponse ? console.log(registerResponse.token ? registerResponse.token : "NO TOKEN") : null;
           setError(null);
           //console.log("The response is: " + response);
         } else {

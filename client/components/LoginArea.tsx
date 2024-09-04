@@ -52,8 +52,8 @@ const LoginArea: React.FC = () => {
     try {
       const loginResponse = await loginExistingUser(email, password, login, tentativeLogin);
       setResponse(loginResponse ? loginResponse.message : null);
-      loginResponse ? console.log(loginResponse.token ? loginResponse.token : "NO TOKEN") : null;
-      loginResponse ? storeToken(loginResponse.token) : null;
+      //loginResponse ? console.log(loginResponse.token ? loginResponse.token : "NO TOKEN") : null;
+      //loginResponse ? storeToken(loginResponse.token) : null;
       setError(null);
     } catch (err) {
       console.error(err + " ... " + typeof err);

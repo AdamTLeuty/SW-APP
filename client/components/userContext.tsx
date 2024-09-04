@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { router } from "expo-router";
-import { deleteToken } from "@/services/tokenStorage";
-
+import { deleteToken, getToken } from "@/services/tokenStorage";
+import { checkUserStatus } from "@/services/authService";
 // Define the types for the context state and functions
 interface User {
   name: string;
@@ -32,11 +32,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [impressionJudgment, setImpressionJudgment] = useState<ImpressionJudgment>(null);
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (userData: User) => {
+  const login = async (userData: User) => {
     setIsLoggedIn(true);
     setUser(userData);
+    const token = await getToken();
+    let response;
+    if (token) {
+      response = checkUserStatus(userData.email, token);
+    }
     setStatus("impressionStage");
-    console.log("Just logged in: " + user?.email);
   };
 
   const tentativeLogin = (userData: User) => {

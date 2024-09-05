@@ -44,6 +44,7 @@ func getUserData(c *gin.Context, db *sql.DB) {
 	tokenEmail, err := verifyToken(token)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Must provide an email and login token"})
+		return
 	}
 	var email = tokenEmail.(string)
 

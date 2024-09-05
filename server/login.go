@@ -79,6 +79,8 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 	claimValue, err := verifyToken(token)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token has expired, please login again"})
+		return
 	} else {
 		fmt.Printf("Claim value: %v\n", claimValue)
 	}
@@ -86,7 +88,6 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 	fmt.Println("The error from the token verification is: ", err)
 
 	token, err = createToken(claimValue.(string))
-
 	fmt.Println(claimValue.(string))
 
 	if err != nil {

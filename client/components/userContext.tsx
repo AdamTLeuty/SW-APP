@@ -38,9 +38,19 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const token = await getToken();
     let response;
     if (token) {
-      response = checkUserStatus(userData.email, token);
+      response = await checkUserStatus(userData.email, token);
     }
-    setStatus("impressionStage");
+    if (response?.userData != null) {
+      const userDataWithStage = response.userData as { stage: string };
+      if (userDataWithStage.stage == "aligner") {
+        setStatus("alignerStage");
+      }
+      if (userDataWithStage.stage == "impression") {
+        setStatus("impressionStage");
+      }
+    } else {
+      console.log(response);
+    }
   };
 
   const tentativeLogin = (userData: User) => {

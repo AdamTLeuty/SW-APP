@@ -26,6 +26,7 @@ interface ResponseMessage {
   message: string;
   token: string;
   status: number;
+  userData?: object;
 }
 
 export const registerNewUser = async (
@@ -123,12 +124,11 @@ export const loginExistingUserWithToken = async (token: string, login: (userData
   try {
     const response = await authService.post(
       `/api/loginWithToken`,
-      {
-        token: token,
-      },
+      {},
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       },
     );
@@ -213,18 +213,12 @@ export const requestNewAuthCode = async (email: string): Promise<ResponseMessage
 
 export const checkUserStatus = async (email: string, token: string): Promise<ResponseMessage | null> => {
   try {
-    const response = await authService.get(
-      `/api/userData`,
-      {
-        email: email,
-        token: token,
+    const response = await authService.get(`/api/userData`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
+    });
 
     for (let key in response.data) {
       if (response.data.hasOwnProperty(key)) {
@@ -232,7 +226,7 @@ export const checkUserStatus = async (email: string, token: string): Promise<Res
       }
     }
 
-    return { message: response.data.message, token: response.data.token, status: response.status };
+    return { message: response.data.message, token: response.data.token, status: response.status, userData: response.data.userData };
   } catch (error) {
     console.error("Error fetching user data from auth server:", error);
     throw error;

@@ -81,7 +81,8 @@ const LoginArea: React.FC = () => {
         //loginResponse = await loginExistingUserWithToken("THISTOKENWASSENTBECAUSETHEREISNOSAVEDTOKEN", userEmail, login);
       }
 
-      setResponse(loginResponse ? loginResponse.message : null);
+      //setResponse(loginResponse ? loginResponse.message : null);
+      setResponse("Session expired, please log in again");
       setError(null);
     } catch (err) {
       console.error(err + " ... " + typeof err);

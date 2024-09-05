@@ -87,6 +87,13 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 	fmt.Println("The decoded claim is: ", claimValue)
 	fmt.Println("The error from the token verification is: ", err)
 
+	emailInDB, err := checkEmailExists(db, claimValue.(string))
+
+	if !emailInDB {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User does not exist"})
+		return
+	}
+
 	token, err = createToken(claimValue.(string))
 	fmt.Println(claimValue.(string))
 

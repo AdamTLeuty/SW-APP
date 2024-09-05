@@ -87,6 +87,18 @@ func checkEmailExists(db *sql.DB, email string) (bool, error) {
 func setupRouter(db *sql.DB) *gin.Engine {
 	router := gin.Default()
 
+	// Load HTML templates
+	//router.SetHTMLTemplate(template.Must(template.ParseFiles("admin/pages/tables.html")))
+	//router.SetHTMLTemplate(template.Must(template.ParseFiles("admin/pages/login.html")))
+
+	//tmpl := template.Must(template.ParseFiles(r.Files...))
+	//tmpl.ParseFiles("template1.html", "template2.html"...)
+	//router.SetHTMLTemplate(tmpl)
+
+	router.LoadHTMLGlob("./admin/pages/*")
+
+	router.StaticFS("/assets", http.Dir("admin/assets"))
+
 	router.POST("/api/register", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
 		register(c, db)
 	})
@@ -111,6 +123,15 @@ func setupRouter(db *sql.DB) *gin.Engine {
 	router.POST("/api/userData", func(c *gin.Context) {
 		setUserData(c, db)
 	})
+
+	router.GET("/admin/login", func(c *gin.Context) {
+		admin_login(c, db)
+	})
+
+	router.GET("/admin/home", func(c *gin.Context) {
+		admin_home(c, db)
+	})
+
 	return router
 }
 

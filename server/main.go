@@ -128,6 +128,10 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		admin_login(c, db)
 	})
 
+	router.POST("/admin/login", func(c *gin.Context) {
+		admin_login_form(c, db)
+	})
+
 	router.GET("/admin/home", func(c *gin.Context) {
 		admin_home(c, db)
 	})

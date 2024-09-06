@@ -95,7 +95,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 	//tmpl.ParseFiles("template1.html", "template2.html"...)
 	//router.SetHTMLTemplate(tmpl)
 
-	router.LoadHTMLGlob("./admin/pages/*")
+	router.LoadHTMLGlob("./admin/pages/*.html")
 
 	router.StaticFS("/assets", http.Dir("admin/assets"))
 

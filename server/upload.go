@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -23,12 +24,22 @@ type UploadData struct {
 
 func upload(c *gin.Context, db *sql.DB) {
 
+	fmt.Println("Upload endpoint accessed")
+
 	// Extract the JSON part
 	jsonData := c.PostForm("json")
 	var uploadData UploadData
 	if err := json.Unmarshal([]byte(jsonData), &uploadData); err != nil {
 		log.Println("Error parsing JSON:", err)
 		c.String(http.StatusBadRequest, "Error parsing JSON")
+		return
+	}
+
+	var userID int
+
+	err := db.QueryRow("SELECT id FROM users WHERE email = ?", uploadData.Email).Scan(&userID)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
 		return
 	}
 
@@ -93,15 +104,43 @@ func upload(c *gin.Context, db *sql.DB) {
 
 	dst := filepath.Join(dstFolder, newFilename)
 
-	// Upload the file to the specific destination
+	// Save the file to the specific destination
 	if err := c.SaveUploadedFile(file, dst); err != nil {
 		log.Println("Error saving the file:", err)
 		c.String(http.StatusInternalServerError, "Error saving the file")
 		return
 	}
 
-	updateDrive()
+	err = addImageToTable(db, userID, uploadData.Type, dst)
+	if err != nil {
 
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "File could not be uploaded, please try again later"})
+
+	}
+	uploadToDrive, err := strconv.ParseBool(os.Getenv("UPLOAD_TO_DRIVE"))
+	if err != nil {
+		return err
+	}
+	if uploadToDrive {
+		updateDrive()
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully"})
+
+}
+
+func addImageToTable(db *sql.DB, userID int, imageType string, path string) error {
+
+	stmt, err := db.Prepare("INSERT INTO images(userID, imageType, path) VALUES(?, ?, ?)")
+	if err != nil {
+
+		return err
+	}
+	_, err = stmt.Exec(userID, imageType, path)
+	if err != nil {
+
+		return err
+	}
+
+	return nil
 
 }

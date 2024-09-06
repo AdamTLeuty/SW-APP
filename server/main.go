@@ -108,7 +108,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 	router.POST("/api/loginWithToken", func(c *gin.Context) {
 		loginWithToken(c, db)
 	})
-	router.POST("/api/uploadImage", checkEmailAndTokenMatch(), func(c *gin.Context) {
+	router.POST("/api/uploadImage", func(c *gin.Context) {
 		upload(c, db)
 	})
 	router.POST("/api/verifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
@@ -147,6 +147,22 @@ func main() {
 	defer db.Close()
 
 	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER, stage TEXT)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	statement.Exec()
+
+	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS admins (id INTEGER PRIMARY KEY, username TEXT, password TEXT)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	statement.Exec()
+
+	//Create a table for images uploaded by the user
+	//Each image has a userID for a corresponding user in the `users` table
+	//Each image has an `imageType`, showing either that the image is of an aligner update or impression check (`aligner`/`impression`)
+	//Each image has a file path for it's location on the server
+	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS images (id INTEGER PRIMARY KEY,userID INTEGER, imageType TEXT, path TEXT,FOREIGN KEY (userID) REFERENCES users(id))")
 	if err != nil {
 		log.Fatal(err)
 	}

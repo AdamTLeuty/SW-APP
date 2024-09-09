@@ -15,8 +15,9 @@ type UserDataRequest struct {
 }
 
 type UserDataResponse struct {
-	Stage    string `json:"stage,omitempty"`
-	Username string `json"stage,omitempty"`
+	Stage                  string `json:"stage,omitempty"`
+	Username               string `json:"username,omitempty"`
+	ImpressionConfirmation string `json:"impressionConfirmation,omitempty"`
 }
 
 func getUserData(c *gin.Context, db *sql.DB) {
@@ -66,7 +67,7 @@ func getUserData(c *gin.Context, db *sql.DB) {
 
 	var userData UserDataResponse
 
-	err = db.QueryRow("SELECT stage, username FROM users WHERE email = ?", email).Scan(&userData.Stage, &userData.Username)
+	err = db.QueryRow("SELECT stage, username, impressionConfirmation FROM users WHERE email = ?", email).Scan(&userData.Stage, &userData.Username, &userData.ImpressionConfirmation)
 	if err != nil {
 		fmt.Println("Error scanning for user data: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching user data - please try again later"})

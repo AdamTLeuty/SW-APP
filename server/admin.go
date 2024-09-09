@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 
 	"net/http"
 
@@ -23,6 +25,7 @@ func admin_login(c *gin.Context, db *sql.DB) {
 }
 
 type TabledUser struct {
+	ID       int
 	Username string
 	Email    string
 	Stage    string
@@ -30,8 +33,6 @@ type TabledUser struct {
 }
 
 func admin_home(c *gin.Context, db *sql.DB) {
-
-	//a := []TabledUser{{Username: "Guy", Email: "guy@example.com", Stage: "impression", Verified: 0}, {Username: "Other Guy", Email: "otherGuy@example.com", Stage: "aligner", Verified: 1}, {Username: "Other Guy", Email: "otherGuy@example.com", Stage: "aligner", Verified: 1}}
 
 	cookie, err := c.Cookie("session_id")
 
@@ -50,7 +51,7 @@ func admin_home(c *gin.Context, db *sql.DB) {
 
 	fmt.Println(username)
 
-	rows, err := db.Query("SELECT email, username, verified, stage FROM users")
+	rows, err := db.Query("SELECT id, email, username, verified, stage FROM users")
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -63,7 +64,7 @@ func admin_home(c *gin.Context, db *sql.DB) {
 	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
 		var user TabledUser
-		if err := rows.Scan(&user.Email, &user.Username, &user.Verified,
+		if err := rows.Scan(&user.ID, &user.Email, &user.Username, &user.Verified,
 			&user.Stage); err != nil {
 			return
 		}
@@ -141,6 +142,88 @@ func admin_login_form(c *gin.Context, db *sql.DB) {
 	//c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully"})
 	c.SetCookie("session_id", token, 3600, "/", os.Getenv("DOMAIN"), false, true)
 	c.Redirect(302, "/admin/home")
+	return
+
+}
+
+type Image struct {
+	Path      string
+	ImageType string
+}
+
+func admin_user_profile(c *gin.Context, db *sql.DB) {
+
+	cookie, err := c.Cookie("session_id")
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
+		return
+	}
+
+	fmt.Printf("Cookie value: %s \n", cookie)
+
+	username, err := verifyToken(cookie)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
+		return
+	}
+
+	fmt.Println(username)
+
+	//userPath, err := strconv.Atoi(c.Param("path"))
+
+	userPath := c.Param("path")
+	userPath = strings.Replace(userPath, "/", "", -1)
+	id, err := strconv.Atoi(userPath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
+	}
+
+	fmt.Println("the id is:", id)
+
+	var user TabledUser
+	err = db.QueryRow("SELECT username, stage, email, verified FROM users WHERE id = ?", id).Scan(&user.Username, &user.Stage, &user.Email, &user.Verified)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
+		fmt.Println("Database broken")
+		return
+	}
+
+	rows, err := db.Query("SELECT imageType, path FROM images WHERE userID = ?", id)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer rows.Close()
+
+	// An userum slice to hold data from returned rows.
+	var images []Image
+
+	// Loop through rows, using Scan to assign column data to struct fields.
+	for rows.Next() {
+		fmt.Println("Adding new image to array")
+		var image Image
+		if err := rows.Scan(&image.ImageType, &image.Path); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
+			return
+		}
+		if image.ImageType == "impression" {
+			images = append(images, image)
+		}
+	}
+	if err = rows.Err(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
+		return
+	}
+
+	fmt.Println(user)
+
+	fmt.Println(images)
+
+	c.HTML(http.StatusOK, "profile.html", gin.H{
+		"User":   user,
+		"Images": images,
+	})
 	return
 
 }

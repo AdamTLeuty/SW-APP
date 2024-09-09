@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,6 +13,45 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+func admin_auth(db *sql.DB) gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+
+		cookie, err := c.Cookie("session_id")
+
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Abort()
+			return
+		}
+
+		username, err := verifyToken(cookie)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Abort()
+			return
+		}
+
+		var exists bool
+		err = db.QueryRow("SELECT COUNT(1) FROM admins WHERE username = ?", username).Scan(&exists)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Abort()
+			return
+		}
+
+		if !exists {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Abort()
+			return
+		}
+
+		// Continue to the handler
+		c.Next()
+	}
+
+}
 
 func LogAccess() gin.HandlerFunc {
 	return func(c *gin.Context) {

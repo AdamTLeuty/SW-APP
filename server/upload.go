@@ -113,13 +113,11 @@ func upload(c *gin.Context, db *sql.DB) {
 
 	err = addImageToTable(db, userID, uploadData.Type, dst)
 	if err != nil {
-
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "File could not be uploaded, please try again later"})
-
 	}
 	uploadToDrive, err := strconv.ParseBool(os.Getenv("UPLOAD_TO_DRIVE"))
 	if err != nil {
-		return err
+		return
 	}
 	if uploadToDrive {
 		updateDrive()

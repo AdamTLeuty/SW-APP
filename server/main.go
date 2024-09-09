@@ -136,8 +136,12 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		admin_home(c, db)
 	})
 
-	router.GET("/admin/user/*path", func(c *gin.Context) {
+	router.GET("/admin/user/:userid", func(c *gin.Context) {
 		admin_user_profile(c, db)
+	})
+
+	router.POST("/admin/user/updateImpressionState/:userid", admin_auth(db), func(c *gin.Context) {
+		edit_user_impression_state(c, db)
 	})
 
 	return router
@@ -150,7 +154,7 @@ func main() {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER, stage TEXT)")
+	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER, stage TEXT, impressionConfirmation TEXT)")
 	if err != nil {
 		log.Fatal(err)
 	}

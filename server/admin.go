@@ -25,11 +25,12 @@ func admin_login(c *gin.Context, db *sql.DB) {
 }
 
 type TabledUser struct {
-	ID       int
-	Username string
-	Email    string
-	Stage    string
-	Verified int
+	ID                int
+	Username          string
+	Email             string
+	Stage             string
+	Verified          int
+	ImpressionQuality string
 }
 
 func admin_home(c *gin.Context, db *sql.DB) {
@@ -170,9 +171,7 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 
 	fmt.Println(username)
 
-	//userPath, err := strconv.Atoi(c.Param("path"))
-
-	userPath := c.Param("path")
+	userPath := c.Param("userid")
 	userPath = strings.Replace(userPath, "/", "", -1)
 	id, err := strconv.Atoi(userPath)
 	if err != nil {
@@ -182,10 +181,11 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 	fmt.Println("the id is:", id)
 
 	var user TabledUser
-	err = db.QueryRow("SELECT username, stage, email, verified FROM users WHERE id = ?", id).Scan(&user.Username, &user.Stage, &user.Email, &user.Verified)
+	err = db.QueryRow("SELECT id, username, stage, email, verified, impressionConfirmation FROM users WHERE id = ?", id).Scan(&user.ID, &user.Username, &user.Stage, &user.Email, &user.Verified, &user.ImpressionQuality)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
 		fmt.Println("Database broken")
+		fmt.Println(err)
 		return
 	}
 
@@ -224,6 +224,51 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 		"User":   user,
 		"Images": images,
 	})
+	return
+
+}
+
+func edit_user_impression_state(c *gin.Context, db *sql.DB) {
+
+	userPath := c.Param("userid")
+	userPath = strings.Replace(userPath, "/", "", -1)
+	id, err := strconv.Atoi(userPath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
+	}
+
+	fmt.Println("the id is:", id)
+
+	quality := c.PostForm("impressionQuality")
+
+	fmt.Println(quality)
+
+	if quality != "acceptable" && quality != "unacceptable" && quality != "unset" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Impression can only be `unset`, `acceptable` or `unacceptable`"})
+		return
+	}
+
+	stmt, err := db.Prepare("UPDATE users SET impressionConfirmation = ? WHERE id = ?")
+	if err != nil {
+		fmt.Println("database failed: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server Error"})
+		return
+	}
+	if quality == "null" {
+		var null sql.NullString
+		_, err = stmt.Exec(null, id)
+	} else {
+		_, err = stmt.Exec(quality, id)
+	}
+	if err != nil {
+		fmt.Println("execution failed: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Server Error"})
+		return
+	}
+
+	returnAddress := "/admin/user/" + strconv.Itoa(id)
+
+	c.Redirect(302, returnAddress)
 	return
 
 }

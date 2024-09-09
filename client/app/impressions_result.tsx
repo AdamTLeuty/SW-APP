@@ -8,13 +8,46 @@ import { Icon } from "@/components/Icon";
 import { Link } from "expo-router";
 
 import { SafeAreaView } from "react-native";
+import { checkUserStatus } from "@/services/authService";
+import { useUserContext } from "@/components/userContext";
+import { getToken } from "@/services/tokenStorage";
 
 type Result = "good" | "bad" | null;
 
 export default function impressions_result() {
+  const { user } = useUserContext();
+  //const token = await getToken();
+  //const userData = await checkUserStatus(user?.email, token);
+  const [impressionConfirmation, setImpressionConfirmation] = useState<string | null>(null);
+  const [token, setToken] = useState<String | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = await getToken();
+        const userData = await checkUserStatus(user?.email, token);
+        setToken(token);
+        const userDataAsserted = userData?.userData as { impressionConfirmation: string };
+        if (userDataAsserted.impressionConfirmation == "acceptable") {
+          setImpressionConfirmation("good");
+        }
+        if (userDataAsserted.impressionConfirmation == "unacceptable") {
+          setImpressionConfirmation("bad");
+        }
+        console.log("\n");
+        console.log(userData);
+        console.log(token);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
   const result: Result = "bad";
 
-  if (result === "good") {
+  if (impressionConfirmation == "good") {
     return (
       <ScrollView contentContainerStyle={{ alignItems: "center", backgroundColor: "red", justifyContent: "center", flexGrow: 1 }}>
         <View style={styles.container}>
@@ -35,7 +68,7 @@ export default function impressions_result() {
         </View>
       </ScrollView>
     );
-  } else {
+  } else if (impressionConfirmation == "bad") {
     return (
       <ScrollView contentContainerStyle={{ alignItems: "center", backgroundColor: "red", justifyContent: "center", flexGrow: 1 }}>
         <View style={styles.container}>
@@ -46,6 +79,26 @@ export default function impressions_result() {
             {"It looks like you will have to retake your impressions on this occasion."}
           </Text>
           <Icon style={styles.icon} width="210" height="210" iconName="thumbs_down" color={"black"} />
+          <Link href="/home" asChild>
+            <Pressable style={styles.homeButton}>
+              <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="800">
+                {"Contact Support"}
+              </Text>
+            </Pressable>
+          </Link>
+        </View>
+      </ScrollView>
+    );
+  } else {
+    return (
+      <ScrollView contentContainerStyle={{ alignItems: "center", backgroundColor: "red", justifyContent: "center", flexGrow: 1 }}>
+        <View style={styles.container}>
+          <Text style={styles.title} fontWeight="800">
+            {"No news yet!"}
+          </Text>
+          <Text style={styles.body} fontWeight="400">
+            {"It looks like we haven't checked your impressions yet, please check back again later."}
+          </Text>
           <Link href="/home" asChild>
             <Pressable style={styles.homeButton}>
               <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="800">

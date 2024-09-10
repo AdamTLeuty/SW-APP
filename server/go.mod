@@ -1,4 +1,4 @@
-module auth_server
+module main
 
 go 1.22.5
 

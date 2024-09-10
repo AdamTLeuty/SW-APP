@@ -99,30 +99,44 @@ func setupRouter(db *sql.DB) *gin.Engine {
 
 	router.Static("/admin/public/assets", "./admin/public/assets")
 
-	router.POST("/api/register", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
-		register(c, db)
-	})
-	router.POST("/api/login", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
-		login(c, db)
-	})
-	router.POST("/api/loginWithToken", func(c *gin.Context) {
-		loginWithToken(c, db)
-	})
-	router.POST("/api/uploadImage", func(c *gin.Context) {
-		upload(c, db)
-	})
-	router.POST("/api/verifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
-		verifyEmail(c, db)
-	})
-	router.POST("/api/resendVerifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
-		resendVerifyEmail(c, db)
-	})
-	router.GET("/api/userData", func(c *gin.Context) {
-		getUserData(c, db)
-	})
-	router.POST("/api/userData", func(c *gin.Context) {
-		setUserData(c, db)
-	})
+	api := router.Group("/api/")
+	api.Use(SimpleLogAccess())
+	{
+		api.POST("/login", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
+			login(c, db)
+		})
+
+		api.POST("/register", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
+			register(c, db)
+		})
+
+		api.POST("/loginWithToken", func(c *gin.Context) {
+			loginWithToken(c, db)
+		})
+
+		authorized := router.Group("/api/")
+		authorized.Use(SimpleLogAccess())
+		{
+
+			api.POST("/uploadImage", func(c *gin.Context) {
+				upload(c, db)
+			})
+			api.POST("/verifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
+				verifyEmail(c, db)
+			})
+			api.POST("/resendVerifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
+				resendVerifyEmail(c, db)
+			})
+			api.GET("/userData", func(c *gin.Context) {
+				getUserData(c, db)
+			})
+			api.POST("/userData", func(c *gin.Context) {
+				setUserData(c, db)
+			})
+
+		}
+
+	}
 
 	router.GET("/admin/login", func(c *gin.Context) {
 		admin_login(c, db)
@@ -170,7 +184,7 @@ func main() {
 	//Each image has a userID for a corresponding user in the `users` table
 	//Each image has an `imageType`, showing either that the image is of an aligner update or impression check (`aligner`/`impression`)
 	//Each image has a file path for it's location on the server
-	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS images (id INTEGER PRIMARY KEY,userID INTEGER, imageType TEXT, path TEXT,FOREIGN KEY (userID) REFERENCES users(id))")
+	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS images (id INTEGER PRIMARY KEY,userID INTEGER, imageType TEXT, path TEXT,FOREIGN KEY (userID) REFERENCES users(id) ON DELETE CASCADE) ")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -92,6 +92,15 @@ func LogAccess() gin.HandlerFunc {
 	}
 }
 
+func SimpleLogAccess() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Println("A handler was accessed")
+
+		// Continue to the handler
+		c.Next()
+	}
+}
+
 type Email_Token_JSON struct {
 	Email string `json:"email"`
 	Token string `json:"token"`
@@ -223,4 +232,41 @@ func LowercaseEmail() gin.HandlerFunc {
 		c.Next()
 	}
 
+}
+
+func check_bearer(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		cookie, err := c.Cookie("session_id")
+
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Abort()
+			return
+		}
+
+		username, err := verifyToken(cookie)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Abort()
+			return
+		}
+
+		var exists bool
+		err = db.QueryRow("SELECT COUNT(1) FROM admins WHERE username = ?", username).Scan(&exists)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Abort()
+			return
+		}
+
+		if !exists {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Abort()
+			return
+		}
+
+		// Continue to the handler
+		c.Next()
+	}
 }

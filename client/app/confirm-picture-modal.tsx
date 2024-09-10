@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { Platform, StyleSheet, Pressable, Image } from "react-native";
-
+import React from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
 import { router } from "expo-router";
@@ -56,10 +56,35 @@ export default function ModalScreen() {
     router.back();
   };
 
+  const getDate = () => {
+    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+    const today = new Date();
+
+    const getOrdinalSuffix = (day: number) => {
+      if (day > 3 && day < 21) return "th";
+      switch (day % 10) {
+        case 1:
+          return "st";
+        case 2:
+          return "nd";
+        case 3:
+          return "rd";
+        default:
+          return "th";
+      }
+    };
+
+    const day = today.getDate();
+    const dayWithSuffix = `${day}${getOrdinalSuffix(day)}`;
+    const formattedDate = today.toLocaleDateString("en-UK", options).replace(today.getDate(), dayWithSuffix).replace(",", ",\n");
+
+    return formattedDate;
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title} fontWeight="800" lightColor="black">
-        {"Tuesday,\n3rd September, 2024"}
+        {status == "impressionStage" ? "Can you clearly see your impressions?" : getDate()}
       </Text>
       {image ? <Image source={{ uri: image.uri }} style={styles.preview} /> : <Text>{"No image taken"}</Text>}
       <Pressable onPress={toCamera} style={[styles.button, styles.retakeButton]}>
@@ -69,7 +94,7 @@ export default function ModalScreen() {
       </Pressable>
       <Pressable onPress={savePhoto} style={[styles.button]}>
         <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
-          {"Save your photo!"}
+          {status == "impressionStage" ? "Send your photo!" : "Save your photo!"}
         </Text>
       </Pressable>
     </View>

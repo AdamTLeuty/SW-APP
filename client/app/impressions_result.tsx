@@ -79,6 +79,9 @@ export default function impressions_result() {
             {"It looks like you will have to retake your impressions on this occasion."}
           </Text>
           <Icon style={styles.icon} width="210" height="210" iconName="thumbs_down" color={"black"} />
+          <Text style={[styles.body, { paddingBottom: 0, marginBottom: 20 }]} fontWeight="400">
+            {"No more putty?"}
+          </Text>
           <Link href="/home" asChild>
             <Pressable style={styles.homeButton}>
               <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="800">

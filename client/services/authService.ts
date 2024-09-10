@@ -226,6 +226,8 @@ export const checkUserStatus = async (email: string, token: string): Promise<Res
       }
     }
 
+    console.log(response.data.userData);
+
     return { message: response.data.message, token: response.data.token, status: response.status, userData: response.data.userData };
   } catch (error) {
     console.error("Error fetching user data from auth server:", error);

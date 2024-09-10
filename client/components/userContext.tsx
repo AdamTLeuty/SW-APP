@@ -20,6 +20,9 @@ interface UserContextType {
   tentativeLogin: (userData: User) => void;
   logout: () => void;
   nextStage: () => void;
+  alignerCount: number;
+  alignerProgress: number;
+  alignerChangeDate: string;
 }
 
 // Create the context with an initial value
@@ -31,6 +34,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [status, setStatus] = useState<Status>("loggedOut");
   const [impressionJudgment, setImpressionJudgment] = useState<ImpressionJudgment>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [alignerCount, setAlignerCount] = useState<number>(0);
+  const [alignerProgress, setAlignerProgress] = useState<number>(0);
+  const [alignerChangeDate, setAlignerChangeDate] = useState<string>(0);
 
   const login = async (userData: User) => {
     setIsLoggedIn(true);
@@ -41,12 +47,24 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       response = await checkUserStatus(userData.email, token);
     }
     if (response?.userData != null) {
-      const userDataWithStage = response.userData as { stage: string };
+      console.log(response?.userData);
+
+      const userDataWithStage = response.userData as { stage: string; alignerCount: number; alignerProgress: number; alignerChangeDate: string };
       if (userDataWithStage.stage == "aligner") {
         setStatus("alignerStage");
       }
       if (userDataWithStage.stage == "impression") {
         setStatus("impressionStage");
+      }
+      console.log(userDataWithStage);
+      if (userDataWithStage.alignerCount) {
+        setAlignerCount(userDataWithStage.alignerCount);
+      }
+      if (userDataWithStage.alignerProgress) {
+        setAlignerProgress(userDataWithStage.alignerProgress);
+      }
+      if (userDataWithStage.alignerChangeDate) {
+        setAlignerChangeDate(userDataWithStage.alignerChangeDate);
       }
     } else {
       console.log(response);
@@ -74,7 +92,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setStatus("loggedOut");
   };
 
-  return <UserContext.Provider value={{ isLoggedIn, user, status, impressionJudgment, login, logout, nextStage, tentativeLogin }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ isLoggedIn, user, status, impressionJudgment, login, logout, nextStage, tentativeLogin, alignerCount, alignerProgress, alignerChangeDate }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 // Custom hook to use the UserContext

@@ -20,6 +20,8 @@ import { Pressable } from "react-native";
 //import { useRoute } from "@react-navigation/native";
 
 export default function Home() {
+  const { alignerProgress, alignerCount } = useUserContext();
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -27,7 +29,7 @@ export default function Home() {
           Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
         </Text>
         <Link style={styles.progressHolder} href="/progress">
-          <Progress style={styles.progressHolder} text="Progress Bar" currentAlignerCount={25} totalAlignerCount={30} />
+          <Progress style={styles.progressHolder} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
         </Link>
 
         <Link href="/aligner-change-modal" asChild>

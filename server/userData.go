@@ -241,6 +241,12 @@ func updateAlignerChangeDate(c *gin.Context, db *sql.DB) {
 		//Else, make alignerChangeDate +10 days from now
 		newChangeDate = today.AddDate(0, 0, 10)
 		println(newChangeDate.Format(time.RFC3339))
+
+		err = moveToNextAligner(db, email)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error, please try again later"})
+			return
+		}
 	}
 
 	err = updateUserAlignerDateChange(db, email, newChangeDate.Format(time.RFC3339))
@@ -260,6 +266,34 @@ func updateUserAlignerDateChange(db *sql.DB, email string, date string) error {
 		return err
 	}
 	_, err = stmt.Exec(date, email)
+	if err != nil {
+		fmt.Println("execution failed: ", err)
+		return err
+	}
+
+	return nil
+}
+
+func moveToNextAligner(db *sql.DB, email string) error {
+	//Fetch the aligner progress value
+	var alignerProgress int
+	err := db.QueryRow("SELECT alignerProgress FROM users WHERE email = ?", email).Scan(&alignerProgress)
+	if err != nil {
+		fmt.Println("Error scanning for user data: ", err)
+		return err
+	}
+	fmt.Println("The current change date in db is: ", alignerProgress)
+
+	//Increment the aligner progress value
+	alignerProgress++
+
+	//Update the value
+	stmt, err := db.Prepare("UPDATE users SET alignerProgress = ? WHERE email = ?")
+	if err != nil {
+		fmt.Println("database failed: ", err)
+		return err
+	}
+	_, err = stmt.Exec(alignerProgress, email)
 	if err != nil {
 		fmt.Println("execution failed: ", err)
 		return err

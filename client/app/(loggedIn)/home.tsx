@@ -21,7 +21,7 @@ import { Pressable } from "react-native";
 //import { useRoute } from "@react-navigation/native";
 
 export default function Home() {
-  const { alignerProgress, alignerCount, updateUserContext } = useUserContext();
+  const { alignerProgress, alignerCount, updateUserContext, alignerChangeDate } = useUserContext();
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(async () => {
@@ -29,6 +29,9 @@ export default function Home() {
     await updateUserContext();
     setRefreshing(false);
   }, []);
+
+  const now = new Date();
+  const changeDate = new Date(Date.parse(alignerChangeDate));
 
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -40,13 +43,17 @@ export default function Home() {
           <Progress style={styles.progressHolder} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
         </Link>
 
-        <Link href="/aligner-change-modal" asChild>
-          <Pressable style={styles.alignerChangeButton}>
-            <Text style={styles.alignerChangeText} lightColor="#fff" fontWeight="600">
-              {"Time to change your aligners"}
-            </Text>
-          </Pressable>
-        </Link>
+        {changeDate < now ? (
+          <Link href="/aligner-change-modal" asChild>
+            <Pressable style={styles.alignerChangeButton}>
+              <Text style={styles.alignerChangeText} lightColor="#fff" fontWeight="600">
+                {alignerProgress > 0 ? "Time to change your aligners" : "Time to start your first aligners"}
+              </Text>
+            </Pressable>
+          </Link>
+        ) : (
+          <Text>{}</Text>
+        )}
         <Link href="/content">
           <Content_Link />
         </Link>

@@ -1,7 +1,7 @@
 // services/hubspotService.ts
 
 import axios from "axios";
-import { storeToken } from "./tokenStorage";
+import { getToken, storeToken } from "./tokenStorage";
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -255,6 +255,30 @@ export const setUserStatus = async (email: string, token: string, userDataToChan
     return { message: response.data.message, token: response.data.token, status: response.status, userData: response.data.userData };
   } catch (error) {
     console.error("Error fetching user data from auth server:", error);
+    throw error;
+  }
+};
+
+export const updateAlignerChangeDate = async (delay: boolean): Promise<ResponseMessage | null> => {
+  try {
+    const token = await getToken();
+
+    const response = await authService.post(
+      "/api/changeAlignerDate",
+      {
+        delayChange: delay,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return { message: response.data.message, token: response.data.token, status: response.status, userData: response.data.userData };
+  } catch (error) {
+    console.error("Error updating `alignerChangeDate`:", error);
     throw error;
   }
 };

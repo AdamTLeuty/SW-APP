@@ -1,13 +1,16 @@
 import { StatusBar } from "expo-status-bar";
 import { Platform, StyleSheet } from "react-native";
-
+import React from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
 import { Link, router } from "expo-router";
 import { Pressable } from "react-native";
 import { CheckBox } from "@rneui/themed";
 
+import { updateAlignerChangeDate } from "@/services/authService";
+
 import { useState } from "react";
+import { useUserContext } from "@/components/userContext";
 
 interface DelayButtonProps {
   selectedIndex: number;
@@ -18,8 +21,9 @@ const DelayButton: React.FC<DelayButtonProps> = ({ selectedIndex, delayReasons }
   const active = selectedIndex != -1;
 
   //{selectedIndex} {delayReasons[selectedIndex]}
-  const delayAlignerChange = () => {
+  const delayAlignerChange = async () => {
     //This will call a function to delay the aligner change date by one, and send that information to the server
+    const response = await updateAlignerChangeDate(true);
     //This will include the `Reason` string to log the issue
     //Then, send back to the home screen
     router.replace("/(loggedIn)/home");
@@ -91,6 +95,7 @@ const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setInd
 
 export default function ModalScreen() {
   const [selectedIndex, setIndex] = useState(-1);
+  const { updateUserContext } = useUserContext();
 
   const delayReasons = [
     "My aligners are still hurting my teeth",
@@ -99,6 +104,13 @@ export default function ModalScreen() {
     "I don’t have access to my next set of aligners right now.",
     "Other",
   ];
+
+  const updateAlignerProgress = async () => {
+    const response = await updateAlignerChangeDate(false);
+    updateUserContext();
+    toCamera();
+    return;
+  };
 
   const toCamera = () => {
     router.replace("/(loggedIn)/camera");
@@ -109,7 +121,7 @@ export default function ModalScreen() {
       <Text style={styles.title} fontWeight="800" lightColor="black">
         {"Time to change your\nClear Aligners"}
       </Text>
-      <Pressable onPress={toCamera} style={styles.button}>
+      <Pressable onPress={updateAlignerProgress} style={styles.button}>
         <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
           {"Take new photo"}
         </Text>

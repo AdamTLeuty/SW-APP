@@ -14,16 +14,24 @@ import { Icon } from "@/components/Icon";
 import Calendar from "@/components/Calendar";
 import Progress from "@/components/progress";
 import { Image } from "expo-image";
+import { RefreshControl } from "react-native";
 
 import { Pressable } from "react-native";
 
 //import { useRoute } from "@react-navigation/native";
 
 export default function Home() {
-  const { alignerProgress, alignerCount } = useUserContext();
+  const { alignerProgress, alignerCount, updateUserContext } = useUserContext();
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await updateUserContext();
+    setRefreshing(false);
+  }, []);
 
   return (
-    <ScrollView>
+    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.container}>
         <Text style={styles.title} textBreakStrategy="balanced" lightColor="#000" fontWeight="800">
           Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!

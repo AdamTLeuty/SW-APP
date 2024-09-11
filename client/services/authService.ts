@@ -234,3 +234,27 @@ export const checkUserStatus = async (email: string, token: string): Promise<Res
     throw error;
   }
 };
+
+export const setUserStatus = async (email: string, token: string, userDataToChange: object): Promise<ResponseMessage | null> => {
+  try {
+    const response = await authService.post(`/api/userData`, userDataToChange, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    for (let key in response.data) {
+      if (response.data.hasOwnProperty(key)) {
+        console.log(key + ": " + response.data[key]);
+      }
+    }
+
+    console.log(response.data.userData);
+
+    return { message: response.data.message, token: response.data.token, status: response.status, userData: response.data.userData };
+  } catch (error) {
+    console.error("Error fetching user data from auth server:", error);
+    throw error;
+  }
+};

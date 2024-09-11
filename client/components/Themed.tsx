@@ -2,7 +2,7 @@
  * Learn more about Light and Dark modes:
  * https://docs.expo.io/guides/color-schemes/
  */
-import React from "react";
+import React, { ReactElement } from "react";
 import { Text as DefaultText, View as DefaultView, TextInput as DefaultTextInput, Button as DefaultButton, ButtonProps, ScrollView as DefaultScrollView } from "react-native";
 
 import Colors from "@/constants/Colors";
@@ -16,6 +16,7 @@ type ThemeProps = {
 
 type ScrollViewPropsSpecific = {
   contentContainerStyle?: object;
+  refreshControl?: ReactElement;
 };
 
 export type TextProps = ThemeProps & DefaultText["props"];
@@ -87,7 +88,7 @@ export function View(props: ViewProps) {
 }
 
 export function ScrollView(props: ScrollViewProps) {
-  const { style, lightColor, darkColor, contentContainerStyle, ...otherProps } = props;
+  const { style, lightColor, darkColor, contentContainerStyle, refreshControl, ...otherProps } = props;
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "background");
 
   const defaultStyle = {
@@ -96,7 +97,7 @@ export function ScrollView(props: ScrollViewProps) {
     // Add other default styles here
   };
 
-  return <DefaultScrollView style={[defaultStyle, style]} contentContainerStyle={contentContainerStyle} {...otherProps} />;
+  return <DefaultScrollView style={[defaultStyle, style]} contentContainerStyle={contentContainerStyle} refreshControl={refreshControl} {...otherProps} />;
 }
 
 export function TextInput(

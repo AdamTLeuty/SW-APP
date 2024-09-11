@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { router } from "expo-router";
 import { deleteToken, getToken } from "@/services/tokenStorage";
-import { checkUserStatus } from "@/services/authService";
+import { checkUserStatus, setUserStatus } from "@/services/authService";
 // Define the types for the context state and functions
 interface User {
   name: string;
@@ -17,6 +17,7 @@ interface UserContextType {
   impressionJudgment: ImpressionJudgment;
   user: User | null;
   login: (userData: User) => void;
+  updateUserContext: () => void;
   tentativeLogin: (userData: User) => void;
   logout: () => void;
   nextStage: () => void;
@@ -71,18 +72,50 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateUserContext = async () => {
+    const token = await getToken();
+    let response;
+    if (token) {
+      response = await checkUserStatus(user.email, token);
+    }
+    if (response?.userData != null) {
+      const userDataWithStage = response.userData as { stage: string; alignerCount: number; alignerProgress: number; alignerChangeDate: string };
+      if (userDataWithStage.stage == "aligner") {
+        setStatus("alignerStage");
+      }
+      if (userDataWithStage.stage == "impression") {
+        setStatus("impressionStage");
+      }
+      console.log(userDataWithStage);
+      if (userDataWithStage.alignerCount) {
+        setAlignerCount(userDataWithStage.alignerCount);
+      }
+      if (userDataWithStage.alignerProgress) {
+        setAlignerProgress(userDataWithStage.alignerProgress);
+      }
+      if (userDataWithStage.alignerChangeDate) {
+        setAlignerChangeDate(userDataWithStage.alignerChangeDate);
+      }
+    } else {
+      console.log(response);
+    }
+    return;
+  };
+
   const tentativeLogin = (userData: User) => {
     setUser(userData);
     setIsLoggedIn(false);
     console.log("Just tentatively logged in: " + user?.email);
   };
 
-  const nextStage = () => {
+  const nextStage = async () => {
     setIsLoggedIn(true);
     if (status == "impressionStage") {
       console.log("Moving from impressions stage to aligner stage");
       setStatus("alignerStage");
     }
+    const token = await getToken();
+    setUserStatus(user.email, token, { stage: "aligner" });
   };
 
   const logout = () => {
@@ -93,7 +126,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <UserContext.Provider value={{ isLoggedIn, user, status, impressionJudgment, login, logout, nextStage, tentativeLogin, alignerCount, alignerProgress, alignerChangeDate }}>
+    <UserContext.Provider
+      value={{ isLoggedIn, user, status, impressionJudgment, login, logout, updateUserContext, nextStage, tentativeLogin, alignerCount, alignerProgress, alignerChangeDate }}
+    >
       {children}
     </UserContext.Provider>
   );

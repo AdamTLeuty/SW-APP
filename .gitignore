@@ -167,3 +167,6 @@ server/users.db
 
 
 .commands
+
+#Testing
+server_tests/

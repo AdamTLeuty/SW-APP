@@ -118,7 +118,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		authorized.Use(SimpleLogAccess())
 		{
 
-			api.POST("/uploadImage", func(c *gin.Context) {
+			api.POST("/uploadImage", check_bearer(db), func(c *gin.Context) {
 				upload(c, db)
 			})
 			api.POST("/verifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {

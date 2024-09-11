@@ -19,7 +19,7 @@ type UserDataResponse struct {
 	Username               string `json:"username,omitempty"`
 	ImpressionConfirmation string `json:"impressionConfirmation,omitempty"`
 	AlignerCount           int    `json:"alignerCount,omitempty"`
-	AlignerProgress        int    `json:"alignerProgress,omitempty"`
+	AlignerProgress        int    `json:"alignerProgress"`
 	AlignerChangeDate      string `json:"alignerChangeDate,omitempty"`
 }
 

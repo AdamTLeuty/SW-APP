@@ -90,7 +90,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (userDataWithStage.alignerCount) {
         setAlignerCount(userDataWithStage.alignerCount);
       }
-      if (userDataWithStage.alignerProgress) {
+      if (userDataWithStage.alignerProgress != null) {
         setAlignerProgress(userDataWithStage.alignerProgress);
       }
       if (userDataWithStage.alignerChangeDate) {

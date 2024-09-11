@@ -237,34 +237,46 @@ func LowercaseEmail() gin.HandlerFunc {
 func check_bearer(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		cookie, err := c.Cookie("session_id")
+		var h Header
+		if err := c.BindHeader(&h); err != nil {
+			fmt.Println(err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Request needs to include a auth bearer token"})
+			c.Abort()
+			return
+		}
+
+		fmt.Println(h.Authorization)
+		token := strings.Replace(h.Authorization, "Bearer ", "", 1)
+		fmt.Println("Token", token)
+		fmt.Println(token)
+
+		claimValue, err := verifyToken(token)
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token has expired, please login again"})
+			c.Abort()
+			return
+		} else {
+			fmt.Printf("Claim value: %v\n", claimValue)
+		}
+		fmt.Println("The decoded claim is: ", claimValue)
+		fmt.Println("The error from the token verification is: ", err)
+
+		emailInDB, err := checkEmailExists(db, claimValue.(string))
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Please try again later"})
 			c.Abort()
 			return
 		}
 
-		username, err := verifyToken(cookie)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+		if !emailInDB {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid User"})
 			c.Abort()
 			return
 		}
 
-		var exists bool
-		err = db.QueryRow("SELECT COUNT(1) FROM admins WHERE username = ?", username).Scan(&exists)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
-			c.Abort()
-			return
-		}
-
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
-			c.Abort()
-			return
-		}
+		c.Set("email", claimValue.(string))
 
 		// Continue to the handler
 		c.Next()

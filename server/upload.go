@@ -16,10 +16,8 @@ import (
 )
 
 type UploadData struct {
-	Email string `json:"email"`
-	Token string `json:"token"`
-	Date  string `json:"date"`
-	Type  string `json:"type"`
+	Date string `json:"date"`
+	Type string `json:"type"`
 }
 
 func upload(c *gin.Context, db *sql.DB) {
@@ -35,9 +33,11 @@ func upload(c *gin.Context, db *sql.DB) {
 		return
 	}
 
+	email := c.GetString("email")
+
 	var userID int
 
-	err := db.QueryRow("SELECT id FROM users WHERE email = ?", uploadData.Email).Scan(&userID)
+	err := db.QueryRow("SELECT id FROM users WHERE email = ?", email).Scan(&userID)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
 		return
@@ -81,7 +81,7 @@ func upload(c *gin.Context, db *sql.DB) {
 	filename := filepath.Base(file.Filename)
 	filename = strings.ReplaceAll(filename, " ", "_")
 	ext := filepath.Ext(filename)
-	base := uploadData.Email + uploadData.Date
+	base := email + uploadData.Date
 
 	// Generate a unique filename
 	newFilename := fmt.Sprintf("%s_%d%s", base, time.Now().UnixNano(), ext)
@@ -90,9 +90,9 @@ func upload(c *gin.Context, db *sql.DB) {
 	var dstFolder string
 
 	if uploadData.Type == "progress" {
-		dstFolder = "./images/progressPictures/" + uploadData.Email + "/"
+		dstFolder = "./images/progressPictures/" + email + "/"
 	} else {
-		dstFolder = "./images/impressionVerification/" + uploadData.Email + "/"
+		dstFolder = "./images/impressionVerification/" + email + "/"
 	}
 
 	// Create the directory if it doesn't exist

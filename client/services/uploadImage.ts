@@ -1,6 +1,7 @@
 import axios from "axios";
 import FormData from "form-data";
 import { Status, useUserContext } from "@/components/userContext";
+import { getToken } from "./tokenStorage";
 
 interface ResponseMessage {
   message: string;
@@ -29,17 +30,21 @@ export const uploadImage = async (uri: string, status: Status): Promise<Response
       type: `image/${fileType}`,
     });
 
+    const today = new Date();
+    const date = today.toISOString().split("T")[0];
+
     const jsonData = JSON.stringify({
-      email: "test@gmail.com",
-      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlRlc3RAZ21haWwuY29tIiwiZXhwIjoxNzIzNjQ4NzY3fQ.UYPtHL7_rp3p_BvCSgqrpx-uaLY5XCBNMp__4FK7fQg",
-      date: "2024-08-14",
+      date: date,
       type: status == "impressionStage" ? "impression" : "progress",
     });
     formData.append("json", jsonData);
 
+    const token = await getToken();
+
     const config = {
       headers: {
-        "content-type": "multipart/form-data",
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
       },
     };
 

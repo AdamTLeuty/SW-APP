@@ -70,7 +70,6 @@ const LoginArea: React.FC = () => {
 
   const handleLoginWithToken = async () => {
     try {
-      //const token = "THIS_IS_A_TOKEN";
       const token = await getToken();
       let loginResponse;
       if (typeof token == "string") {
@@ -78,18 +77,14 @@ const LoginArea: React.FC = () => {
       } else {
         console.log("There is no saved token");
         return;
-        //loginResponse = await loginExistingUserWithToken("THISTOKENWASSENTBECAUSETHEREISNOSAVEDTOKEN", userEmail, login);
       }
 
       //setResponse(loginResponse ? loginResponse.message : null);
       setResponse("Session expired, please log in again");
       setError(null);
     } catch (err) {
-      console.error(err + " ... " + typeof err);
-      const errorMessage = (err as any)?.response?.data?.error;
-      setError("Login with session token failed, please log in using email and password");
+      setError(null);
       setResponse(null);
-
       await deleteToken();
     }
   };

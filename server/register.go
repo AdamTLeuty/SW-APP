@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"net/http"
 
@@ -54,12 +55,14 @@ func register(c *gin.Context, db *sql.DB) {
 	//Generate an authcode
 	authCode := generateAuthCode()
 
+	unixEpoch := time.Unix(0, 0).UTC()
+
 	stmt, err := db.Prepare("INSERT INTO users(email, password, username, verified, authcode, stage, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to prepare database statement"})
 		return
 	}
-	_, err = stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, "impression", "unset", 0, 0, "1970-01-01T00:00:00.000Z")
+	_, err = stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, "impression", "unset", 0, 0, unixEpoch.Format(time.RFC3339))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute database statement"})
 		return

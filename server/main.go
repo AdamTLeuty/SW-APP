@@ -133,7 +133,9 @@ func setupRouter(db *sql.DB) *gin.Engine {
 			api.POST("/userData", func(c *gin.Context) {
 				setUserData(c, db)
 			})
-
+			api.POST("/changeAlignerDate", check_bearer(db), func(c *gin.Context) {
+				updateAlignerChangeDate(c, db)
+			})
 		}
 
 	}

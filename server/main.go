@@ -160,6 +160,22 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		edit_user_impression_state(c, db)
 	})
 
+	router.GET("/admin/components", func(c *gin.Context) {
+		admin_home(c, db)
+	})
+
+	auth_components := router.Group("/admin/components/")
+	auth_components.Use(admin_auth(db))
+	{
+		auth_components.GET("/userInfoForm/:userid", func(c *gin.Context) {
+			admin_get_user_info_form(c, db)
+		})
+
+		auth_components.POST("/userInfoForm/:userid", func(c *gin.Context) {
+			admin_edit_user_info_form(c, db)
+		})
+	}
+
 	return router
 }
 

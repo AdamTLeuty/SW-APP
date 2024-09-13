@@ -1,0 +1,43 @@
+<form role="form" class="text-start list-group" action="/admin/components/userInfoForm/{{.User.ID}}" method="post">
+    <div class="align-items-center input-group input-group-outline my-3 gap-4">
+        <label class="m-0">Email</label>
+        <input name="email" placeholder="{{.User.Email}}" value="{{.User.Email}}" type="email" class="form-control" />
+    </div>
+
+    <div class="form-check form-switch d-flex align-items-center mb-3 justify-content-end">
+        <input class="form-check-input" type="checkbox" name="verified" id="verified" {{ if eq .User.Verified 1 }}checked{{ end }} value="1" />
+        <label class="form-check-label mb-0 ms-3" for="verified">Email Verified?</label>
+    </div>
+
+    <div class="align-items-center input-group input-group-outline my-3 gap-4">
+        <label class="m-0">Username</label>
+        <input name="username" placeholder="{{.User.Username}}" type="text" class="form-control" />
+    </div>
+
+    <div class="align-items-center input-group input-group-outline my-3 gap-4">
+        <label for="stage" class="m-0">Process Stage:</label>
+        <select class="form-control" name="stage" id="stage" selected="{{.User.Stage}}">
+            <option value="impression" {{ if eq .User.Stage `impression` }}selected{{ end }}>Impression Stage</option>
+            <option value="aligner" {{ if eq .User.Stage `aligner` }}selected{{ end }}>Aligner Stage</option>
+        </select>
+    </div>
+
+    <div class="align-items-center input-group input-group-outline my-3 gap-4">
+        <label class="m-0">Aligner Progress</label>
+        <input name="aligner-progress" value="{{.User.AlignerProgress}}" type="number" class="form-control" />
+    </div>
+
+    <div class="align-items-center input-group input-group-outline my-3 gap-4">
+        <label class="m-0">Aligner Count</label>
+        <input name="aligner-count" value="{{.User.AlignerCount}}" type="number" class="form-control" />
+    </div>
+
+    <div class="align-items-center input-group input-group-outline my-3 gap-4">
+        <label class="m-0">Aligner Change Date</label>
+        <input name="aligner-change-date" value="{{.User.AlignerChangeDate}}" type="date" class="form-control" />
+    </div>
+
+    <div class="text-center">
+        <input type="submit" class="btn bg-gradient-primary w-min my-4 mb-2" value="Update user details" />
+    </div>
+</form>

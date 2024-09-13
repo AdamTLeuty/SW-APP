@@ -21,14 +21,14 @@ func admin_auth(db *sql.DB) gin.HandlerFunc {
 		cookie, err := c.Cookie("session_id")
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Redirect(http.StatusUnauthorized, "/admin/login")
 			c.Abort()
 			return
 		}
 
 		username, err := verifyToken(cookie)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Redirect(http.StatusUnauthorized, "/admin/login")
 			c.Abort()
 			return
 		}
@@ -36,13 +36,13 @@ func admin_auth(db *sql.DB) gin.HandlerFunc {
 		var exists bool
 		err = db.QueryRow("SELECT COUNT(1) FROM admins WHERE username = ?", username).Scan(&exists)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Redirect(http.StatusSeeOther, "/admin/login")
 			c.Abort()
 			return
 		}
 
 		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Not logged in as admin"})
+			c.Redirect(http.StatusUnauthorized, "/admin/login")
 			c.Abort()
 			return
 		}

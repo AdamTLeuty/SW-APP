@@ -9,6 +9,7 @@ import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
 import Calendar from "@/components/Calendar";
+import { progressStyles as styles } from "@/constants/Styles";
 
 export default function Progress() {
   return (
@@ -24,23 +25,3 @@ export default function Progress() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    padding: 20,
-  },
-  title: {
-    fontSize: 25,
-    fontWeight: "bold",
-    fontFamily: "Poppins_Bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  content: {},
-});

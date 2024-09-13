@@ -5,6 +5,8 @@ import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
 import { router } from "expo-router";
 
+import { universalStyles as styles } from "@/constants/Styles";
+
 import * as MediaLibrary from "expo-media-library";
 
 import { useCurrentImageContext } from "@/components/currentImageContext";
@@ -83,11 +85,11 @@ export default function ModalScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title} fontWeight="800" lightColor="black">
+      <Text style={[styles.title, styles.bottomMargin]} fontWeight="800" lightColor="black">
         {status == "impressionStage" ? "Can you clearly see your impressions?" : getDate()}
       </Text>
-      {image ? <Image source={{ uri: image.uri }} style={styles.preview} /> : <Text>{"No image taken"}</Text>}
-      <Pressable onPress={toCamera} style={[styles.button, styles.retakeButton]}>
+      {image ? <Image source={{ uri: image.uri }} style={[styles.preview, styles.bottomMargin]} /> : <Text>{"No image taken"}</Text>}
+      <Pressable onPress={toCamera} style={[styles.button, styles.retakeButton, styles.bottomMargin]}>
         <Text style={styles.buttonText} lightColor="#000" fontWeight="600">
           {"Retake your photo"}
         </Text>
@@ -100,7 +102,7 @@ export default function ModalScreen() {
     </View>
   );
 }
-
+/*
 const styles = StyleSheet.create({
   title: {
     fontSize: 25,
@@ -133,5 +135,7 @@ const styles = StyleSheet.create({
   preview: {
     flex: 1,
     width: "100%",
+    borderRadius: 10,
   },
 });
+*/

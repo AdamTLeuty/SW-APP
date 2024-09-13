@@ -6,7 +6,7 @@ import { Link } from "expo-router";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
 import { ScrollView, Text, View } from "@/components/Themed";
-
+import { universalStyles as styles } from "@/constants/Styles";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
@@ -36,13 +36,12 @@ export default function Home() {
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.container}>
-        <Text style={styles.title} textBreakStrategy="balanced" lightColor="#000" fontWeight="800">
+        <Text style={[styles.title, styles.bottomMargin]} textBreakStrategy="balanced" lightColor="#000" fontWeight="800">
           Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
         </Text>
         <Link style={styles.progressHolder} href="/progress">
           <Progress style={styles.progressHolder} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
         </Link>
-
         {changeDate < now ? (
           <Link href="/aligner-change-modal" asChild>
             <Pressable style={styles.alignerChangeButton}>
@@ -83,84 +82,3 @@ const Content_Link: React.FC<Content_LinkProps> = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  content_link: {
-    width: "100%",
-    minHeight: 200,
-    flexDirection: "row",
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  image: {
-    width: "100%",
-    backgroundColor: "#0553",
-    flexShrink: 1,
-  },
-  content_right: {
-    flexGrow: 1,
-    backgroundColor: "#5700FF",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 19,
-  },
-  contentHeading: {
-    fontSize: 22,
-    lineHeight: 26,
-    textAlign: "center",
-  },
-  contentButton: {
-    borderRadius: 64,
-    backgroundColor: "#fff",
-    paddingHorizontal: 19,
-    paddingVertical: 10,
-    marginHorizontal: 19,
-  },
-  contentButtonText: {
-    fontSize: 14,
-    lineHeight: 21,
-  },
-
-  containerHolder: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    padding: 20,
-  },
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    padding: 20,
-  },
-
-  title: {
-    fontSize: 25,
-    fontWeight: "bold",
-    fontFamily: "Poppins_Bold",
-    textAlign: "center",
-    marginBottom: 22,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  alignerChangeButton: {
-    borderRadius: 47,
-    backgroundColor: "#FF005C",
-    paddingHorizontal: 39,
-    paddingVertical: 10,
-    width: "100%",
-    marginVertical: 36.5,
-    textAlign: "center",
-  },
-  alignerChangeText: {
-    fontSize: 18,
-    textAlign: "center",
-    lineHeight: 29,
-  },
-  progressHolder: {
-    width: "100%",
-  },
-});

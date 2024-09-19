@@ -186,7 +186,7 @@ func main() {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER, stage TEXT, impressionConfirmation TEXT, alignerProgress INTEGER, alignerCount INTEGER, alignerChangeDate TEXT)")
+	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER, stage TEXT, impressionConfirmation TEXT, alignerProgress INTEGER, alignerCount INTEGER, alignerChangeDate TEXT, expo_notification_token TEXT)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -257,6 +257,12 @@ func serverSideControls(db *sql.DB) {
 			//Generate a random number, padded by zeros
 			s := fmt.Sprintf("%04d", rand.IntN(9999))
 			fmt.Println(s)
+		case 'n':
+			token, err := getUserExpoToken(2, db)
+			if err != nil {
+				return
+			}
+			notify(token, "Smile Correct Club!", "Testy, it's time to change your aligners!")
 		default:
 			fmt.Println("Pressed a button")
 		}

@@ -57,12 +57,12 @@ func register(c *gin.Context, db *sql.DB) {
 
 	unixEpoch := time.Unix(0, 0).UTC()
 
-	stmt, err := db.Prepare("INSERT INTO users(email, password, username, verified, authcode, stage, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO users(email, password, username, verified, authcode, stage, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate, expo_notification_token ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to prepare database statement"})
 		return
 	}
-	_, err = stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, "impression", "unset", 0, 0, unixEpoch.Format(time.RFC3339))
+	_, err = stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, "impression", "unset", 0, 0, unixEpoch.Format(time.RFC3339), "")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute database statement"})
 		return

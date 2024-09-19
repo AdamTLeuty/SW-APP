@@ -208,6 +208,12 @@ func main() {
 	}
 	statement.Exec()
 
+	// Set up and start the cron job (in a separate function)
+	cronJob := setupCronJob(db)
+
+	// Defer stopping the cron scheduler until the program exits
+	defer cronJob.Stop()
+
 	go func() {
 		router := setupRouter(db)
 		s := &http.Server{
@@ -263,6 +269,8 @@ func serverSideControls(db *sql.DB) {
 				return
 			}
 			notify(token, "Smile Correct Club!", "Testy, it's time to change your aligners!")
+		case 'c':
+			getUsersWithNowChangeDate(db)
 		default:
 			fmt.Println("Pressed a button")
 		}

@@ -4,8 +4,10 @@
   },
   "build": {
     "development": {
-      "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "http://10.0.0.115:8080"
+      }
     },
     "preview": {
       "distribution": "internal"

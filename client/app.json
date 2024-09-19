@@ -13,10 +13,14 @@
       "backgroundColor": "#ff0ff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "org.name.SCCAPP",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app requires access to the camera for the user to take progress and verification pictures"
+      }
     },
     "android": {
-      "package": "com.yourname.mynewproject",
+      "package": "org.name.SCCAPP",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

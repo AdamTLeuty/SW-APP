@@ -1,0 +1,11 @@
+#!/bin/bash
+clear;
+rm -r ios;
+expo prebuild;
+if [ $? -ne 0 ]; then
+    echo "Prebuild failed!";
+else
+    echo "Prebuild succeeded!";
+    echo "Building the application for IOS...";
+    eas build --profile development --platform ios --local;
+fi

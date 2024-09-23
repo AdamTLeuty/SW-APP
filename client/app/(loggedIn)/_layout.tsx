@@ -146,18 +146,7 @@ export default function TabLayout() {
           },
         }}
       />
-      <Tabs.Screen
-        name="notification_screen"
-        options={{
-          title: "notification_screen",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="play" width="30" color={focused ? inactiveColor : activeColor} backgroundColor={focused ? activeColor : inactiveColor} focused={focused} />
-          ),
-          header: ({ navigation, route, options }) => {
-            return <CustomHeader locked={false} />;
-          },
-        }}
-      />
+
       <Tabs.Screen
         name="liveChat"
         options={{

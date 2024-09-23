@@ -235,7 +235,7 @@ export const checkUserStatus = async (email: string, token: string): Promise<Res
   }
 };
 
-export const setUserStatus = async (email: string, token: string, userDataToChange: object): Promise<ResponseMessage | null> => {
+export const setUserStatus = async (token: string, userDataToChange: object): Promise<ResponseMessage | null> => {
   try {
     const response = await authService.post(`/api/userData`, userDataToChange, {
       headers: {

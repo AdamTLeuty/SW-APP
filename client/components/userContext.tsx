@@ -24,6 +24,8 @@ interface UserContextType {
   alignerCount: number;
   alignerProgress: number;
   alignerChangeDate: string;
+  expoPushToken: string;
+  updateExpoPushToken: (expoToken: string) => void;
 }
 
 // Create the context with an initial value
@@ -37,7 +39,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [alignerCount, setAlignerCount] = useState<number>(0);
   const [alignerProgress, setAlignerProgress] = useState<number>(0);
-  const [alignerChangeDate, setAlignerChangeDate] = useState<string>(0);
+  const [alignerChangeDate, setAlignerChangeDate] = useState<string>("");
+  const [expoPushToken, setExpoPushToken] = useState<string>("");
 
   const login = async (userData: User) => {
     setIsLoggedIn(true);
@@ -115,7 +118,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       setStatus("alignerStage");
     }
     const token = await getToken();
-    setUserStatus(user.email, token, { stage: "aligner" });
+    if (!token) {
+      console.error("Token is empty");
+      return;
+    }
+    setUserStatus(token, { stage: "aligner" });
   };
 
   const logout = () => {
@@ -125,9 +132,37 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setStatus("loggedOut");
   };
 
+  const updateExpoPushToken = async (expoToken: string) => {
+    console.log("Setting Expo Push Token as: ", expoToken);
+    const userToken = await getToken();
+    if (!userToken) {
+      console.error("Token is empty");
+      return;
+    }
+    if (expoToken != "" && expoToken != expoPushToken) {
+      setExpoPushToken(expoToken);
+      setUserStatus(userToken, { expoPushToken: expoToken });
+    }
+  };
+
   return (
     <UserContext.Provider
-      value={{ isLoggedIn, user, status, impressionJudgment, login, logout, updateUserContext, nextStage, tentativeLogin, alignerCount, alignerProgress, alignerChangeDate }}
+      value={{
+        isLoggedIn,
+        user,
+        status,
+        impressionJudgment,
+        login,
+        logout,
+        updateUserContext,
+        nextStage,
+        tentativeLogin,
+        alignerCount,
+        alignerProgress,
+        alignerChangeDate,
+        expoPushToken,
+        updateExpoPushToken,
+      }}
     >
       {children}
     </UserContext.Provider>

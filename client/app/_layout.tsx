@@ -3,7 +3,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native
 import { useFonts } from "expo-font";
 import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import "react-native-reanimated";
 import { UserProvider, useUserContext } from "@/components/userContext";
 import { ImageProvider, useCurrentImageContext } from "@/components/currentImageContext";
@@ -11,6 +11,11 @@ import { useColorScheme } from "@/components/useColorScheme";
 import * as Font from "expo-font";
 import { View } from "@/components/Themed";
 import { InteractionManager } from "react-native";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import { Status } from "@/components/userContext";
+
+import { handleRegistrationError, registerForPushNotificationsAsync } from "@/services/notificationService";
 
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 export {
@@ -25,8 +30,6 @@ export const unstable_settings = {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
-import { Status } from "@/components/userContext";
 
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -103,14 +106,50 @@ const userStateChanged = (isLoggedIn: boolean, status: Status) => {
   }
 };
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState<Notifications.Notification | undefined>(undefined);
+  const notificationListener = useRef<Notifications.Subscription>();
+  const responseListener = useRef<Notifications.Subscription>();
+  const { isLoggedIn, status, updateExpoPushToken } = useUserContext();
 
-  const { isLoggedIn, status } = useUserContext();
+  useEffect(() => {
+    //sendTokenToServer()
+    console.log("Send the expoPushToken to the server: " + expoPushToken);
+    updateExpoPushToken(expoPushToken);
+  }, [expoPushToken]);
 
   useEffect(() => {
     userStateChanged(isLoggedIn, status);
   }, [isLoggedIn, status]);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync()
+      .then((token) => setExpoPushToken(token ?? ""))
+      .catch((error: any) => setExpoPushToken(`${error}`));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log(response);
+    });
+
+    return () => {
+      notificationListener.current && Notifications.removeNotificationSubscription(notificationListener.current);
+      responseListener.current && Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   if (status == "alignerStage") {
     //console.log("Is logged in!!");

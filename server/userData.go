@@ -11,8 +11,9 @@ import (
 )
 
 type UserDataRequest struct {
-	Stage    string `json:"stage,omitempty"`
-	Username string `json:"username,omitempty"`
+	Stage         string `json:"stage,omitempty"`
+	Username      string `json:"username,omitempty"`
+	ExpoPushToken string `json:"expoPushToken,omitempty"`
 }
 
 type UserDataResponse struct {
@@ -22,6 +23,7 @@ type UserDataResponse struct {
 	AlignerCount           int    `json:"alignerCount,omitempty"`
 	AlignerProgress        int    `json:"alignerProgress"`
 	AlignerChangeDate      string `json:"alignerChangeDate,omitempty"`
+	ExpoPushToken          string `json:"expoPushToken,omitempty"`
 }
 
 func getUserData(c *gin.Context, db *sql.DB) {
@@ -149,8 +151,9 @@ func updateUserData(db *sql.DB, email string, request UserDataRequest) error {
 	)
 
 	fields := map[string]string{
-		"stage":    request.Stage,
-		"username": request.Username,
+		"stage":                   request.Stage,
+		"username":                request.Username,
+		"expo_notification_token": request.ExpoPushToken,
 	}
 
 	for field, value := range fields {

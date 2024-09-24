@@ -2,16 +2,17 @@ import { StyleSheet, Pressable } from "react-native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
-import { Text, View } from "@/components/Themed";
+import { Text, Title, View } from "@/components/Themed";
 import RegisterArea from "@/components/RegisterArea";
 import { router } from "expo-router";
+import { universalStyles } from "@/constants/Styles";
 
 export default function RegisterScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title} fontWeight={"800"} lightColor={"#000"} darkColor={"#fff"}>
+      <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
         Register
-      </Text>
+      </Title>
       <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
         Time to create your scc hub account to track your smile transformation
       </Text>

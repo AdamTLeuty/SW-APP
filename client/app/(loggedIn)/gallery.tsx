@@ -3,7 +3,8 @@ import { Button, SafeAreaView, ScrollView, StyleSheet, View, Platform } from "re
 import * as MediaLibrary from "expo-media-library";
 import { Image } from "expo-image";
 import GalleryImage from "@/components/galleryImage";
-import { Text } from "@/components/Themed";
+import { Text, Title } from "@/components/Themed";
+import { universalStyles } from "@/constants/Styles";
 
 // Define types for Album and Asset
 type Album = {
@@ -59,7 +60,11 @@ export default function Gallery() {
           </Text>
         </View>
       ) : (
-        <ScrollView>{albums && albums.map((album) => <AlbumEntry key={album.id} album={album} />)}</ScrollView>
+        <ScrollView style={[styles.main /*universalStyles.container*/]}>
+          <Title> Photo Gallery </Title>
+
+          {albums && albums.map((album) => <AlbumEntry key={album.id} album={album} />)}
+        </ScrollView>
       )}
     </SafeAreaView>
   );
@@ -92,7 +97,11 @@ function AlbumEntry({ album }: AlbumEntryProps) {
 }
 
 const styles = StyleSheet.create({
+  main: {
+    backgroundColor: "white",
+  },
   container: {
+    backgroundColor: "white",
     flex: 1,
     gap: 8,
     justifyContent: "center",

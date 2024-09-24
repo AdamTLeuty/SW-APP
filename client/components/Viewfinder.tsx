@@ -49,6 +49,28 @@ function Shutter_Button() {
   );
 }
 
+function FrameTop() {
+  return (
+    <View style={styles.frameTop}>
+      <View style={[styles.rule, styles.rightCurve]} />
+      <Text style={styles.frame_text} lightColor="white" fontWeight="800">
+        {"Keep face in frame"}
+      </Text>
+      <View style={[styles.rule, styles.leftCurve]} />
+    </View>
+  );
+}
+
+function FrameBottom() {
+  return (
+    <View style={styles.frameBottom}>
+      <View style={[styles.rule, styles.rightCurve]} />
+      <View style={styles.rule_spacer} />
+      <View style={[styles.rule, styles.leftCurve]} />
+    </View>
+  );
+}
+
 const Viewfinder: React.FC = () => {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
@@ -119,18 +141,8 @@ const Viewfinder: React.FC = () => {
           </TouchableOpacity>
         </View>
       </CameraView>
-      <View style={styles.frameTop}>
-        <View style={[styles.rule, styles.rightCurve]} />
-        <Text style={styles.frame_text} lightColor="white" fontWeight="800">
-          {"Keep face in frame"}
-        </Text>
-        <View style={[styles.rule, styles.leftCurve]} />
-      </View>
-      <View style={styles.frameBottom}>
-        <View style={[styles.rule, styles.rightCurve]} />
-        <View style={styles.rule_spacer} />
-        <View style={[styles.rule, styles.leftCurve]} />
-      </View>
+      {status == "alignerStage" ? <FrameTop /> : null}
+      {status == "alignerStage" ? <FrameBottom /> : null}
     </View>
   );
 };
@@ -164,7 +176,6 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    gap: "30%",
   },
   frame_text: {
     fontSize: 25,

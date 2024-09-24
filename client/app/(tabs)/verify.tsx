@@ -2,11 +2,12 @@ import { StyleSheet, Pressable } from "react-native";
 import React from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
-import { Text, View } from "@/components/Themed";
+import { Text, View, Title } from "@/components/Themed";
 import RegisterArea from "@/components/RegisterArea";
 import { router } from "expo-router";
 import { TextBase } from "react-native";
 import VerifyArea from "@/components/VerifyArea";
+import { universalStyles } from "@/constants/Styles";
 
 interface Props {
   text: String;
@@ -17,9 +18,9 @@ interface Props {
 export default function VerifyScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title} fontWeight={"800"} lightColor={"#000"} darkColor={"#fff"}>
+      <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
         Verify your email
-      </Text>
+      </Title>
       <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
         Please check your email for a six digit code.
       </Text>

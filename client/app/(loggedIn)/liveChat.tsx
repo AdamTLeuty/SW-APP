@@ -2,12 +2,12 @@ import { Button, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import { WebView } from "react-native-webview";
-import { Text, View } from "@/components/Themed";
+import { Title, View } from "@/components/Themed";
 
 export default function LiveChatScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Live Chat</Text>
+      <Title style={styles.title}>Live Chat</Title>
       <WebView style={styles.webview} source={{ uri: "https://app-auth.smilewhite.co.uk/chat.php" }} />
     </View>
   );

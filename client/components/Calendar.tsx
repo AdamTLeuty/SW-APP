@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Button, StyleSheet, LayoutChangeEvent } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
-import { getUserByEmail, getUserLeadDetailsByEmail } from "../services/hubspotService";
 
 const layoutConstants = {
   cardMinWidth: 57,
   cardMinHeight: 86,
-  minCardGap: 18,
+  minCardGap: 10,
   container_padding: 30, // Sum of horizontal padding values
 };
 

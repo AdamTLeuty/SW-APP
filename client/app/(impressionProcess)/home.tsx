@@ -7,7 +7,7 @@ import { Link } from "expo-router";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
-import { Text, View, ScrollView } from "@/components/Themed";
+import { Text, View, ScrollView, Title } from "@/components/Themed";
 
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
@@ -38,9 +38,7 @@ export default function Home() {
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.container}>
-        <Text style={styles.title} textBreakStrategy="balanced" lightColor="#000" fontWeight="800">
-          Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
-        </Text>
+        <Title lightColor="#000">Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!</Title>
         <View style={styles.separator} />
 
         <Link href="/impressionsProcessPage" asChild>

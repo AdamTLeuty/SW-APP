@@ -1,12 +1,14 @@
 import { Button, StyleSheet, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 
-import { Text, View, ScrollView } from "@/components/Themed";
-import { Video } from "expo-av";
+import { Text, View, ScrollView, Title } from "@/components/Themed";
+import { Video, ResizeMode } from "expo-av";
 
 import { Link } from "expo-router";
 
 import Accordion from "@/components/accordion";
+
+import { universalStyles } from "@/constants/Styles";
 
 const VideoPlayer = () => {
   const videoUri = "https://cdn.shopify.com/videos/c/o/v/096c48f55f1849fdb131bc61dcf6d627.mp4";
@@ -19,7 +21,7 @@ const VideoPlayer = () => {
       //posterSource={poster}
       posterStyle={styles.poster}
       useNativeControls
-      resizeMode={"contain"}
+      resizeMode={ResizeMode.CONTAIN}
       style={styles.video}
     />
   );
@@ -29,9 +31,9 @@ export default function impressionsProcessPage() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title} fontWeight="800">
+        <Title style={universalStyles.bottomMargin} fontWeight="800">
           Impressions Process
-        </Text>
+        </Title>
         <Text style={styles.body}>
           {
             "Before sending back your impression kit we request that you take a photo of your newly created impressions. This is to ensure that your aligners are to a high enough standard for our team to create your aligners."

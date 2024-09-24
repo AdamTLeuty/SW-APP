@@ -5,7 +5,7 @@ import { Link } from "expo-router";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
-import { ScrollView, Text, View } from "@/components/Themed";
+import { ScrollView, Text, Title, View } from "@/components/Themed";
 import { universalStyles as styles } from "@/constants/Styles";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
@@ -36,16 +36,17 @@ export default function Home() {
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.container}>
-        <Text style={[styles.title, styles.bottomMargin]} textBreakStrategy="balanced" lightColor="#000" fontWeight="800">
+        <Title style={styles.bottomMargin} lightColor="#000">
           Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
-        </Text>
+        </Title>
         <Link style={styles.progressHolder} href="/progress">
           <Progress style={styles.progressHolder} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
         </Link>
+
         {changeDate < now ? (
           <Link href="/aligner-change-modal" asChild>
             <Pressable style={styles.alignerChangeButton}>
-              <Text style={styles.alignerChangeText} lightColor="#fff" fontWeight="600">
+              <Text style={styles.alignerChangeText} lightColor="#fff" fontWeight="600" numberOfLines={1} adjustsFontSizeToFit={true}>
                 {alignerProgress > 0 ? "Time to change your aligners" : "Time to start your first aligners"}
               </Text>
             </Pressable>

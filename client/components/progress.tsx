@@ -10,7 +10,7 @@ interface Props {
   totalAlignerCount: number;
 }
 
-const Progress: React.FC<Props> = ({ text, currentAlignerCount, totalAlignerCount }) => {
+export const Progress: React.FC<Props> = ({ text, currentAlignerCount, totalAlignerCount }) => {
   return (
     <View style={styles.container}>
       <View style={styles.headingContainer}>

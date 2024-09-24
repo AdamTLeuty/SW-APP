@@ -8,6 +8,8 @@ import { Text as DefaultText, View as DefaultView, TextInput as DefaultTextInput
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
 
+import { universalStyles } from "@/constants/Styles";
+
 type ThemeProps = {
   lightColor?: string;
   darkColor?: string;
@@ -20,6 +22,7 @@ type ScrollViewPropsSpecific = {
 };
 
 export type TextProps = ThemeProps & DefaultText["props"];
+export type TitleProps = TextProps;
 export type ViewProps = ThemeProps & DefaultView["props"];
 export type ScrollViewProps = ScrollViewPropsSpecific & ThemeProps & DefaultView["props"];
 export type TextInputProps = ThemeProps & DefaultTextInput["props"];
@@ -72,6 +75,23 @@ export function Text(props: TextProps) {
   };
 
   return <DefaultText style={[defaultStyle, style]} {...otherProps} />;
+}
+
+export function Title(props: TextProps) {
+  const { style, lightColor, darkColor, fontWeight, ...otherProps } = props;
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+
+  const defaultWeight = "800";
+  const fontFamily = chooseFont(fontWeight ? fontWeight : defaultWeight);
+
+  const textBreakStrategy = props.textBreakStrategy ? props.textBreakStrategy : "balanced";
+
+  const defaultStyle = {
+    color: color,
+    fontFamily: fontFamily,
+  };
+
+  return <DefaultText style={[universalStyles.title, defaultStyle, style]} textBreakStrategy={textBreakStrategy} {...otherProps} />;
 }
 
 export function View(props: ViewProps) {

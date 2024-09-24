@@ -74,6 +74,11 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     gap: 5,
     justifyContent: "flex-start",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.25, // 40 in hex equals 25% opacity
+    shadowRadius: 4,
+    elevation: 4, // For Android shadow
   },
   groupItem: {
     //top: 11,

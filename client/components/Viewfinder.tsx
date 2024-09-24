@@ -12,6 +12,8 @@ import { Svg, Path, Rect, Circle, Ellipse } from "react-native-svg";
 
 import { useCurrentImageContext } from "@/components/currentImageContext";
 
+import { useUserContext } from "./userContext";
+
 function FlipIcon() {
   return (
     <Svg width="35" height="35" viewBox="0 0 35 35" fill="none">
@@ -53,6 +55,7 @@ const Viewfinder: React.FC = () => {
   const [maxHeight, setMaxHeight] = useState(0);
   const cameraRef = useRef(null);
   const [photo, setPhoto] = useState(null);
+  const { status } = useUserContext();
 
   const { newImage } = useCurrentImageContext();
 
@@ -116,11 +119,71 @@ const Viewfinder: React.FC = () => {
           </TouchableOpacity>
         </View>
       </CameraView>
+      <View style={styles.frameTop}>
+        <View style={[styles.rule, styles.rightCurve]} />
+        <Text style={styles.frame_text} lightColor="white" fontWeight="800">
+          {"Keep face in frame"}
+        </Text>
+        <View style={[styles.rule, styles.leftCurve]} />
+      </View>
+      <View style={styles.frameBottom}>
+        <View style={[styles.rule, styles.rightCurve]} />
+        <View style={styles.rule_spacer} />
+        <View style={[styles.rule, styles.leftCurve]} />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  frameTop: {
+    position: "absolute",
+    backgroundColor: "#ffffff00",
+    top: "17%",
+    //paddingTop: "13%",
+    //borderWidth: 1,
+    //borderColor: "red",
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  rule_spacer: {
+    width: "30%",
+    height: 0,
+    color: "#00000000",
+  },
+  frameBottom: {
+    position: "absolute",
+    backgroundColor: "#ffffff00",
+    //backgroundColor: "red",
+    bottom: "24%",
+    //paddingTop: "13%",
+    //borderWidth: 1,
+    //borderColor: "red",
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: "30%",
+  },
+  frame_text: {
+    fontSize: 25,
+    flex: 0,
+    textAlign: "center",
+  },
+  rule: {
+    flex: 1,
+    height: 5,
+    //borderRadius: 10,
+  },
+  leftCurve: {
+    borderBottomLeftRadius: 20,
+    borderTopLeftRadius: 20,
+  },
+  rightCurve: {
+    borderBottomRightRadius: 20,
+    borderTopRightRadius: 20,
+  },
   container: {
     flex: 1,
     justifyContent: "center",

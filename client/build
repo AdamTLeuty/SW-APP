@@ -1,11 +1,16 @@
 #!/bin/bash
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
 clear;
-rm -r ios;
+#echo "Deleting existing iOS directory...";
+#sudo rm -r ios;
+echo "Starting Expo prebuild...";
 expo prebuild;
 if [ $? -ne 0 ]; then
-    echo "Prebuild failed!";
+    echo "${RED}Prebuild failed!";
 else
-    echo "Prebuild succeeded!";
+    echo "${GREEN}Prebuild succeeded!";
     echo "Building the application for IOS...";
     eas build --profile development --platform ios --local;
 fi

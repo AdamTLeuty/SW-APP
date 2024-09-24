@@ -14,13 +14,13 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "org.name.SCCAPP",
+      "bundleIdentifier": "com.smilecorrectclub.app",
       "infoPlist": {
         "NSCameraUsageDescription": "This app requires access to the camera for the user to take progress and verification pictures"
       }
     },
     "android": {
-      "package": "org.name.SCCAPP",
+      "package": "com.smilecorrectclub.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

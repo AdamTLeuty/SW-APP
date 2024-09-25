@@ -1,11 +1,11 @@
-import { Button, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import { Link } from "expo-router";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
-import { ScrollView, Text, Title, View } from "@/components/Themed";
+import { ScrollView, Text, Title, View, Button } from "@/components/Themed";
 import { universalStyles as styles } from "@/constants/Styles";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
@@ -16,13 +16,12 @@ import Progress from "@/components/progress";
 import { Image } from "expo-image";
 import { RefreshControl } from "react-native";
 
-import { Pressable } from "react-native";
-
 //import { useRoute } from "@react-navigation/native";
 
 export default function Home() {
   const { alignerProgress, alignerCount, updateUserContext, alignerChangeDate } = useUserContext();
   const [refreshing, setRefreshing] = React.useState(false);
+  console.log("Rendering the home screen");
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
@@ -39,17 +38,13 @@ export default function Home() {
         <Title style={styles.bottomMargin} lightColor="#000">
           Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
         </Title>
-        <Link style={styles.progressHolder} href="/progress">
-          <Progress style={styles.progressHolder} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
+        <Link style={[styles.progressHolder, styles.bottomMargin]} href="/progress">
+          <Progress style={[styles.progressHolder, styles.bottomMargin]} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
         </Link>
 
         {changeDate < now ? (
           <Link href="/aligner-change-modal" asChild>
-            <Pressable style={styles.alignerChangeButton}>
-              <Text style={styles.alignerChangeText} lightColor="#fff" fontWeight="600" numberOfLines={1} adjustsFontSizeToFit={true}>
-                {alignerProgress > 0 ? "Time to change your aligners" : "Time to start your first aligners"}
-              </Text>
-            </Pressable>
+            <Button lightColor="#FF005C">{alignerProgress > 0 ? "Time to change your aligners" : "Time to start your first aligners"}</Button>
           </Link>
         ) : (
           <Text>{}</Text>
@@ -61,6 +56,11 @@ export default function Home() {
     </ScrollView>
   );
 }
+
+/*
+
+
+*/
 
 interface Content_LinkProps {}
 

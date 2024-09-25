@@ -190,7 +190,7 @@ export const universalStyles = StyleSheet.create({
     paddingHorizontal: 39,
     paddingVertical: 10,
     width: "100%",
-    marginVertical: 36.5,
+    //marginVertical: 36.5,
     textAlign: "center",
   },
   alignerChangeText: {

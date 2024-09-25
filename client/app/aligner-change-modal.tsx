@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, StyleSheet } from "react-native";
 import React from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
-import { Text, View } from "@/components/Themed";
+import { Button, Text, View } from "@/components/Themed";
 import { Link, router } from "expo-router";
 import { Pressable } from "react-native";
 import { CheckBox } from "@rneui/themed";
@@ -31,19 +31,17 @@ const DelayButton: React.FC<DelayButtonProps> = ({ selectedIndex, delayReasons }
 
   if (active) {
     return (
-      <Pressable style={[styles.button, styles.delayButtonActive]} onPress={delayAlignerChange}>
-        <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
-          {"Delay changing Aligners"}
-        </Text>
-      </Pressable>
+      <Button lightColor="#FF005C" onPress={delayAlignerChange}>
+        {"Delay changing Aligners"}
+      </Button>
     );
   } else {
     return (
-      <View style={[styles.button, styles.delayButtonInactive]}>
-        <Text style={[styles.buttonText, styles.delayButtonTextActive]} lightColor="#fff" fontWeight="600">
+      <Button lightColor="#F7F6F8">
+        <Text lightColor="#BDBDBD" fontWeight="600">
           {"Delay changing Aligners "}
         </Text>
-      </View>
+      </Button>
     );
   }
 };

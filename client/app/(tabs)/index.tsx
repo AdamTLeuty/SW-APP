@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable } from "react-native";
+import React, { StyleSheet, Pressable } from "react-native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
@@ -11,6 +11,8 @@ import { getToken } from "@/services/tokenStorage";
 import { universalStyles } from "@/constants/Styles";
 
 export default function SignInScreen() {
+  console.log("Rendering the sign in screen");
+
   return (
     <View style={styles.container}>
       <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>

@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable } from "react-native";
+import React, { StyleSheet } from "react-native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";

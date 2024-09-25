@@ -2,8 +2,17 @@
  * Learn more about Light and Dark modes:
  * https://docs.expo.io/guides/color-schemes/
  */
-import React, { ReactElement } from "react";
-import { Text as DefaultText, View as DefaultView, TextInput as DefaultTextInput, Button as DefaultButton, ButtonProps, ScrollView as DefaultScrollView } from "react-native";
+import React, { ReactElement, ReactNode } from "react";
+import {
+  Pressable as DefaultPressable,
+  Text as DefaultText,
+  View as DefaultView,
+  TextInput as DefaultTextInput,
+  Button as DefaultButton,
+  ScrollView as DefaultScrollView,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
@@ -24,6 +33,12 @@ type ScrollViewPropsSpecific = {
 export type TextProps = ThemeProps & DefaultText["props"];
 export type TitleProps = TextProps;
 export type ViewProps = ThemeProps & DefaultView["props"];
+export type ButtonProps = ThemeProps & {
+  style?: StyleProp<ViewStyle>;
+  children?: ReactNode;
+  onPressIn?: () => void; // Include onPressIn event
+  onPressOut?: () => void; // Include onPressOut event
+} & Omit<DefaultButton["props"], "title">;
 export type ScrollViewProps = ScrollViewPropsSpecific & ThemeProps & DefaultView["props"];
 export type TextInputProps = ThemeProps & DefaultTextInput["props"];
 
@@ -81,7 +96,7 @@ export function Title(props: TextProps) {
   const { style, lightColor, darkColor, fontWeight, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
-  const defaultWeight = "800";
+  const defaultWeight = "900";
   const fontFamily = chooseFont(fontWeight ? fontWeight : defaultWeight);
 
   const textBreakStrategy = props.textBreakStrategy ? props.textBreakStrategy : "balanced";
@@ -118,6 +133,26 @@ export function ScrollView(props: ScrollViewProps) {
   };
 
   return <DefaultScrollView style={[defaultStyle, style]} contentContainerStyle={contentContainerStyle} refreshControl={refreshControl} {...otherProps} />;
+}
+
+export function Button(props: ButtonProps) {
+  const { style, lightColor, darkColor, children, onPress, onPressIn, onPressOut, ...otherProps } = props;
+
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "button");
+  const customStyle =
+    backgroundColor == undefined
+      ? {}
+      : {
+          backgroundColor: backgroundColor,
+        };
+
+  return (
+    <DefaultPressable onPress={onPress} onPressIn={onPressIn} onPressOut={onPressOut} style={[universalStyles.bottomMargin, universalStyles.alignerChangeButton, style, customStyle]}>
+      <Text style={universalStyles.alignerChangeText} lightColor="#fff" fontWeight="600" numberOfLines={1} adjustsFontSizeToFit={true}>
+        {children}
+      </Text>
+    </DefaultPressable>
+  );
 }
 
 export function TextInput(

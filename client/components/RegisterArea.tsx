@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Pressable, StyleSheet, Animated } from "react-native";
+import { Pressable, StyleSheet, Animated } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
 import { registerNewUser, loginExistingUser } from "../services/authService";
@@ -8,7 +8,8 @@ import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { ScreenStackHeaderCenterView } from "react-native-screens";
 
-import { useThemeColor } from "./Themed";
+import { useThemeColor, Button } from "./Themed";
+import { universalStyles } from "@/constants/Styles";
 
 //import { useRoute } from "@react-navigation/native";
 
@@ -123,7 +124,7 @@ const RegisterArea: React.FC = () => {
       />
 
       <TextInput
-        style={styles.input}
+        style={[styles.input, universalStyles.bottomMargin]}
         placeholder="*Password"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
@@ -137,9 +138,9 @@ const RegisterArea: React.FC = () => {
       />
 
       <Animated.View style={{ transform: [{ scale }] }}>
-        <Pressable style={styles.loginButton} onPress={handleRegister} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-          <Text style={styles.loginButtonText}>Register</Text>
-        </Pressable>
+        <Button onPress={handleRegister} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+          {"Create Account"}
+        </Button>
       </Animated.View>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -164,6 +165,7 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     marginTop: 20,
+    textAlign: "center",
   },
   error: {
     color: "red",

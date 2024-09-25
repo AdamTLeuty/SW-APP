@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Pressable } from "react-native";
+import { Button, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import EditScreenInfo from "@/components/EditScreenInfo";

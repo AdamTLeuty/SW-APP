@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Pressable, StyleSheet, Animated } from "react-native";
+import { Pressable, StyleSheet, Animated } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
 import { registerNewUser, loginExistingUser, loginExistingUserWithToken } from "../services/authService";
@@ -8,7 +8,7 @@ import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { ScreenStackHeaderCenterView } from "react-native-screens";
 
-import { useThemeColor } from "./Themed";
+import { useThemeColor, Button } from "./Themed";
 
 import { getToken } from "../services/tokenStorage";
 
@@ -21,6 +21,8 @@ const LoginArea: React.FC = () => {
   const [response, setResponse] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { isLoggedIn, login, tentativeLogin } = useUserContext();
+
+  console.log("Rendering the login area");
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -117,10 +119,11 @@ const LoginArea: React.FC = () => {
         onChangeText={setPassword}
         secureTextEntry={true}
       />
+
       <Animated.View style={{ transform: [{ scale }] }}>
-        <Pressable style={styles.loginButton} onPress={handleLogin} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-          <Text style={styles.loginButtonText}>Login</Text>
-        </Pressable>
+        <Button onPress={handleLogin} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+          Login
+        </Button>
       </Animated.View>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -136,6 +139,8 @@ const LoginArea: React.FC = () => {
     <Text style={styles.loginButtonText}>Login with token</Text>
   </Pressable>
 </Animated.View>
+
+
 
 */
 

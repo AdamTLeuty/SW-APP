@@ -1,4 +1,4 @@
-import { Button, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import { useRef } from "react";
@@ -7,7 +7,7 @@ import { Link } from "expo-router";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
-import { Text, View, ScrollView, Title } from "@/components/Themed";
+import { Text, View, ScrollView, Title, Button } from "@/components/Themed";
 
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
@@ -17,9 +17,8 @@ import Calendar from "@/components/Calendar";
 import Progress from "@/components/progress";
 import { RefreshControl } from "react-native";
 
-import { Pressable } from "react-native";
-
 import { Status } from "@/components/userContext";
+import { universalStyles } from "@/constants/Styles";
 
 //import { Audio, Video } from "expo-av";
 
@@ -40,13 +39,8 @@ export default function Home() {
       <View style={styles.container}>
         <Title lightColor="#000">Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!</Title>
         <View style={styles.separator} />
-
         <Link href="/impressionsProcessPage" asChild>
-          <Pressable style={styles.impressionsButton}>
-            <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="800">
-              {"Impressions tutorial"}
-            </Text>
-          </Pressable>
+          <Button>{"Take me to impressions process"}</Button>
         </Link>
         <Text lightColor="black" style={styles.body} fontWeight="400">
           {"More features will be unlocked once we send you your aligners"}
@@ -55,23 +49,17 @@ export default function Home() {
           {"Already have your aligners?"}
         </Text>
 
-        <Pressable
+        <Button
           onPress={() => {
             nextStage();
           }}
-          style={styles.homeButton}
+          lightColor="#FF005C"
         >
-          <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="800">
-            {"Take me to the aligner stage!"}
-          </Text>
-        </Pressable>
+          {"Take me to the aligner stage!"}
+        </Button>
 
         <Link href="/impressions_result" asChild>
-          <Pressable style={styles.homeButton}>
-            <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="800">
-              {"Impression check results"}
-            </Text>
-          </Pressable>
+          <Button>{"Impression check results"}</Button>
         </Link>
       </View>
     </ScrollView>

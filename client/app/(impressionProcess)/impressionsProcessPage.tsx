@@ -1,7 +1,7 @@
-import { Button, StyleSheet, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 
-import { Text, View, ScrollView, Title } from "@/components/Themed";
+import { Text, View, ScrollView, Title, Button } from "@/components/Themed";
 import { Video, ResizeMode } from "expo-av";
 
 import { Link } from "expo-router";
@@ -40,11 +40,7 @@ export default function impressionsProcessPage() {
           }
         </Text>
         <Link href="/(impressionProcess)/camera" asChild>
-          <Pressable style={styles.verifyButton}>
-            <Text style={styles.verifyButtonText} lightColor="#fff" fontWeight="800">
-              {"Verify your impressions"}
-            </Text>
-          </Pressable>
+          <Button lightColor="#FF005C">{"Verify your impressions"}</Button>
         </Link>
         <Text fontWeight="600" style={styles.videoHeading}>
           {"PLEASE FOLLOW OUR GUIDE BELOW FOR THE BEST IMPRESSION RESULTS."}

@@ -1,5 +1,6 @@
 import { Text, View } from "./Themed";
 
+import React from "react";
 import { StyleSheet } from "react-native";
 
 import { LinearProgress } from "@rneui/themed";
@@ -27,7 +28,13 @@ export const Progress: React.FC<Props> = ({ text, currentAlignerCount, totalAlig
         </View>
       </View>
       <View style={styles.progressBarHolder}>
-        <LinearProgress value={currentAlignerCount / totalAlignerCount} variant="determinate" style={styles.progressBar} trackColor="#F7F6F8" color={"#FFBA00"} />
+        <LinearProgress
+          value={currentAlignerCount < totalAlignerCount ? currentAlignerCount / totalAlignerCount : 1}
+          variant="determinate"
+          style={styles.progressBar}
+          trackColor="#F7F6F8"
+          color={"#FFBA00"}
+        />
       </View>
     </View>
   );

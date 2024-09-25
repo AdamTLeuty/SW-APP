@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Pressable, StyleSheet, Animated } from "react-native";
+import { Pressable, StyleSheet, Animated } from "react-native";
 
 import { Text, View, TextInput } from "./Themed";
 import { registerNewUser, loginExistingUser, verifyEmail, requestNewAuthCode } from "../services/authService";
@@ -8,7 +8,8 @@ import { router } from "expo-router";
 import { ScreenStackHeaderCenterView } from "react-native-screens";
 import { useUserContext } from "@/components/userContext";
 
-import { useThemeColor } from "./Themed";
+import { useThemeColor, Button } from "./Themed";
+import { universalStyles } from "@/constants/Styles";
 
 const VerifyArea: React.FC = () => {
   const [authcode, setAuthcode] = useState<string>("");
@@ -88,7 +89,7 @@ const VerifyArea: React.FC = () => {
   return (
     <View style={[styles.container, awaitingResponse ? styles.disabled : null]}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, universalStyles.bottomMargin]}
         placeholder="Eg. 123456"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
@@ -99,10 +100,11 @@ const VerifyArea: React.FC = () => {
         value={authcode}
         onChangeText={setAuthcode}
       />
+
       <Animated.View style={{ transform: [{ scale }] }}>
-        <Pressable style={styles.loginButton} onPress={handleVerify} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-          <Text style={styles.loginButtonText}>Submit</Text>
-        </Pressable>
+        <Button onPress={handleVerify} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+          {"Submit"}
+        </Button>
       </Animated.View>
 
       <Text style={styles.orText}> {"or"}</Text>

@@ -32,7 +32,7 @@ export default function impressionsProcessPage() {
     <ScrollView>
       <View style={styles.container}>
         <Title style={universalStyles.bottomMargin} fontWeight="800">
-          Impressions Process
+          IMPRESSIONS PROCESS
         </Title>
         <Text style={styles.body}>
           {

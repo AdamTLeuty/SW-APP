@@ -16,7 +16,7 @@ export default function SignInScreen() {
   return (
     <View style={styles.container}>
       <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
-        Log in
+        LOG IN
       </Title>
       <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
         Please enter the email you gave us when you booked your consultation.

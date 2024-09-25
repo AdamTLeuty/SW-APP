@@ -36,7 +36,7 @@ export default function Home() {
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.container}>
         <Title style={styles.bottomMargin} lightColor="#000">
-          Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!
+          WELCOME TO THE SMILE&nbsp;CORRECT&nbsp;CLUB PORTAL!
         </Title>
         <Link style={[styles.progressHolder, styles.bottomMargin]} href="/progress">
           <Progress style={[styles.progressHolder, styles.bottomMargin]} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />

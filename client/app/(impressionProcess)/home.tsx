@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.container}>
-        <Title lightColor="#000">Welcome to the Smile&nbsp;Correct&nbsp;Club Portal!</Title>
+        <Title lightColor="#000">WELCOME TO THE SMILE&nbsp;CORRECT&nbsp;CLUB PORTAL!</Title>
         <View style={styles.separator} />
         <Link href="/impressionsProcessPage" asChild>
           <Button>{"Take me to impressions process"}</Button>

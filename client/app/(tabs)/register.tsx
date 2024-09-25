@@ -11,7 +11,7 @@ export default function RegisterScreen() {
   return (
     <View style={styles.container}>
       <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
-        Register
+        REGISTER
       </Title>
       <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
         Time to create your scc hub account to track your smile transformation

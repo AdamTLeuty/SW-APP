@@ -61,7 +61,7 @@ export default function Gallery() {
         </View>
       ) : (
         <ScrollView style={[styles.main /*universalStyles.container*/]}>
-          <Title> Photo Gallery </Title>
+          <Title> PHOTO GALLERY </Title>
 
           {albums && albums.map((album) => <AlbumEntry key={album.id} album={album} />)}
         </ScrollView>

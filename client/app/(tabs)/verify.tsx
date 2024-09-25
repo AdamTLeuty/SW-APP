@@ -19,7 +19,7 @@ export default function VerifyScreen() {
   return (
     <View style={styles.container}>
       <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
-        Verify your email
+        VERIFY YOUR EMAIL
       </Title>
       <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
         Please check your email for a six digit code.

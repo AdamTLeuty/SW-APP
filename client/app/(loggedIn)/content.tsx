@@ -14,7 +14,7 @@ import { getToken } from "@/services/tokenStorage";
 export default function Content() {
   return (
     <View style={styles.container}>
-      <Title>Content Creation</Title>
+      <Title>CONTENT CREATION</Title>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.content} lightColor="#c0c0c0">
         Coming soon...

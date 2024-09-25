@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button, StyleSheet, LayoutChangeEvent } from "react-native";
 
-import { Text, View, TextInput } from "./Themed";
+import { Text, View, TextInput, useThemeColor } from "./Themed";
+import Colors from "@/constants/Colors";
 
 const layoutConstants = {
   cardMinWidth: 57,
@@ -55,12 +56,16 @@ const DateCard: React.FC<DateCardProps> = ({ i }) => {
     currentDate = true;
   }
 
+  //currentCard: { backgroundColor: "#5700FF" },
+  //otherCard: { backgroundColor: "#fff" },
+  const backgroundColor = currentDate ? Colors["light"]["tint"] : useThemeColor({}, "accentBackground");
+
   return (
-    <View style={[styles.dateCard, currentDate ? styles.currentCard : styles.otherCard]} onLayout={handleCardLayout}>
-      <Text style={styles.dayOfWeek} lightColor={currentDate ? "#fff" : "#5700FF"} darkColor="#000" fontWeight="500">
+    <View style={styles.dateCard} lightColor={backgroundColor} darkColor={backgroundColor} onLayout={handleCardLayout}>
+      <Text style={styles.dayOfWeek} lightColor={currentDate ? "#fff" : "#5700FF"} darkColor="#fff" fontWeight="500">
         {getDayOfWeek(i)}
       </Text>
-      <Text style={styles.dateText} lightColor={currentDate ? "#fff" : "#5700FF"} darkColor="#000" fontWeight="700">
+      <Text style={styles.dateText} lightColor={currentDate ? "#fff" : "#5700FF"} darkColor="#fff" fontWeight="700">
         {getDate(i)}
       </Text>
     </View>
@@ -109,7 +114,7 @@ const Calendar: React.FC<CalendarProps> = ({ rows, title }) => {
 const styles = StyleSheet.create({
   container: {
     margin: 25,
-    backgroundColor: "white",
+    //backgroundColor: "white",
     elevation: 2,
     shadowColor: "rgba(0, 0, 0, 1.0)",
     shadowOffset: { width: 0, height: 1 },
@@ -138,7 +143,6 @@ const styles = StyleSheet.create({
   dateCard: {
     width: layoutConstants.cardMinWidth,
     minHeight: layoutConstants.cardMinHeight,
-
     borderRadius: 10,
     display: "flex",
     flexDirection: "column",
@@ -155,8 +159,8 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginHorizontal: 0,
   },
-  currentCard: { backgroundColor: "#5700FF" },
-  otherCard: { backgroundColor: "#fff" },
+  //currentCard: { backgroundColor: "#5700FF" },
+  //otherCard: { backgroundColor: "#fff" },
   dayOfWeek: {
     fontSize: 14,
     fontWeight: 500,

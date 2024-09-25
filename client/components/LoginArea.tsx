@@ -7,6 +7,7 @@ import { storeToken, deleteToken } from "../services/tokenStorage";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { ScreenStackHeaderCenterView } from "react-native-screens";
+import Colors from "@/constants/Colors";
 
 import { useThemeColor, Button } from "./Themed";
 
@@ -99,9 +100,7 @@ const LoginArea: React.FC = () => {
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
         lightColor={"#5700FF"}
-        darkColor={"FFFFFF"}
-        lightBgColor="#F7F6F8"
-        darkBgColor="#5700FF"
+        darkColor={"#FFFFFF"}
         value={email}
         onChangeText={setEmail}
       />
@@ -112,9 +111,7 @@ const LoginArea: React.FC = () => {
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
         lightColor={"#5700FF"}
-        darkColor={"FFFFFF"}
-        lightBgColor="#F7F6F8"
-        darkBgColor="#5700FF"
+        darkColor={"#FFFFFF"}
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}

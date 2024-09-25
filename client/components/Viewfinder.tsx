@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
   rule: {
     flex: 1,
     height: 5,
+    backgroundColor: "white",
     //borderRadius: 10,
   },
   leftCurve: {

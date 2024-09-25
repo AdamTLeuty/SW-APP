@@ -187,7 +187,7 @@ export const universalStyles = StyleSheet.create({
   alignerChangeButton: {
     borderRadius: 47,
     backgroundColor: "#FF005C",
-    paddingHorizontal: 39,
+    paddingHorizontal: 10,
     paddingVertical: 10,
     width: "100%",
     //marginVertical: 36.5,
@@ -196,7 +196,10 @@ export const universalStyles = StyleSheet.create({
   alignerChangeText: {
     fontSize: 18,
     textAlign: "center",
+    alignContent: "center",
+    verticalAlign: "middle",
     lineHeight: 29,
+    width: "100%",
   },
   progressHolder: {
     width: "100%",

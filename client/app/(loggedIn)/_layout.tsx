@@ -10,7 +10,7 @@ import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { LogoTitle } from "@/components/Logo";
 import CustomHeader from "@/components/CustomHeader";
 import { Icon } from "@/components/Icon";
-import { View } from "@/components/Themed";
+import { useThemeColor, View } from "@/components/Themed";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: { iconName: string; width?: string; height?: string; color?: string; backgroundColor?: string; focused?: boolean }) {
@@ -18,6 +18,7 @@ function TabBarIcon(props: { iconName: string; width?: string; height?: string; 
     backgroundColor: props.backgroundColor,
     borderRadius: props.iconName == "photo" ? 100 : 10,
   };
+  console.log(props.iconName + ": " + props.color + " , " + props.backgroundColor);
 
   return (
     <View style={[styles.trayIcon, otherStyles]}>
@@ -57,7 +58,6 @@ const styles = StyleSheet.create({
     display: "flex",
     gap: 0,
     paddingHorizontal: 15,
-    backgroundColor: "#F7F6F8",
   },
   tabLabel: {
     margin: 0,
@@ -71,18 +71,19 @@ const styles = StyleSheet.create({
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  const activeColor = Colors[colorScheme ?? "light"].tint;
-  const inactiveColor = Colors[colorScheme ?? "light"].tabIconDefault;
+  const activeTint = Colors[colorScheme ?? "light"].tabIconSelectedTint;
+  const activeBackground = Colors[colorScheme ?? "light"].tabIconSelectedBackground;
+  const inactiveBackground = Colors[colorScheme ?? "light"].tabIconDefaultBackground;
+  const inactiveTint = Colors[colorScheme ?? "light"].tabIconDefaultTint;
+  const tabBarBackground = { backgroundColor: useThemeColor({}, "background") };
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: activeColor,
-        tabBarInactiveTintColor: activeColor,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
+        tabBarActiveTintColor: activeTint,
+        tabBarInactiveTintColor: activeTint,
         headerShown: useClientOnlyValue(false, true),
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [styles.tabBar, tabBarBackground],
         tabBarLabelStyle: styles.tabLabel,
       }}
     >
@@ -93,7 +94,7 @@ export default function TabLayout() {
           tabBarBadgeStyle: styles.trayIcon,
 
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="home" width="30" color={focused ? inactiveColor : activeColor} backgroundColor={focused ? activeColor : inactiveColor} focused={focused} />
+            <TabBarIcon iconName="home" width="30" color={focused ? inactiveTint : activeTint} backgroundColor={focused ? activeBackground : inactiveBackground} focused={focused} />
           ),
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} />;
@@ -105,7 +106,7 @@ export default function TabLayout() {
         options={{
           title: "Support",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="support" width="30" color={focused ? inactiveColor : activeColor} backgroundColor={focused ? activeColor : inactiveColor} focused={focused} />
+            <TabBarIcon iconName="support" width="30" color={focused ? inactiveTint : activeTint} backgroundColor={focused ? activeBackground : inactiveBackground} focused={focused} />
           ),
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} nav={navigation} />;
@@ -117,7 +118,7 @@ export default function TabLayout() {
         options={{
           title: "Photo",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="photo" width="30" color={focused ? inactiveColor : activeColor} backgroundColor={focused ? activeColor : inactiveColor} focused={focused} />
+            <TabBarIcon iconName="photo" width="30" color={focused ? inactiveTint : activeTint} backgroundColor={focused ? activeBackground : inactiveBackground} focused={focused} />
           ),
           headerShown: false, // This hides the header
         }}
@@ -127,7 +128,7 @@ export default function TabLayout() {
         options={{
           title: "Progress",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="calendar" width="30" color={focused ? inactiveColor : activeColor} backgroundColor={focused ? activeColor : inactiveColor} focused={focused} />
+            <TabBarIcon iconName="calendar" width="30" color={focused ? inactiveTint : activeTint} backgroundColor={focused ? activeBackground : inactiveBackground} focused={focused} />
           ),
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} />;
@@ -139,7 +140,7 @@ export default function TabLayout() {
         options={{
           title: "Content",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="play" width="30" color={focused ? inactiveColor : activeColor} backgroundColor={focused ? activeColor : inactiveColor} focused={focused} />
+            <TabBarIcon iconName="play" width="30" color={focused ? inactiveTint : activeTint} backgroundColor={focused ? activeBackground : inactiveBackground} focused={focused} />
           ),
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} />;

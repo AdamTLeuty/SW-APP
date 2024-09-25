@@ -167,7 +167,7 @@ export function TextInput(
 ) {
   const { style, lightColor, darkColor, lightBgColor, darkBgColor, placeHolderTextColorLight, placeHolderTextColorDark, autoCapitalize, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
-  const backgroundColor = useThemeColor({ light: lightBgColor, dark: darkBgColor }, "background");
+  const backgroundColor = useThemeColor({ light: lightBgColor, dark: darkBgColor }, "accentBackground");
   const placeholderTextColor = useThemeColor({ light: placeHolderTextColorLight, dark: placeHolderTextColorDark }, "background");
   const autocapitalize = props.autoCapitalize ? props.autoCapitalize : "none";
   const defaultStyle = {

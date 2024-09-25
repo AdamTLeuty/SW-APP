@@ -54,6 +54,7 @@ export default function Home() {
             nextStage();
           }}
           lightColor="#FF005C"
+          darkColor="#FF005C"
         >
           {"Take me to the aligner stage!"}
         </Button>

@@ -1,8 +1,8 @@
 import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withTiming, SharedValue } from "react-native-reanimated";
+import React from "react";
+import { useThemeColor } from "./Themed";
 
-import { Text } from "./Themed";
-
-import { View } from "./Themed";
+import { View, Text } from "./Themed";
 
 import { Pressable, StyleSheet, SafeAreaView, Button } from "react-native";
 import { useEffect } from "react";
@@ -98,11 +98,13 @@ const Accordion: React.FC<Props> = ({ buttonText, hiddenText }) => {
     open.value = !open.value;
   };
 
+  const text_color = useThemeColor({}, "text");
+
   return (
     <SafeAreaView style={styles.container}>
       <Pressable onPress={onPress}>
         <View style={styles.buttonTextHolder}>
-          <Icon width={"10"} height={"10"} color="black" style={styles.cross} iconName="cross" />
+          <Icon width={"10"} height={"10"} color={useThemeColor({ light: "black", dark: "#fff" }, "text")} style={styles.cross} iconName="cross" />
           <Text style={styles.accordionText} fontWeight="600">
             {buttonText}
           </Text>
@@ -130,7 +132,6 @@ const styles = StyleSheet.create({
   },
   accordionText: {
     fontSize: 16,
-    color: "#000",
   },
   hidden_text: {
     fontSize: 16,

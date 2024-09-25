@@ -1,11 +1,12 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { LogoTitle } from "./Logo";
 import { Icon } from "./Icon";
 import { useRouter } from "expo-router";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { Pressable } from "react-native";
 import { useUserContext } from "@/components/userContext";
+import { View } from "./Themed";
 
 const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any }) => {
   const { locked, backButton, ...otherProps } = props;
@@ -84,7 +85,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "center",
-    backgroundColor: "#ffffff",
     padding: 20,
     paddingTop: "20%",
   },

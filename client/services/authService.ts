@@ -110,17 +110,21 @@ export const loginExistingUser = async (
 
     return { message: response.data.message, token: response.data.token, status: response.status };
   } catch (error) {
-    console.error("Error fetching user data from auth server:", error);
     const status = error?.response?.status;
     if (status == 403) {
       const mockUserData = { name: "John Doe", email: email };
+      console.log("about to call `tentativeLogin` with this email" + email);
       tentativeLogin(mockUserData);
     }
     throw error;
   }
 };
 
-export const loginExistingUserWithToken = async (token: string, login: (userData: { name: string; email: string }) => void): Promise<ResponseMessage | null> => {
+export const loginExistingUserWithToken = async (
+  token: string,
+  login: (userData: { name: string; email: string }) => void,
+  tentativeLogin: (userData: { name: string; email: string }) => void,
+): Promise<ResponseMessage | null> => {
   try {
     const response = await authService.post(
       `/api/v1/loginWithToken`,
@@ -148,7 +152,13 @@ export const loginExistingUserWithToken = async (token: string, login: (userData
 
     return { message: response.data.message, token: response.data.token, status: response.status };
   } catch (error) {
-    console.error("Error fetching user data from auth server:", error);
+    const status = error?.response?.status;
+    const email = error?.response?.data?.email;
+    console.log("The login email from the token was: ");
+    if (status == 403) {
+      const mockUserData = { name: "John Doe", email: email };
+      tentativeLogin(mockUserData);
+    }
     throw error;
   }
 };

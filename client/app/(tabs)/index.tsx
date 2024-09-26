@@ -11,8 +11,6 @@ import { getToken } from "@/services/tokenStorage";
 import { universalStyles } from "@/constants/Styles";
 
 export default function SignInScreen() {
-  console.log("Rendering the sign in screen");
-
   return (
     <View style={styles.container}>
       <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>

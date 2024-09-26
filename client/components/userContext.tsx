@@ -105,10 +105,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     return;
   };
 
-  const tentativeLogin = (userData: User) => {
+  const tentativeLogin = async (userData: User) => {
+    console.log(userData);
     setUser(userData);
     setIsLoggedIn(false);
-    console.log("Just tentatively logged in: " + user?.email);
+    console.log("User data is:" + user);
+    console.log("Just tentatively logged in: " + userData.email);
   };
 
   const nextStage = async () => {

@@ -21,7 +21,6 @@ import { RefreshControl } from "react-native";
 export default function Home() {
   const { alignerProgress, alignerCount, updateUserContext, alignerChangeDate } = useUserContext();
   const [refreshing, setRefreshing] = React.useState(false);
-  console.log("Rendering the home screen");
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);

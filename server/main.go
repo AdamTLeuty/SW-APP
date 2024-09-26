@@ -123,7 +123,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		})
 
 		authorized := api.Group("/")
-		authorized.Use(check_bearer(db))
+		authorized.Use(check_bearer(db), check_verified(db))
 		{
 
 			authorized.POST("/uploadImage", func(c *gin.Context) {

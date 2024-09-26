@@ -21,9 +21,9 @@ const VerifyArea: React.FC = () => {
   const handleVerify = async () => {
     try {
       if (authcode.length > 5) {
-        const email = user?.email ? user.email : "";
-        console.log(email);
-        const verifyResponse = await verifyEmail(email ? email : "", authcode, login);
+        const email = user.email ? user.email : "";
+        console.log("Email: " + email);
+        const verifyResponse = await verifyEmail(email, authcode, login);
         setResponse(verifyResponse ? verifyResponse.message : null);
         verifyResponse ? console.log(verifyResponse.token ? verifyResponse.token : "NO TOKEN") : null;
         setError(null);

@@ -23,8 +23,6 @@ const LoginArea: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { isLoggedIn, login, tentativeLogin } = useUserContext();
 
-  console.log("Rendering the login area");
-
   useEffect(() => {
     if (!isLoggedIn) {
       console.log("Not logged in");
@@ -64,9 +62,10 @@ const LoginArea: React.FC = () => {
       const status = (err as any)?.response?.status;
       if (status == 403) {
         //Email has not been verified, go to verification screen
+        console.log("Email has not been verified, go to verification screen");
         router.navigate("/(tabs)/verify");
       }
-      setError(typeof errorMessage == "string" ? errorMessage : "Login FAILED :(");
+      setError(typeof errorMessage == "string" ? errorMessage : "Login failed");
       setResponse(null);
     }
   };

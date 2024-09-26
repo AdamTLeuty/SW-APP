@@ -282,3 +282,31 @@ func check_bearer(db *sql.DB) gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func check_verified(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Println("Checking whether user verified")
+
+		email := c.GetString("email")
+
+		verified, err := checkUserEmailVerified(db, email)
+		if err != nil {
+			log.Fatal(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Please login again or try again later"})
+			fmt.Println("500 - Couldn't check whether user is verified or not")
+			c.Abort()
+			return
+		}
+		if !verified {
+			//The user's email is already verified
+			c.JSON(http.StatusForbidden, gin.H{"error": "User not yet verified"})
+			fmt.Println("403 - User not yet verified")
+			c.Abort()
+			return
+		}
+
+		fmt.Println("User is verified - continue to next handler")
+		// Continue to the handler
+		c.Next()
+	}
+}

@@ -96,6 +96,17 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 		return
 	}
 
+	verified, err := checkUserEmailVerified(db, claimValue.(string))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "There has been an issue verifying your email. Please try again, or contact support"})
+		fmt.Println(err)
+		return
+	}
+	if !verified {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Your email has not yet been verified", "email": claimValue.(string)})
+		return
+	}
+
 	token, err = createToken(claimValue.(string))
 	fmt.Println(claimValue.(string))
 

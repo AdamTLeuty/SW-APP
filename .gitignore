@@ -170,3 +170,6 @@ server/users.db
 
 #Testing
 server_tests/
+
+client/Payload
+*.ipa

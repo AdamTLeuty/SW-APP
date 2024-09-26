@@ -26,6 +26,7 @@ func login(c *gin.Context, db *sql.DB) {
 	fmt.Printf("Duration of database read is %s\n", duration)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		fmt.Println(err)
 		return
 	}
 
@@ -37,6 +38,7 @@ func login(c *gin.Context, db *sql.DB) {
 	verified, err := checkUserEmailVerified(db, loginDetails.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "There has been an issue verifying your email. Please try again, or contact support"})
+		fmt.Println(err)
 		return
 	}
 	if !verified {

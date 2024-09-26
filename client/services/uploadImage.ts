@@ -48,7 +48,7 @@ export const uploadImage = async (uri: string, status: Status): Promise<Response
       },
     };
 
-    const response = await authService.post(`/api/uploadImage`, formData, config);
+    const response = await authService.post(`/api/v1/uploadImage`, formData, config);
 
     console.log("Response Message: " + response.data.message);
 

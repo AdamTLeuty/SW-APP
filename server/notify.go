@@ -14,7 +14,7 @@ func notify(token string, title string, body string) {
 	client := &http.Client{}
 
 	var data = strings.NewReader(fmt.Sprintf(`{
-		  	"to": "ExponentPushToken[%s]",
+		  	"to": "%s",
 			"title": "%s",
 			"body": "%s"
 		}`, token, title, body))

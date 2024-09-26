@@ -37,7 +37,7 @@ export const registerNewUser = async (
 ): Promise<ResponseMessage | null> => {
   try {
     const response = await authService.post(
-      `/api/register`,
+      `/api/v1/register`,
       {
         username: username,
         email: email,
@@ -83,7 +83,7 @@ export const loginExistingUser = async (
 ): Promise<ResponseMessage | null> => {
   try {
     const response = await authService.post(
-      `/api/login`,
+      `/api/v1/login`,
       {
         email: email,
         password: password,
@@ -123,7 +123,7 @@ export const loginExistingUser = async (
 export const loginExistingUserWithToken = async (token: string, login: (userData: { name: string; email: string }) => void): Promise<ResponseMessage | null> => {
   try {
     const response = await authService.post(
-      `/api/loginWithToken`,
+      `/api/v1/loginWithToken`,
       {},
       {
         headers: {
@@ -156,7 +156,7 @@ export const loginExistingUserWithToken = async (token: string, login: (userData
 export const verifyEmail = async (email: string, authcode: string, login: (userData: { name: string; email: string }) => void): Promise<ResponseMessage | null> => {
   try {
     const response = await authService.post(
-      `/api/verifyEmail`,
+      `/api/v1/verifyEmail`,
       {
         email: email,
         authcode: authcode,
@@ -187,7 +187,7 @@ export const verifyEmail = async (email: string, authcode: string, login: (userD
 export const requestNewAuthCode = async (email: string): Promise<ResponseMessage | null> => {
   try {
     const response = await authService.post(
-      `/api/resendVerifyEmail`,
+      `/api/v1/resendVerifyEmail`,
       {
         email: email,
       },
@@ -213,7 +213,7 @@ export const requestNewAuthCode = async (email: string): Promise<ResponseMessage
 
 export const checkUserStatus = async (email: string, token: string): Promise<ResponseMessage | null> => {
   try {
-    const response = await authService.get(`/api/userData`, {
+    const response = await authService.get(`/api/v1/userData`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -237,7 +237,7 @@ export const checkUserStatus = async (email: string, token: string): Promise<Res
 
 export const setUserStatus = async (token: string, userDataToChange: object): Promise<ResponseMessage | null> => {
   try {
-    const response = await authService.post(`/api/userData`, userDataToChange, {
+    const response = await authService.post(`/api/v1/userData`, userDataToChange, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -264,7 +264,7 @@ export const updateAlignerChangeDate = async (delay: boolean): Promise<ResponseM
     const token = await getToken();
 
     const response = await authService.post(
-      "/api/changeAlignerDate",
+      "/api/v1/changeAlignerDate",
       {
         delayChange: delay,
       },

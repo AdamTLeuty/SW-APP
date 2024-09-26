@@ -99,7 +99,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 
 	router.Static("/admin/public/assets", "./admin/public/assets")
 
-	api := router.Group("/api/")
+	api := router.Group("/api/v1/")
 	api.Use(SimpleLogAccess())
 	{
 		api.POST("/login", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
@@ -114,7 +114,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 			loginWithToken(c, db)
 		})
 
-		authorized := router.Group("/api/")
+		authorized := api.Group("/")
 		authorized.Use(SimpleLogAccess())
 		{
 

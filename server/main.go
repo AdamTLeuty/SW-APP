@@ -114,26 +114,28 @@ func setupRouter(db *sql.DB) *gin.Engine {
 			loginWithToken(c, db)
 		})
 
+		api.POST("/verifyEmail", LowercaseEmail(), func(c *gin.Context) {
+			verifyEmail(c, db)
+		})
+
+		api.POST("/resendVerifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
+			resendVerifyEmail(c, db)
+		})
+
 		authorized := api.Group("/")
-		authorized.Use(SimpleLogAccess())
+		authorized.Use(check_bearer(db))
 		{
 
-			api.POST("/uploadImage", check_bearer(db), func(c *gin.Context) {
+			authorized.POST("/uploadImage", func(c *gin.Context) {
 				upload(c, db)
 			})
-			api.POST("/verifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
-				verifyEmail(c, db)
-			})
-			api.POST("/resendVerifyEmail", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
-				resendVerifyEmail(c, db)
-			})
-			api.GET("/userData", func(c *gin.Context) {
+			authorized.GET("/userData", func(c *gin.Context) {
 				getUserData(c, db)
 			})
-			api.POST("/userData", func(c *gin.Context) {
+			authorized.POST("/userData", func(c *gin.Context) {
 				setUserData(c, db)
 			})
-			api.POST("/changeAlignerDate", check_bearer(db), func(c *gin.Context) {
+			authorized.POST("/changeAlignerDate", func(c *gin.Context) {
 				updateAlignerChangeDate(c, db)
 			})
 		}

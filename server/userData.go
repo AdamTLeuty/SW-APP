@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -28,37 +27,7 @@ type UserDataResponse struct {
 
 func getUserData(c *gin.Context, db *sql.DB) {
 
-	var h Header
-	if err := c.BindHeader(&h); err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Must provide Bearer header with authorisation token"})
-		return
-	}
-	if h.Authorization == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Must provide Bearer header with authorisation token"})
-		return
-	}
-
-	token := strings.Replace(h.Authorization, "Bearer ", "", 1)
-
-	//Check the request contained data
-	if token == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Must provide an email and login token"})
-		return
-	}
-
-	//Check that the token corresponds to the email provided
-	tokenEmail, err := verifyToken(token)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Must provide an email and login token"})
-		return
-	}
-	var email = tokenEmail.(string)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error - please try again later"})
-		return
-	}
+	email := c.GetString("email")
 
 	//Check if user exists in database
 	emailInDB, err := checkEmailExists(db, email)
@@ -87,31 +56,7 @@ func getUserData(c *gin.Context, db *sql.DB) {
 
 func setUserData(c *gin.Context, db *sql.DB) {
 
-	var h Header
-	if err := c.BindHeader(&h); err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Must provide Bearer header with authorisation token"})
-		return
-	}
-	if h.Authorization == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Must provide Bearer header with authorisation token"})
-		return
-	}
-
-	token := strings.Replace(h.Authorization, "Bearer ", "", 1)
-
-	//Check the request contained data
-	if token == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Must provide an email and login token"})
-		return
-	}
-
-	//Check that the token corresponds to the email provided
-	tokenEmail, err := verifyToken(token)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Must provide an email and login token"})
-	}
-	email := tokenEmail.(string)
+	email := c.GetString("email")
 
 	//Read the request data
 	var requestData UserDataRequest

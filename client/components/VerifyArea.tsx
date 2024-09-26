@@ -27,9 +27,6 @@ const VerifyArea: React.FC = () => {
         setResponse(verifyResponse ? verifyResponse.message : null);
         verifyResponse ? console.log(verifyResponse.token ? verifyResponse.token : "NO TOKEN") : null;
         setError(null);
-        if (verifyResponse) {
-          storeToken(verifyResponse.token);
-        }
       } else {
         throw {
           response: {
@@ -94,9 +91,7 @@ const VerifyArea: React.FC = () => {
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
         lightColor={"#5700FF"}
-        darkColor={"FFFFFF"}
-        lightBgColor="#F7F6F8"
-        darkBgColor="#5700FF"
+        darkColor={"#FFFFFF"}
         value={authcode}
         onChangeText={setAuthcode}
       />

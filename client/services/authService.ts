@@ -50,7 +50,7 @@ export const registerNewUser = async (
       },
     );
 
-    storeToken(response.data.token);
+    await storeToken(response.data.token);
 
     const mockUserData = { name: username, email: email };
     //console.log("Before the login state call");
@@ -95,7 +95,7 @@ export const loginExistingUser = async (
       },
     );
 
-    storeToken(response.data.token);
+    await storeToken(response.data.token);
 
     const mockUserData = { name: "John Doe", email: email };
     //console.log("Before the login state call");
@@ -133,7 +133,7 @@ export const loginExistingUserWithToken = async (token: string, login: (userData
       },
     );
 
-    storeToken(response.data.token);
+    await storeToken(response.data.token);
 
     for (let key in response.data) {
       if (response.data.hasOwnProperty(key)) {
@@ -167,6 +167,8 @@ export const verifyEmail = async (email: string, authcode: string, login: (userD
         },
       },
     );
+
+    await storeToken(response.data.token);
 
     const mockUserData = { name: "John Doe", email: email };
     login(mockUserData);

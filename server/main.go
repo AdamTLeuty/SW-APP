@@ -15,6 +15,8 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/JGLTechnologies/gin-rate-limit"
 )
 
 type User struct {
@@ -84,14 +86,42 @@ func checkEmailExists(db *sql.DB, email string) (bool, error) {
 	return exists, nil
 }
 
+func keyFunc(c *gin.Context) string {
+	return c.ClientIP()
+}
+
+func errorHandler(c *gin.Context, info ratelimit.Info) {
+	c.String(429, "Too many requests. Try again in "+time.Until(info.ResetTime).String())
+}
+
 func setupRouter(db *sql.DB) *gin.Engine {
 	router := gin.Default()
 
 	router.LoadHTMLGlob("./admin/pages/*.html")
 
+	// This makes it so each ip can only make 5 requests per second
+	store := ratelimit.InMemoryStore(&ratelimit.InMemoryOptions{
+		Rate:  time.Second,
+		Limit: 5,
+	})
+	rate_limit := ratelimit.RateLimiter(store, &ratelimit.Options{
+		ErrorHandler: errorHandler,
+		KeyFunc:      keyFunc,
+	})
+
+	// This makes it so each ip can only make 6 requests per minute (Request every ten seconds)
+	store_slow := ratelimit.InMemoryStore(&ratelimit.InMemoryOptions{
+		Rate:  time.Minute,
+		Limit: 6,
+	})
+	rate_limit_slow := ratelimit.RateLimiter(store_slow, &ratelimit.Options{
+		ErrorHandler: errorHandler,
+		KeyFunc:      keyFunc,
+	})
+
 	// Apply AuthRequired middleware to protect static files
 	authorized := router.Group("/admin/")
-	authorized.Use(admin_auth(db))
+	authorized.Use(rate_limit, admin_auth(db))
 	{
 		authorized.Static("/assets", "./admin/assets")
 		authorized.Static("/images", "./images")
@@ -100,7 +130,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 	router.Static("/admin/public/assets", "./admin/public/assets")
 
 	api := router.Group("/api/v1/")
-	api.Use(SimpleLogAccess())
+	api.Use(rate_limit, SimpleLogAccess())
 	{
 		api.POST("/login", LogAccess(), LowercaseEmail(), func(c *gin.Context) {
 			login(c, db)
@@ -126,7 +156,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		authorized.Use(check_bearer(db), check_verified(db))
 		{
 
-			authorized.POST("/uploadImage", func(c *gin.Context) {
+			authorized.POST("/uploadImage", rate_limit_slow, func(c *gin.Context) {
 				upload(c, db)
 			})
 			authorized.GET("/userData", func(c *gin.Context) {
@@ -142,32 +172,32 @@ func setupRouter(db *sql.DB) *gin.Engine {
 
 	}
 
-	router.GET("/admin/login", func(c *gin.Context) {
+	router.GET("/admin/login", rate_limit, func(c *gin.Context) {
 		admin_login(c, db)
 	})
 
-	router.POST("/admin/login", func(c *gin.Context) {
+	router.POST("/admin/login", rate_limit, func(c *gin.Context) {
 		admin_login_form(c, db)
 	})
 
-	router.GET("/admin/home", func(c *gin.Context) {
+	router.GET("/admin/home", rate_limit, func(c *gin.Context) {
 		admin_home(c, db)
 	})
 
-	router.GET("/admin/user/:userid", func(c *gin.Context) {
+	router.GET("/admin/user/:userid", rate_limit, func(c *gin.Context) {
 		admin_user_profile(c, db)
 	})
 
-	router.POST("/admin/user/updateImpressionState/:userid", admin_auth(db), func(c *gin.Context) {
+	router.POST("/admin/user/updateImpressionState/:userid", rate_limit, admin_auth(db), func(c *gin.Context) {
 		edit_user_impression_state(c, db)
 	})
 
-	router.GET("/admin/components", func(c *gin.Context) {
+	router.GET("/admin/components", rate_limit, func(c *gin.Context) {
 		admin_home(c, db)
 	})
 
 	auth_components := router.Group("/admin/components/")
-	auth_components.Use(admin_auth(db))
+	auth_components.Use(rate_limit, admin_auth(db))
 	{
 		auth_components.GET("/userInfoForm/:userid", func(c *gin.Context) {
 			admin_get_user_info_form(c, db)

@@ -36,38 +36,6 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func emailInHubspot(email string) bool {
-
-	BASE_URL := "https://api.hubapi.com"
-
-	HUBSPOT_ACCESS_TOKEN := os.Getenv("HUBSPOT_API_KEY")
-
-	fmt.Println("Checking the email is correct...")
-
-	client := &http.Client{}
-
-	req, err := http.NewRequest("GET", BASE_URL+"/crm/v3/objects/contacts/"+email+"?idProperty=email", nil)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	req.Header.Add("Authorization", "Bearer "+HUBSPOT_ACCESS_TOKEN)
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer resp.Body.Close()
-
-	//body, err := ioutil.ReadAll(resp.Body)
-
-	if resp.Status == "200 OK" {
-		return true
-	} else {
-		return false
-	}
-
-}
-
 func generateAuthCode() string {
 	authCode := fmt.Sprintf("%06d", rand.IntN(999999))
 	fmt.Println("Authcode generated: ", authCode)
@@ -152,6 +120,10 @@ func setupRouter(db *sql.DB) *gin.Engine {
 			resendVerifyEmail(c, db)
 		})
 
+		api.POST("/hubspot", authenticate_hubspot(db), func(c *gin.Context) {
+			hubspot_listener(c, db)
+		})
+
 		authorized := api.Group("/")
 		authorized.Use(check_bearer(db), check_verified(db))
 		{
@@ -230,6 +202,12 @@ func main() {
 	}
 	statement.Exec()
 
+	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS user_hubspot_data (id INTEGER PRIMARY KEY, userID INTEGER, process_stage TEXT, object_id INTEGER,  FOREIGN KEY (userID) REFERENCES users(id) ON DELETE CASCADE) ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	statement.Exec()
+
 	//Create a table for images uploaded by the user
 	//Each image has a userID for a corresponding user in the `users` table
 	//Each image has an `imageType`, showing either that the image is of an aligner update or impression check (`aligner`/`impression`)
@@ -303,6 +281,13 @@ func serverSideControls(db *sql.DB) {
 			notify(token, "Smile Correct Club!", "Testy, it's time to change your aligners!")
 		case 'c':
 			getUsersWithNowChangeDate(db)
+		case 'h':
+			data, err := getUserHubspotData("test@gmail.com")
+			if err != nil {
+				fmt.Println("Error: ", err)
+			} else {
+				fmt.Println(data)
+			}
 		default:
 			fmt.Println("Pressed a button")
 		}

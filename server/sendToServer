@@ -1,2 +1,8 @@
 #!/bin/zsh
-rsync -avz --exclude-from=excludeFromServer -e 'ssh -i ~/.ssh/shared_server' . root@molar.dentahost.co.uk:/home/appauthscc/public_html/auth-server
+clear;
+rsync -avz --exclude-from=excludeFromServer -e 'ssh -i ~/.ssh/molardental' . root@molar.dentahost.co.uk:/home/appauthscc/public_html/auth-server;
+cd fromServer;
+./retrieveFromServer;
+cp -f auth-server/users.db ../users.db;
+cd ..;
+open -g -a "DB Browser for SQLite" ./users.db;

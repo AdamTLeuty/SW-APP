@@ -12,6 +12,16 @@ interface Props {
 }
 
 export const Progress: React.FC<Props> = ({ text, currentAlignerCount, totalAlignerCount }) => {
+  let progressValue: number;
+
+  if (totalAlignerCount == 0) {
+    progressValue = 0;
+  } else if (currentAlignerCount < totalAlignerCount) {
+    progressValue = currentAlignerCount / totalAlignerCount;
+  } else {
+    progressValue = 1;
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.headingContainer}>
@@ -28,13 +38,7 @@ export const Progress: React.FC<Props> = ({ text, currentAlignerCount, totalAlig
         </View>
       </View>
       <View style={styles.progressBarHolder}>
-        <LinearProgress
-          value={currentAlignerCount < totalAlignerCount ? currentAlignerCount / totalAlignerCount : 1}
-          variant="determinate"
-          style={styles.progressBar}
-          trackColor="#F7F6F8"
-          color={"#FFBA00"}
-        />
+        <LinearProgress value={progressValue} variant="determinate" style={styles.progressBar} trackColor="#F7F6F8" color={"#FFBA00"} />
       </View>
     </View>
   );

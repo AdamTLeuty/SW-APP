@@ -26,6 +26,7 @@ interface UserContextType {
   alignerChangeDate: string;
   expoPushToken: string;
   updateExpoPushToken: (expoToken: string) => void;
+  updateAlignerCount: (count: number) => void;
 }
 
 // Create the context with an initial value
@@ -60,7 +61,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (userDataWithStage.stage == "impression") {
         setStatus("impressionStage");
       }
-      console.log(userDataWithStage);
       if (userDataWithStage.alignerCount) {
         setAlignerCount(userDataWithStage.alignerCount);
       }
@@ -76,6 +76,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateUserContext = async () => {
+    console.log("Should send a request to the server");
     const token = await getToken();
     let response;
     if (token) {
@@ -83,6 +84,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
     if (response?.userData != null) {
       const userDataWithStage = response.userData as { stage: string; alignerCount: number; alignerProgress: number; alignerChangeDate: string };
+      console.log("stage: " + userDataWithStage.stage);
       if (userDataWithStage.stage == "aligner") {
         setStatus("alignerStage");
       }
@@ -147,6 +149,21 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateAlignerCount = async (count: number) => {
+    await updateUserContext();
+
+    if (alignerCount == 0) {
+      if (count < 0) {
+        console.log("Not an acceptable answer");
+      } else {
+        console.log("Set the aligner count");
+        setAlignerCount(count);
+      }
+    }
+
+    return;
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -164,6 +181,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         alignerChangeDate,
         expoPushToken,
         updateExpoPushToken,
+        updateAlignerCount,
       }}
     >
       {children}

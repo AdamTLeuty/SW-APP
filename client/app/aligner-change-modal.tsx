@@ -1,12 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { Platform, StyleSheet } from "react-native";
-import React from "react";
+import { Platform, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
+import React, { useEffect } from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
-import { Button, Text, View } from "@/components/Themed";
+import { Button, Text, TextInput, View, Title } from "@/components/Themed";
 import { Link, router } from "expo-router";
 import { Pressable } from "react-native";
 import { CheckBox } from "@rneui/themed";
-
 import { updateAlignerChangeDate } from "@/services/authService";
 
 import { useState } from "react";
@@ -46,6 +45,54 @@ const DelayButton: React.FC<DelayButtonProps> = ({ selectedIndex, delayReasons }
   }
 };
 
+interface AlignerCountCheckProps {
+  setGlobalAlignerCount: (count: number) => void;
+}
+
+const AlignerCountCheck: React.FC<AlignerCountCheckProps> = ({ setGlobalAlignerCount }) => {
+  const [alignerCountInput, setAlignerCountInput] = useState<string>("");
+  const [alignerCount, setAlignerCount] = useState<number>(0);
+
+  useEffect(() => {
+    const alignerCountInputClean = parseInt(alignerCountInput.replace(/[^0-9]/g, ""), 10);
+
+    if (Number.isNaN(alignerCountInputClean)) {
+      setAlignerCount(0);
+    } else {
+      setAlignerCount(alignerCountInputClean);
+    }
+  }, [alignerCountInput]);
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={[styles.container, { justifyContent: "center" }]}>
+        <Title>HOW MANY ALIGNERS DO YOU HAVE?</Title>
+        <Text> {"Before you put in your first aligner, we need to know how many aligners came in your treatment kit"} </Text>
+        <Text> {"The input number is: " + alignerCount} </Text>
+        <TextInput
+          style={{ textAlign: "center" }}
+          placeholder="Aligner Count"
+          keyboardType="numeric"
+          placeHolderTextColorLight={"#BDBDBD"}
+          placeHolderTextColorDark={"#FFFFFF"}
+          lightColor={"#5700FF"}
+          darkColor={"#FFFFFF"}
+          value={alignerCountInput}
+          //If input is invalid, set as 0, else, keep as number
+          onChangeText={setAlignerCountInput}
+        />
+        <Button
+          onPress={() => {
+            setGlobalAlignerCount(alignerCount);
+          }}
+        >
+          Submit
+        </Button>
+      </View>
+    </TouchableWithoutFeedback>
+  );
+};
+
 interface DelayReasonListProps {
   selectedIndex: number;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
@@ -53,9 +100,6 @@ interface DelayReasonListProps {
 }
 
 const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setIndex, delayReasons }) => {
-  //const [selectedIndex, setIndex] = useState(-1);
-  //const { selectedIndex, setIndex} = props;
-
   return (
     <View style={styles.list}>
       <Text fontWeight="400" lightColor="black" style={styles.listHeading}>
@@ -93,7 +137,7 @@ const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setInd
 
 export default function ModalScreen() {
   const [selectedIndex, setIndex] = useState(-1);
-  const { updateUserContext } = useUserContext();
+  const { updateUserContext, alignerCount, updateAlignerCount } = useUserContext();
 
   const delayReasons = [
     "My aligners are still hurting my teeth",
@@ -113,21 +157,24 @@ export default function ModalScreen() {
   const toCamera = () => {
     router.replace("/(loggedIn)/camera");
   };
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title} fontWeight="800" lightColor="black">
-        {"Time to change your\nClear Aligners"}
-      </Text>
-      <Pressable onPress={updateAlignerProgress} style={styles.button}>
-        <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
-          {"Take new photo"}
+  if (alignerCount > 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title} fontWeight="800" lightColor="black">
+          {"Time to change your\nClear Aligners"}
         </Text>
-      </Pressable>
-      <DelayButton selectedIndex={selectedIndex} delayReasons={delayReasons} />
-      <DelayReasonList setIndex={setIndex} selectedIndex={selectedIndex} delayReasons={delayReasons} />
-    </View>
-  );
+        <Pressable onPress={updateAlignerProgress} style={styles.button}>
+          <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
+            {"Take new photo"}
+          </Text>
+        </Pressable>
+        <DelayButton selectedIndex={selectedIndex} delayReasons={delayReasons} />
+        <DelayReasonList setIndex={setIndex} selectedIndex={selectedIndex} delayReasons={delayReasons} />
+      </View>
+    );
+  } else {
+    return <AlignerCountCheck setGlobalAlignerCount={updateAlignerCount} />;
+  }
 }
 
 const styles = StyleSheet.create({

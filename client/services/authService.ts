@@ -9,6 +9,7 @@ const authService = axios.create({
   baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
+    "Cache-Control": "no-cache",
   },
 });
 
@@ -46,6 +47,7 @@ export const registerNewUser = async (
       {
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
         },
       },
     );
@@ -70,7 +72,7 @@ export const registerNewUser = async (
     //Object.keys(response.data.properties).length > 0 ? response.data.properties : null;
     //return response.data.properties;
   } catch (error) {
-    console.error("Error fetching user data from auth server:", error);
+    console.error("Error registering user:", error);
     throw error;
   }
 };
@@ -91,6 +93,7 @@ export const loginExistingUser = async (
       {
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
         },
       },
     );
@@ -132,6 +135,7 @@ export const loginExistingUserWithToken = async (
       {
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
           Authorization: `Bearer ${token}`,
         },
       },
@@ -174,6 +178,7 @@ export const verifyEmail = async (email: string, authcode: string, login: (userD
       {
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
         },
       },
     );
@@ -191,7 +196,7 @@ export const verifyEmail = async (email: string, authcode: string, login: (userD
 
     return { message: response.data.message, token: response.data.token, status: response.status };
   } catch (error) {
-    console.error("Error fetching user data from auth server:", error);
+    console.error("Error verifying user email:", error);
     throw error;
   }
 };
@@ -206,6 +211,7 @@ export const requestNewAuthCode = async (email: string): Promise<ResponseMessage
       {
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
         },
       },
     );
@@ -218,7 +224,7 @@ export const requestNewAuthCode = async (email: string): Promise<ResponseMessage
 
     return { message: response.data.message, token: response.data.token, status: response.status };
   } catch (error) {
-    console.error("Error fetching user data from auth server:", error);
+    console.error("Error requesting new auth code:", error);
     throw error;
   }
 };
@@ -228,6 +234,7 @@ export const checkUserStatus = async (email: string, token: string): Promise<Res
     const response = await authService.get(`/api/v1/userData`, {
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -239,6 +246,8 @@ export const checkUserStatus = async (email: string, token: string): Promise<Res
     }
 
     console.log(response.data.userData);
+
+    console.log("stage inside: " + response.data.userData.stage);
 
     return { message: response.data.message, token: response.data.token, status: response.status, userData: response.data.userData };
   } catch (error) {
@@ -252,6 +261,7 @@ export const setUserStatus = async (token: string, userDataToChange: object): Pr
     const response = await authService.post(`/api/v1/userData`, userDataToChange, {
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -283,6 +293,7 @@ export const updateAlignerChangeDate = async (delay: boolean): Promise<ResponseM
       {
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
           Authorization: `Bearer ${token}`,
         },
       },

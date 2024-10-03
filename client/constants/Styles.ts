@@ -226,6 +226,14 @@ export const universalStyles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
   },
+  input: {
+    paddingHorizontal: 17,
+    paddingVertical: 15,
+    borderRadius: 10,
+    fontSize: 16,
+    verticalAlign: "bottom",
+    elevation: -100,
+  },
 });
 
 export const progressStyles = StyleSheet.create({

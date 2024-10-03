@@ -174,8 +174,9 @@ export function TextInput(
     color: color,
     backgroundColor: backgroundColor,
     fontFamily: "Poppins_Regular",
+    width: "100%",
     // Add other default styles here
   };
 
-  return <DefaultTextInput autoCapitalize={autocapitalize} style={[defaultStyle, style]} placeholderTextColor={placeholderTextColor} {...otherProps} />;
+  return <DefaultTextInput autoCapitalize={autocapitalize} style={[universalStyles.input, defaultStyle, style]} placeholderTextColor={placeholderTextColor} {...otherProps} />;
 }

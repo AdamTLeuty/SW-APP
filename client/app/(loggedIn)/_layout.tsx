@@ -18,7 +18,6 @@ function TabBarIcon(props: { iconName: string; width?: string; height?: string; 
     backgroundColor: props.backgroundColor,
     borderRadius: props.iconName == "photo" ? 100 : 10,
   };
-  console.log(props.iconName + ": " + props.color + " , " + props.backgroundColor);
 
   return (
     <View style={[styles.trayIcon, otherStyles]}>

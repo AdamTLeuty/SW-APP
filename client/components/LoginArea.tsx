@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Pressable, StyleSheet, Animated } from "react-native";
 
-import { Text, View, TextInput } from "./Themed";
+import { Text, View, TextInput, useThemeColor, Button, ScrollView } from "./Themed";
 import { registerNewUser, loginExistingUser, loginExistingUserWithToken } from "../services/authService";
 import { storeToken, deleteToken } from "../services/tokenStorage";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { ScreenStackHeaderCenterView } from "react-native-screens";
 import Colors from "@/constants/Colors";
-
-import { useThemeColor, Button } from "./Themed";
 
 import { getToken } from "../services/tokenStorage";
 
@@ -127,18 +125,6 @@ const LoginArea: React.FC = () => {
     </View>
   );
 };
-
-/*
-
-<Animated.View style={{ transform: [{ scale }] }}>
-  <Pressable style={styles.loginButton} onPress={handleLoginWithToken} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-    <Text style={styles.loginButtonText}>Login with token</Text>
-  </Pressable>
-</Animated.View>
-
-
-
-*/
 
 const styles = StyleSheet.create({
   container: {

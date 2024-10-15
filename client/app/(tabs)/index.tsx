@@ -2,7 +2,8 @@ import React, { StyleSheet, Pressable } from "react-native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
-import { Text, View, Title } from "@/components/Themed";
+import RegisterArea from "@/components/RegisterArea";
+import { Text, View, Title, KeyboardAvoidingView, ScrollView } from "@/components/Themed";
 
 import { useEffect, useState } from "react";
 
@@ -12,31 +13,37 @@ import { universalStyles } from "@/constants/Styles";
 
 export default function SignInScreen() {
   return (
-    <View style={styles.container}>
-      <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
-        LOG IN
-      </Title>
-      <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
-        Please enter the email you gave us when you booked your consultation.
-      </Text>
-      <LoginArea />
-      <Text style={styles.orText}>Or</Text>
-      <Pressable>
-        <Text style={styles.registerText} lightColor="#5700ff" darkColor="#ffffff" onPress={() => router.replace("/register")}>
-          Register
-        </Text>
-      </Pressable>
-    </View>
+    <KeyboardAvoidingView style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
+        <View style={styles.container}>
+          <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
+            LOG IN
+          </Title>
+          <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
+            Please enter the email you gave us when you booked your consultation.
+          </Text>
+          <LoginArea />
+          <Text style={styles.orText}>Or</Text>
+          <Pressable>
+            <Text style={styles.registerText} lightColor="#5700ff" darkColor="#ffffff" onPress={() => router.replace("/register")}>
+              Register
+            </Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    flexGrow: 1,
+    height: "100%",
     padding: 27,
     fontSize: 25,
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 20,

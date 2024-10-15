@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Image, Button, StyleSheet, TouchableOpacity, LayoutChangeEvent } from "react-native";
-import MaskedView from "@react-native-masked-view/masked-view";
+import * as MediaLibrary from "expo-media-library";
 
 import { Text, View, TextInput } from "./Themed";
 
@@ -73,7 +73,8 @@ function FrameBottom() {
 
 const Viewfinder: React.FC = () => {
   const [facing, setFacing] = useState<CameraType>("back");
-  const [permission, requestPermission] = useCameraPermissions();
+  const [cameraPermission, requestCameraPermission] = useCameraPermissions();
+  const [libraryPermission, requestLibraryPermission] = MediaLibrary.usePermissions();
   const [maxHeight, setMaxHeight] = useState(0);
   const cameraRef = useRef(null);
   const [photo, setPhoto] = useState(null);
@@ -81,21 +82,28 @@ const Viewfinder: React.FC = () => {
 
   const { newImage } = useCurrentImageContext();
 
-  if (!permission) {
+  if (!cameraPermission || libraryPermission?.status == "denied") {
+    requestLibraryPermission();
     // Camera permissions are still loading.
     return (
-      <View>
-        <Text style={{ textAlign: "center" }}>We need your permission to show the camera</Text>
+      <View style={styles.container}>
+        <Text style={{ textAlign: "center" }}>We need your permission to show the camera, please allow 'Camera' and 'Photos' access in settings</Text>
       </View>
     );
   }
 
-  if (!permission.granted) {
+  if (!cameraPermission.granted || libraryPermission?.status != "granted") {
     // Camera permissions are not granted yet.
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: "center" }}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="Grant Permission" />
+        <Text style={{ textAlign: "center" }}>We need your permission to show the camera and store the resulting picture</Text>
+        <Button
+          onPress={() => {
+            requestCameraPermission();
+            requestLibraryPermission();
+          }}
+          title="Grant Permission"
+        />
       </View>
     );
   }

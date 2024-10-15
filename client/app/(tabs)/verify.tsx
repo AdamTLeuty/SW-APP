@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import React from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
-import { Text, View, Title } from "@/components/Themed";
+import { Text, View, Title, KeyboardAvoidingView, ScrollView } from "@/components/Themed";
 import RegisterArea from "@/components/RegisterArea";
 import { router } from "expo-router";
 import { TextBase } from "react-native";
@@ -17,15 +17,19 @@ interface Props {
 
 export default function VerifyScreen() {
   return (
-    <View style={styles.container}>
-      <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
-        VERIFY YOUR EMAIL
-      </Title>
-      <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
-        Please check your email for a six digit code.
-      </Text>
-      <VerifyArea />
-    </View>
+    <KeyboardAvoidingView style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
+        <View style={styles.container}>
+          <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
+            VERIFY YOUR EMAIL
+          </Title>
+          <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
+            Please check your email for a six digit code.
+          </Text>
+          <VerifyArea />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

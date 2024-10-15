@@ -2,12 +2,12 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 import React, { useEffect } from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
-import { Button, Text, TextInput, View, Title } from "@/components/Themed";
+import { Button, Text, TextInput, View, Title, Checkbox } from "@/components/Themed";
 import { Link, router } from "expo-router";
 import { Pressable } from "react-native";
-import { CheckBox } from "@rneui/themed";
+//import { CheckBox } from "@rneui/themed";
 import { updateAlignerChangeDate } from "@/services/authService";
-
+import Colors from "@/constants/Colors";
 import { useState } from "react";
 import { useUserContext } from "@/components/userContext";
 
@@ -30,14 +30,14 @@ const DelayButton: React.FC<DelayButtonProps> = ({ selectedIndex, delayReasons }
 
   if (active) {
     return (
-      <Button lightColor="#FF005C" onPress={delayAlignerChange}>
+      <Button lightColor="#FF005C" darkColor="#FF005C" onPress={delayAlignerChange}>
         {"Delay changing Aligners"}
       </Button>
     );
   } else {
     return (
-      <Button lightColor="#F7F6F8">
-        <Text lightColor="#BDBDBD" fontWeight="600">
+      <Button lightColor="#F7F6F8" darkColor={Colors.dark.accentBackground}>
+        <Text lightColor="#BDBDBD" darkColor="#BDBDBD" fontWeight="600">
           {"Delay changing Aligners "}
         </Text>
       </Button>
@@ -102,22 +102,26 @@ interface DelayReasonListProps {
 const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setIndex, delayReasons }) => {
   return (
     <View style={styles.list}>
-      <Text fontWeight="400" lightColor="black" style={styles.listHeading}>
+      <Text fontWeight="400" style={styles.listHeading}>
         {"Tell us why you are delaying your Clear Aligner journey"}
       </Text>
       {delayReasons.map((reason, i) => (
         <View key={i}>
-          <CheckBox
+          <Checkbox
             checked={selectedIndex === i}
-            onPress={() => setIndex(i)}
+            onPress={() => {
+              if (selectedIndex === i) {
+                //Deselect the radio if clicked when active
+                setIndex(-1);
+              } else {
+                //Select this checkbox
+                setIndex(i);
+              }
+            }}
             checkedIcon="circle"
             uncheckedIcon="circle"
             checkedColor="#FF005C"
-            title={
-              <Text lightColor={"black"} style={styles.listItem}>
-                {reason}
-              </Text>
-            }
+            title={<Text style={styles.listItem}>{reason}</Text>}
             onIconPress={() => {
               if (selectedIndex === i) {
                 //Deselect the radio if clicked when active

@@ -12,5 +12,5 @@ if [ $? -ne 0 ]; then
 else
     echo "${GREEN}Prebuild succeeded!";
     echo "Building the application for IOS...";
-    eas build --profile development --platform ios --local;
+    eas build --profile production --platform ios --local
 fi

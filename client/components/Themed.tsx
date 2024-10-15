@@ -12,7 +12,12 @@ import {
   ScrollView as DefaultScrollView,
   StyleProp,
   ViewStyle,
+  TextStyle,
+  KeyboardAvoidingView as DefaultKeyboardAvoidingView,
+  Platform,
 } from "react-native";
+
+import { CheckBox as DefaultCheckbox } from "@rneui/base";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
@@ -28,11 +33,24 @@ type ThemeProps = {
 type ScrollViewPropsSpecific = {
   contentContainerStyle?: object;
   refreshControl?: ReactElement;
+  centerContent?: boolean;
 };
 
 export type TextProps = ThemeProps & DefaultText["props"];
 export type TitleProps = TextProps;
 export type ViewProps = ThemeProps & DefaultView["props"];
+export type CheckboxProps = ThemeProps & {
+  style?: StyleProp<ViewStyle>;
+  onPressIn?: () => void; // Include onPressIn event
+  onPressOut?: () => void; // Include onPressOut event
+  checked: boolean;
+  checkedIcon: string;
+  uncheckedIcon: string;
+  checkedColor: string;
+  title: string | React.ReactElement<{}, string | React.JSXElementConstructor<any>> | undefined;
+  onIconPress: () => void;
+  textStyle: StyleProp<TextStyle>;
+} & React.ComponentProps<typeof DefaultCheckbox>;
 export type ButtonProps = ThemeProps & {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
@@ -75,6 +93,42 @@ export function useThemeColor(props: { light?: string; dark?: string }, colorNam
   } else {
     return Colors[theme][colorName];
   }
+}
+
+/*style?: StyleProp<ViewStyle>;
+children?: ReactNode;
+onPressIn?: () => void; // Include onPressIn event
+onPressOut?: () => void; // Include onPressOut event
+checkedIcon: string;
+uncheckedIcon: string;
+checkedColor: string;
+title: string | React.ReactElement<{}, string | React.JSXElementConstructor<any>> | undefined;
+onIconPress: () => void;
+textStyle: StyleProp<TextStyle>; */
+
+export function Checkbox(props: CheckboxProps) {
+  const { style, checked, lightColor, darkColor, checkedIcon, uncheckedIcon, checkedColor, textStyle, title, ...otherProps } = props;
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "background");
+
+  const defaultStyle = {
+    backgroundColor: backgroundColor,
+    fontFamily: "Poppins_Regular",
+    // Add other default styles here
+  };
+
+  return (
+    <DefaultCheckbox
+      //style={[defaultStyle, style, { backgroundColor: "red", borderColor: "blue", borderWidth: 3 }]}
+      checked={checked}
+      checkedIcon={checkedIcon}
+      title={title}
+      checkedColor={checkedColor}
+      uncheckedIcon={uncheckedIcon}
+      textStyle={textStyle}
+      containerStyle={[defaultStyle, style]}
+      {...otherProps}
+    />
+  );
 }
 
 export function Text(props: TextProps) {
@@ -123,6 +177,19 @@ export function View(props: ViewProps) {
 }
 
 export function ScrollView(props: ScrollViewProps) {
+  const { style, lightColor, darkColor, contentContainerStyle, refreshControl, centerContent, ...otherProps } = props;
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "background");
+
+  const defaultStyle = {
+    backgroundColor: backgroundColor,
+    fontFamily: "Poppins_Regular",
+    // Add other default styles here
+  };
+
+  return <DefaultScrollView style={[defaultStyle, style]} contentContainerStyle={contentContainerStyle} refreshControl={refreshControl} centerContent={centerContent} {...otherProps} />;
+}
+
+export function KeyboardAvoidingView(props: ScrollViewProps) {
   const { style, lightColor, darkColor, contentContainerStyle, refreshControl, ...otherProps } = props;
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "background");
 
@@ -132,7 +199,17 @@ export function ScrollView(props: ScrollViewProps) {
     // Add other default styles here
   };
 
-  return <DefaultScrollView style={[defaultStyle, style]} contentContainerStyle={contentContainerStyle} refreshControl={refreshControl} {...otherProps} />;
+  return (
+    <DefaultKeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      enabled
+      keyboardVerticalOffset={200}
+      style={[defaultStyle, style]}
+      contentContainerStyle={contentContainerStyle}
+      //refreshControl={refreshControl}
+      {...otherProps}
+    />
+  );
 }
 
 export function Button(props: ButtonProps) {

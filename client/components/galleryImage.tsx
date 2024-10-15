@@ -1,8 +1,9 @@
 import * as React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { Image } from "expo-image";
-import { Text } from "./Themed";
+import { Text, View } from "./Themed";
 import * as MediaLibrary from "expo-media-library";
+import Colors from "@/constants/Colors";
 
 type Asset = {
   id: string;
@@ -46,9 +47,9 @@ const GalleryImage: React.FC<GalleryImageProps> = ({ asset }) => {
   };
 
   return (
-    <View style={styles.rectangleParent}>
+    <View style={styles.rectangleParent} lightColor="white" darkColor={Colors.dark.accentBackground}>
       <Image key={asset.id} source={asset.uri} style={styles.groupItem} />
-      <View style={styles.textHolder}>
+      <View style={styles.textHolder} lightColor="#00000000" darkColor="#00000000">
         <Text lightColor="#000" fontWeight="700" style={styles.text}>
           {dateUnixToHuman(asset.modificationTime, "dayAndMonth")}
         </Text>
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "auto",
     width: "50%",
-    backgroundColor: "white",
+    //backgroundColor: "white",
     borderRadius: 10,
     minWidth: "40%",
     alignItems: "center",

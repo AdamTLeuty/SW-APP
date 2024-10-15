@@ -52,8 +52,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       response = await checkUserStatus(userData.email, token);
     }
     if (response?.userData != null) {
-      console.log(response?.userData);
-
       const userDataWithStage = response.userData as { stage: string; alignerCount: number; alignerProgress: number; alignerChangeDate: string };
       if (userDataWithStage.stage == "aligner") {
         setStatus("alignerStage");

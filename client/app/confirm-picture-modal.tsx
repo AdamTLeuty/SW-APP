@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, StyleSheet, Pressable, Image } from "react-native";
 import React from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
-import { Text, View } from "@/components/Themed";
+import { Text, View, Button } from "@/components/Themed";
 import { router } from "expo-router";
 
 import { universalStyles as styles } from "@/constants/Styles";
@@ -89,16 +89,16 @@ export default function ModalScreen() {
         {status == "impressionStage" ? "Can you clearly see your impressions?" : getDate()}
       </Text>
       {image ? <Image source={{ uri: image.uri }} style={[styles.preview, styles.bottomMargin]} /> : <Text>{"No image taken"}</Text>}
-      <Pressable onPress={toCamera} style={[styles.button, styles.retakeButton, styles.bottomMargin]}>
-        <Text style={styles.buttonText} lightColor="#000" fontWeight="600">
+      <Button onPress={toCamera} lightColor="#F7F6F8" darkColor="#F7F6F8">
+        <Text style={styles.buttonText} lightColor="#000" darkColor="#000" fontWeight="600">
           {"Retake your photo"}
         </Text>
-      </Pressable>
-      <Pressable onPress={savePhoto} style={[styles.button]}>
+      </Button>
+      <Button onPress={savePhoto} lightColor="#5700FF" darkColor="#5700FF">
         <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
           {status == "impressionStage" ? "Send your photo!" : "Save your photo!"}
         </Text>
-      </Pressable>
+      </Button>
     </View>
   );
 }

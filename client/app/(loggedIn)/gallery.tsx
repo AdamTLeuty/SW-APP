@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Button, SafeAreaView, ScrollView, StyleSheet, View, Platform } from "react-native";
+import { Button, SafeAreaView, StyleSheet, Platform } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { Image } from "expo-image";
 import GalleryImage from "@/components/galleryImage";
-import { Text, Title } from "@/components/Themed";
+import { View, ScrollView, Text, Title } from "@/components/Themed";
 import { universalStyles } from "@/constants/Styles";
+import Colors from "@/constants/Colors";
 
 // Define types for Album and Asset
 type Album = {
@@ -56,13 +57,12 @@ export default function Gallery() {
       {albums == null ? (
         <View style={styles.warning}>
           <Text style={styles.warningText} fontWeight="600">
-            No photos in gallery - take your first progress picture now!{" "}
+            No photos in gallery - take your first progress picture now!
           </Text>
         </View>
       ) : (
-        <ScrollView style={[styles.main /*universalStyles.container*/]}>
+        <ScrollView>
           <Title> PHOTO GALLERY </Title>
-
           {albums && albums.map((album) => <AlbumEntry key={album.id} album={album} />)}
         </ScrollView>
       )}

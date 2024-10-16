@@ -1,7 +1,7 @@
 {
   "name": "scc-app",
   "main": "expo-router/entry",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
@@ -22,11 +22,11 @@
     "@rneui/base": "^4.0.0-rc.8",
     "@rneui/themed": "^4.0.0-rc.8",
     "axios": "^1.7.2",
-    "expo": "~51.0.36",
+    "expo": "~51.0.37",
     "expo-av": "~14.0.6",
     "expo-camera": "~15.0.14",
     "expo-constants": "^16.0.2",
-    "expo-dev-client": "~4.0.27",
+    "expo-dev-client": "~4.0.28",
     "expo-device": "^6.0.2",
     "expo-font": "~12.0.9",
     "expo-image": "~1.13.0",

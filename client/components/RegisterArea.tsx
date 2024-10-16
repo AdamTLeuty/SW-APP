@@ -88,7 +88,7 @@ const RegisterArea: React.FC = () => {
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
         lightColor={"#5700FF"}
-        darkColor={"FFFFFF"}
+        darkColor={"#FFFFFF"}
         value={username}
         onChangeText={setUsername}
         autoCapitalize="words"
@@ -100,7 +100,7 @@ const RegisterArea: React.FC = () => {
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
         lightColor={"#5700FF"}
-        darkColor={"FFFFFF"}
+        darkColor={"#FFFFFF"}
         value={email}
         onChangeText={setEmail}
       />
@@ -111,7 +111,7 @@ const RegisterArea: React.FC = () => {
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
         lightColor={"#5700FF"}
-        darkColor={"FFFFFF"}
+        darkColor={"#FFFFFF"}
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
@@ -123,7 +123,7 @@ const RegisterArea: React.FC = () => {
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
         lightColor={"#5700FF"}
-        darkColor={"FFFFFF"}
+        darkColor={"#FFFFFF"}
         value={passwordConfirm}
         onChangeText={setPasswordConfirm}
         secureTextEntry={true}

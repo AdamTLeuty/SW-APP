@@ -22,7 +22,7 @@ type UploadData struct {
 
 func upload(c *gin.Context, db *sql.DB) {
 
-	fmt.Println("Upload endpoint accessed")
+	log.Println("Upload endpoint accessed")
 
 	// Extract the JSON part
 	jsonData := c.PostForm("json")
@@ -114,8 +114,8 @@ func upload(c *gin.Context, db *sql.DB) {
 	err = addImageToTable(db, userID, uploadData.Type, dst)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "File could not be uploaded, please try again later"})
-		fmt.Println("Could not add image to table")
-		fmt.Println(err)
+		log.Println("Could not add image to table")
+		log.Println(err)
 		return
 	}
 	uploadToDrive, err := strconv.ParseBool(os.Getenv("UPLOAD_TO_DRIVE"))

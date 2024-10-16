@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"strconv"
 
 	"log"
 	"net/http"
@@ -38,7 +39,7 @@ func checkPasswordHash(password, hash string) bool {
 
 func generateAuthCode() string {
 	authCode := fmt.Sprintf("%06d", rand.IntN(999999))
-	fmt.Println("Authcode generated: ", authCode)
+	log.Println("Authcode generated: ", authCode)
 	return authCode
 }
 
@@ -132,6 +133,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 				upload(c, db)
 			})
 			authorized.GET("/userData", func(c *gin.Context) {
+				log.Println("Getting user data...")
 				getUserData(c, db)
 			})
 			authorized.POST("/userData", func(c *gin.Context) {
@@ -184,6 +186,24 @@ func setupRouter(db *sql.DB) *gin.Engine {
 }
 
 func main() {
+
+	// log to custom file
+	LOG_FILE := os.Getenv("LOG_FILE")
+	// open log file
+	logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		log.Panic(err)
+	}
+	defer logFile.Close()
+
+	// Set log out put and enjoy :)
+	log.SetOutput(logFile)
+
+	// optional: log date-time, filename, and line number
+	log.SetFlags(log.Lshortfile | log.LstdFlags)
+
+	log.Println("Program started...")
+
 	db, err := sql.Open("sqlite3", "./users.db")
 	if err != nil {
 		log.Fatal(err)
@@ -200,9 +220,25 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	statement.Exec()
+	_, err = statement.Exec()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS user_hubspot_data (id INTEGER PRIMARY KEY, userID INTEGER, process_stage TEXT, object_id INTEGER,  FOREIGN KEY (userID) REFERENCES users(id) ON DELETE CASCADE) ")
+	statement, err = db.Prepare(`
+	    INSERT INTO admins(username, password)
+	    SELECT ?, ?
+	    WHERE NOT EXISTS (SELECT 1 FROM admins WHERE username = ?)
+    `)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = statement.Exec(os.Getenv("DEFAULT_ADMIN_NAME"), os.Getenv("DEFAULT_ADMIN_PASS"), os.Getenv("DEFAULT_ADMIN_NAME"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS user_hubspot_data (id INTEGER PRIMARY KEY, userID INTEGER, process_stage TEXT, object_id INTEGER, FOREIGN KEY (userID) REFERENCES users(id) ON DELETE CASCADE) ")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -227,21 +263,26 @@ func main() {
 	go func() {
 		router := setupRouter(db)
 		s := &http.Server{
-			Addr:           ":8080",
+			Addr:           ":1234",
 			Handler:        router,
 			ReadTimeout:    10 * time.Second,
 			WriteTimeout:   10 * time.Second,
 			MaxHeaderBytes: 1 << 20,
 		}
 
-		fmt.Println("Starting server on port 8080...")
+		log.Println("Starting server on port 1234...")
 		if err := s.ListenAndServe(); err != nil {
 			log.Fatal(err)
 		}
 	}()
 
-	go serverSideControls(db)
-
+	useControls, _ := strconv.ParseBool(os.Getenv("ADMIN_CONTROLS"))
+	if err != nil {
+		log.Fatal("ADMIN_CONTROLS not set correctly: ", err)
+	}
+	if useControls {
+		go serverSideControls(db)
+	}
 	select {}
 
 }
@@ -250,21 +291,21 @@ func serverSideControls(db *sql.DB) {
 
 	reader := bufio.NewReader(os.Stdin)
 	for {
-		fmt.Println("---Admin control centre---")
-		fmt.Println("Press a key to perform an admin action: ")
+		log.Println("---Admin control centre---")
+		log.Println("Press a key to perform an admin action: ")
 		input, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Printf("Error reading input: %v\n", err)
+			log.Printf("Error reading input: %v\n", err)
 			continue
 		}
 
 		switch input[0] {
 		case 'q':
-			fmt.Println("Quitting...")
+			log.Println("Quitting...")
 			os.Exit(0)
 		case 'e':
 			sendEmail("test@gmail.com", "987654")
-			fmt.Println("Sending an email")
+			log.Println("Sending an email")
 		case 'u':
 			updateDrive()
 		case 'i':
@@ -272,7 +313,7 @@ func serverSideControls(db *sql.DB) {
 		case 'r':
 			//Generate a random number, padded by zeros
 			s := fmt.Sprintf("%04d", rand.IntN(9999))
-			fmt.Println(s)
+			log.Println(s)
 		case 'n':
 			token, err := getUserExpoToken(2, db)
 			if err != nil {
@@ -284,12 +325,12 @@ func serverSideControls(db *sql.DB) {
 		case 'h':
 			data, err := getUserHubspotData("test@gmail.com")
 			if err != nil {
-				fmt.Println("Error: ", err)
+				log.Println("Error: ", err)
 			} else {
-				fmt.Println(data)
+				log.Println(data)
 			}
 		default:
-			fmt.Println("Pressed a button")
+			log.Println("Pressed a button")
 		}
 	}
 

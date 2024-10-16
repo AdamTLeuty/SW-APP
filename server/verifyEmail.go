@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"strconv"
 
@@ -25,8 +24,8 @@ func verifyEmail(c *gin.Context, db *sql.DB) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("Email:", verifyData.Email)
-	fmt.Println("Authcode:", verifyData.AuthCode)
+	log.Println("Email:", verifyData.Email)
+	log.Println("Authcode:", verifyData.AuthCode)
 
 	//Check the request contained data
 	if verifyData.Email == "" || verifyData.AuthCode == "" {
@@ -77,12 +76,12 @@ func verifyEmail(c *gin.Context, db *sql.DB) {
 		log.Fatal(readErr)
 		return
 	}
-	fmt.Println("Authcode from the database is : ", authcode)
+	log.Println("Authcode from the database is : ", authcode)
 	row.Close()
 
 	//Check the authcodes match
 	if strconv.Itoa(authcode) == verifyData.AuthCode {
-		fmt.Println("The auth codes match")
+		log.Println("The auth codes match")
 		token, err := createToken(verifyData.Email)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error - please try again later"})
@@ -91,24 +90,24 @@ func verifyEmail(c *gin.Context, db *sql.DB) {
 		setUserEmailVerified(db, verifyData.Email)
 		return
 	} else {
-		fmt.Println("The auth codes do not match")
+		log.Println("The auth codes do not match")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Incorrect Auth Code"})
 		return
 	}
 }
 
 func setUserEmailVerified(db *sql.DB, email string) {
-	fmt.Println("Setting the user to verified")
+	log.Println("Setting the user to verified")
 	//Set the `verified` flag field in the users database to true for a given user
 
 	stmt, err := db.Prepare("UPDATE users SET verified = '1' WHERE email = ?")
 	if err != nil {
-		fmt.Println("database failed: ", err)
+		log.Println("database failed: ", err)
 		return
 	}
 	_, err = stmt.Exec(email)
 	if err != nil {
-		fmt.Println("execution failed: ", err)
+		log.Println("execution failed: ", err)
 		return
 	}
 }

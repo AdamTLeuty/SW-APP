@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -50,14 +49,14 @@ func sendEmail(email string, authCode string) error {
 			log.Fatal(err)
 			return err
 		} else {
-			fmt.Println(response.StatusCode)
-			fmt.Println(response.Body)
-			fmt.Println(response.Headers)
+			log.Println(response.StatusCode)
+			log.Println(response.Body)
+			log.Println(response.Headers)
 			return nil
 		}
 	} else {
 		//Do not send the email
-		fmt.Println("Did not send confirmation email, as environment flag SEND_EMAIL set to false")
+		log.Println("Did not send confirmation email, as environment flag SEND_EMAIL set to false")
 		return nil
 	}
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -29,7 +30,7 @@ func verifyToken(tokenString string) (interface{}, error) {
 	claimKey := "email"
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		fmt.Printf("Secret key is: %s\n", secretKey)
+		log.Printf("Secret key is: %s\n", secretKey)
 		return []byte(secretKey), nil
 	})
 

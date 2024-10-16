@@ -33,7 +33,7 @@ func notify(token string, title string, body string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%s\n", bodyText)
+	log.Printf("%s\n", bodyText)
 
 }
 

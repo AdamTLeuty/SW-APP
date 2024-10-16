@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	"net/http"
@@ -78,12 +77,12 @@ func updateUserAuthCode(db *sql.DB, email string, authcode string) error {
 	//Changing the user's authcode
 	stmt, err := db.Prepare("UPDATE users SET authcode = ? WHERE email = ?")
 	if err != nil {
-		fmt.Println("database failed: ", err)
+		log.Println("database failed: ", err)
 		return err
 	}
 	_, err = stmt.Exec(authcode, email)
 	if err != nil {
-		fmt.Println("execution failed: ", err)
+		log.Println("execution failed: ", err)
 		return err
 	}
 

@@ -157,6 +157,7 @@ ehthumbs.db
 accessServer
 excludeFromServer
 sendToServer
+sendDBToServer
 fromServer/
 retrieveFromServer
 
@@ -167,6 +168,7 @@ server/users.db
 
 
 .commands
+.server_commands
 
 #Testing
 server_tests/

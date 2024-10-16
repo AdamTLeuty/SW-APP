@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -23,10 +23,10 @@ func login(c *gin.Context, db *sql.DB) {
 	var user User
 	err := db.QueryRow("SELECT id, email, password FROM users WHERE email = ?", loginDetails.Email).Scan(&user.ID, &user.Email, &user.Password)
 	duration := time.Since(start) // Calculate the duration
-	fmt.Printf("Duration of database read is %s\n", duration)
+	log.Printf("Duration of database read is %s\n", duration)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
@@ -38,7 +38,7 @@ func login(c *gin.Context, db *sql.DB) {
 	verified, err := checkUserEmailVerified(db, loginDetails.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "There has been an issue verifying your email. Please try again, or contact support"})
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	if !verified {
@@ -63,14 +63,14 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 
 	var h Header
 	if err := c.BindHeader(&h); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
-	fmt.Println(h.Authorization)
+	log.Println(h.Authorization)
 	token := strings.Replace(h.Authorization, "Bearer ", "", 1)
-	fmt.Println("Token", token)
-	fmt.Println(token)
+	log.Println("Token", token)
+	log.Println(token)
 
 	var tokenLoginDetails tokenLoginDetails
 	if err := c.ShouldBindJSON(&tokenLoginDetails); err != nil {
@@ -80,14 +80,14 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 
 	claimValue, err := verifyToken(token)
 	if err != nil {
-		fmt.Printf("Error: %v\n", err)
+		log.Printf("Error: %v\n", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token has expired, please login again"})
 		return
 	} else {
-		fmt.Printf("Claim value: %v\n", claimValue)
+		log.Printf("Claim value: %v\n", claimValue)
 	}
-	fmt.Println("The decoded claim is: ", claimValue)
-	fmt.Println("The error from the token verification is: ", err)
+	log.Println("The decoded claim is: ", claimValue)
+	log.Println("The error from the token verification is: ", err)
 
 	emailInDB, err := checkEmailExists(db, claimValue.(string))
 
@@ -99,7 +99,7 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 	verified, err := checkUserEmailVerified(db, claimValue.(string))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "There has been an issue verifying your email. Please try again, or contact support"})
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	if !verified {
@@ -108,7 +108,7 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 	}
 
 	token, err = createToken(claimValue.(string))
-	fmt.Println(claimValue.(string))
+	log.Println(claimValue.(string))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error - please try again later"})

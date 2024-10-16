@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -13,6 +14,7 @@ type UserDataRequest struct {
 	Stage         string `json:"stage,omitempty"`
 	Username      string `json:"username,omitempty"`
 	ExpoPushToken string `json:"expoPushToken,omitempty"`
+	Aligner_Count int    `json:"aligner_count,omitempty"`
 }
 
 type UserDataResponse struct {
@@ -44,12 +46,11 @@ func getUserData(c *gin.Context, db *sql.DB) {
 
 	err = db.QueryRow("SELECT stage, username, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate FROM users WHERE email = ?", email).Scan(&userData.Stage, &userData.Username, &userData.ImpressionConfirmation, &userData.AlignerProgress, &userData.AlignerCount, &userData.AlignerChangeDate)
 	if err != nil {
-		fmt.Println("Error scanning for user data: ", err)
+		log.Println("Error scanning for user data: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching user data - please try again later"})
 		return
 	}
-
-	fmt.Println(userData)
+	log.Println(userData)
 
 	c.JSON(http.StatusOK, gin.H{"message": "User data fetched", "userData": userData})
 }
@@ -76,6 +77,15 @@ func setUserData(c *gin.Context, db *sql.DB) {
 		return
 	}
 
+	if requestData.Stage != "" {
+		log.Println("The user has changed stages")
+		userChangingStage, err := checkUserChangingStage(db, requestData.Stage, email)
+		if userChangingStage && err == nil {
+			go userStageUpdate(db, email)
+		}
+
+	}
+
 	err = updateUserData(db, email, requestData)
 
 	if err != nil {
@@ -86,19 +96,70 @@ func setUserData(c *gin.Context, db *sql.DB) {
 
 }
 
+func checkUserChangingStage(db *sql.DB, stage string, email string) (bool, error) {
+
+	currentStage, err := getUserStage(db, email)
+	if err != nil {
+		log.Println("Cannot check the user is changing stage")
+		return false, err
+	}
+
+	log.Println("Current stage: ", currentStage)
+
+	return (currentStage == "impression" && stage == "aligner"), nil
+}
+
+func getUserStage(db *sql.DB, email string) (string, error) {
+	row, err := db.Query("SELECT stage FROM users WHERE email = ?", email)
+	if err != nil {
+		return "", err
+	}
+	defer row.Close()
+	row.Next()
+	var stage string
+	err = row.Scan(&stage)
+	if err != nil {
+		return "", err
+	}
+
+	return stage, nil
+}
+
+func userStageUpdate(db *sql.DB, email string) {
+	log.Println("\nUser stage update function\n")
+
+	//Check hubspot for aligner count
+	data, err := getUserHubspotData(email)
+	log.Println(data, err)
+
+	//Update aligner count if available
+	if data.Aligner_Count > 0 {
+
+		var changeData UserDataRequest
+
+		changeData.Aligner_Count = data.Aligner_Count
+
+		updateUserData(db, email, changeData)
+	}
+
+}
+
 func updateUserData(db *sql.DB, email string, request UserDataRequest) error {
 	//Updates user data based on which members of request are populated
-	fmt.Println("\n Updating user data function")
+	log.Println("\n Updating user data function")
 
 	var (
 		args      []any
 		setString = "SET "
 	)
 
-	fields := map[string]string{
+	log.Println(request)
+
+	fields := map[string]any{
 		"stage":                   request.Stage,
 		"username":                request.Username,
 		"expo_notification_token": request.ExpoPushToken,
+		"alignerCount":            request.Aligner_Count,
 	}
 
 	for field, value := range fields {
@@ -111,25 +172,25 @@ func updateUserData(db *sql.DB, email string, request UserDataRequest) error {
 		}
 	}
 
-	fmt.Println(request)
+	log.Println(request)
 
 	//Join the SET clause into the query
 	query := fmt.Sprintf("UPDATE users %s WHERE email = ?", setString)
-	fmt.Println("The final query is: ", query)
+	log.Println("The final query is: ", query)
 
 	stmt, err := db.Prepare(query)
 	if err != nil {
-		fmt.Println("database failed: ", err)
+		log.Println("database failed: ", err)
 		return err
 	}
 
 	args = append(args, email)
 
-	fmt.Println(args...)
+	log.Println(args...)
 
 	_, err = stmt.Exec(args...)
 	if err != nil {
-		fmt.Println("execution failed: ", err)
+		log.Println("execution failed: ", err)
 		return err
 	}
 	return nil
@@ -144,7 +205,7 @@ func updateAlignerChangeDate(c *gin.Context, db *sql.DB) {
 
 	//Get email from context
 	email := c.GetString("email")
-	fmt.Println("Updating aligner change date for ", email)
+	log.Println("Updating aligner change date for ", email)
 
 	//Read the request data
 	var requestData ChangeDateRequest
@@ -152,29 +213,29 @@ func updateAlignerChangeDate(c *gin.Context, db *sql.DB) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println(requestData)
+	log.Println(requestData)
 
 	//Get current change date from db
 	var currentAlignerChangeDateString string
 	err := db.QueryRow("SELECT alignerChangeDate FROM users WHERE email = ?", email).Scan(&currentAlignerChangeDateString)
 	if err != nil {
-		fmt.Println("Error scanning for user data: ", err)
+		log.Println("Error scanning for user data: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching user data - please try again later"})
 		return
 	}
-	fmt.Println("The current change date in db is: ", currentAlignerChangeDateString)
+	log.Println("The current change date in db is: ", currentAlignerChangeDateString)
 
 	//Convert from string to datetime object
 	currentAlignerChangeDate, err := time.Parse(time.RFC3339, currentAlignerChangeDateString)
 	if err != nil {
-		fmt.Println("Error parsing date:", err)
+		log.Println("Error parsing date:", err)
 		return
 	}
 
 	//If alignerChangeDate is in the future, do not allow to change
 	today := time.Now().UTC().Truncate(24 * time.Hour) //Today, rounded back to midnight
 	if currentAlignerChangeDate.After(today) {
-		fmt.Println("The aligner change date is in the future")
+		log.Println("The aligner change date is in the future")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "The aligner change date is in the future, cannot change aligners yet"})
 		return
 	}
@@ -210,12 +271,12 @@ func updateUserAlignerDateChange(db *sql.DB, email string, date string) error {
 	//Changing the user's authcode
 	stmt, err := db.Prepare("UPDATE users SET alignerChangeDate = ? WHERE email = ?")
 	if err != nil {
-		fmt.Println("database failed: ", err)
+		log.Println("database failed: ", err)
 		return err
 	}
 	_, err = stmt.Exec(date, email)
 	if err != nil {
-		fmt.Println("execution failed: ", err)
+		log.Println("execution failed: ", err)
 		return err
 	}
 
@@ -227,10 +288,10 @@ func moveToNextAligner(db *sql.DB, email string) error {
 	var alignerProgress int
 	err := db.QueryRow("SELECT alignerProgress FROM users WHERE email = ?", email).Scan(&alignerProgress)
 	if err != nil {
-		fmt.Println("Error scanning for user data: ", err)
+		log.Println("Error scanning for user data: ", err)
 		return err
 	}
-	fmt.Println("The current change date in db is: ", alignerProgress)
+	log.Println("The current change date in db is: ", alignerProgress)
 
 	//Increment the aligner progress value
 	alignerProgress++
@@ -238,12 +299,12 @@ func moveToNextAligner(db *sql.DB, email string) error {
 	//Update the value
 	stmt, err := db.Prepare("UPDATE users SET alignerProgress = ? WHERE email = ?")
 	if err != nil {
-		fmt.Println("database failed: ", err)
+		log.Println("database failed: ", err)
 		return err
 	}
 	_, err = stmt.Exec(alignerProgress, email)
 	if err != nil {
-		fmt.Println("execution failed: ", err)
+		log.Println("execution failed: ", err)
 		return err
 	}
 

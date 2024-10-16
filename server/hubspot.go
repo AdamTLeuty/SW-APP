@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,28 +22,28 @@ import (
 func authenticate_hubspot(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		fmt.Println("Validating request is from Hubspot...")
+		log.Println("Validating request is from Hubspot...")
 
 		headers := c.Request.Header
 		signatureVersion := headers.Get("X-Hubspot-Signature-Version")
 		signature := headers.Get("X-Hubspot-Signature")
 
 		if signatureVersion == "" || signature == "" {
-			fmt.Println("Missing Hubspot signature headers")
+			log.Println("Missing Hubspot signature headers")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		ByteBody, err := io.ReadAll(c.Request.Body)
 		if err != nil {
-			fmt.Println("Body could not be read")
+			log.Println("Body could not be read")
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 		c.Request.Body = io.NopCloser(bytes.NewBuffer(ByteBody))
 
-		fmt.Println("Hubspot secret version:", signatureVersion)
-		fmt.Println("Hubspot signature:", signature)
+		log.Println("Hubspot secret version:", signatureVersion)
+		log.Println("Hubspot signature:", signature)
 
 		body := ByteBody
 		secret := os.Getenv("HUBSPOT_CLIENT_SECRET")
@@ -65,21 +66,21 @@ func authenticate_hubspot(db *sql.DB) gin.HandlerFunc {
 			r1 := sha256.Sum256([]byte(s))
 			calculatedSignature = hex.EncodeToString(r1[:])
 		default:
-			fmt.Println("Unsupported signature version:", signatureVersion)
+			log.Println("Unsupported signature version:", signatureVersion)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		fmt.Println("The calculated checksum is:", calculatedSignature)
+		log.Println("The calculated checksum is:", calculatedSignature)
 
 		// Use hmac.Equal to compare in constant time
 		if !hmac.Equal([]byte(calculatedSignature), []byte(signature)) {
-			fmt.Println("Invalid signature")
+			log.Println("Invalid signature")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		fmt.Println("The checksum given is correct")
+		log.Println("The checksum given is correct")
 
 		c.Next()
 	}
@@ -90,49 +91,55 @@ func hubspot_listener(c *gin.Context, db *sql.DB) {
 	var jsonData []interface{}
 
 	if err := c.ShouldBindJSON(&jsonData); err != nil {
-		fmt.Println("Could not read the JSON")
-		fmt.Println(err)
+		log.Println("Could not read the JSON")
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
 
 	innerData := jsonData[0]
 
-	fmt.Println("First child of json array is: ", innerData)
+	log.Println("First child of json array is: ", innerData)
 
 	data, ok := innerData.(map[string]interface{})
 	if !ok {
-		fmt.Println("Should be a map")
+		log.Println("Should be a map")
 		c.Status(http.StatusBadRequest)
 		return
 	}
 	if data == nil {
-		fmt.Println("Cannot be empty")
+		log.Println("Cannot be empty")
 		c.Status(http.StatusBadRequest)
 	}
 
-	fmt.Println("Object ID: ", data["objectId"])
-	fmt.Printf("Object Id Type: %T\n", data["objectId"])
+	log.Println("Object ID: ", data["objectId"])
+	log.Printf("Object Id Type: %T\n", data["objectId"])
 	objectID := strconv.FormatFloat(data["objectId"].(float64), 'f', -1, 64)
-	fmt.Println("Object ID: ", objectID)
+	log.Println("Object ID: ", objectID)
 
-	fmt.Println("Property name", data["propertyName"])
+	log.Println("Property name", data["propertyName"])
 	propertyName, ok := data["propertyName"].(string)
 	if !ok {
-		fmt.Println("Property name is not a string")
+		log.Println("Property name is not a string")
 	}
 
-	fmt.Println("Property Value", data["propertyValue"])
+	log.Println("Property Value", data["propertyValue"])
 	propertyValue, ok := data["propertyValue"].(string)
 	if !ok {
-		fmt.Println("Property value is not a string")
+		log.Println("Property value is not a string")
 	}
 
 	err := updateLocalHubspotProperty(db, objectID, propertyName, propertyValue)
 	if err != nil {
-		fmt.Println(err)
-		c.Status(http.StatusBadRequest)
-		return
+		if strings.HasPrefix(err.Error(), "No rows were updated") {
+			//No rows were updated, but this request doesn't need to be repeated
+			c.Status(http.StatusAccepted)
+			return
+		} else {
+			log.Println(err)
+			c.Status(http.StatusBadRequest)
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -142,7 +149,7 @@ func hubspot_listener(c *gin.Context, db *sql.DB) {
 }
 
 func updateLocalHubspotProperty(db *sql.DB, objectID string, propertyName string, propertyValue string) error {
-	fmt.Println(objectID, propertyName, propertyValue)
+	log.Println(objectID, propertyName, propertyValue)
 
 	var fieldName string
 	var fieldValue string
@@ -159,13 +166,13 @@ func updateLocalHubspotProperty(db *sql.DB, objectID string, propertyName string
 	query := fmt.Sprintf("UPDATE user_hubspot_data SET %s = ? WHERE object_id = ?", fieldName)
 	stmt, err := db.Prepare(query)
 	if err != nil {
-		fmt.Println("database failed: ", err)
+		log.Println("database failed: ", err)
 		return err
 	}
 
 	res, err := stmt.Exec(fieldValue, objectID)
 	if err != nil {
-		fmt.Println("Execution failed: ", err)
+		log.Println("Execution failed: ", err)
 		return err
 	}
 
@@ -189,7 +196,7 @@ func emailInHubspot(email string) bool {
 
 	HUBSPOT_ACCESS_TOKEN := os.Getenv("HUBSPOT_API_KEY")
 
-	fmt.Println("Checking the email is correct...")
+	log.Println("Checking the email is correct...")
 
 	client := &http.Client{}
 
@@ -217,12 +224,14 @@ func emailInHubspot(email string) bool {
 
 // If more data needed, add here and in `getUserHubspotData` function
 type HubspotData struct {
-	Process_Stage string `json:"process_stage,omitempty"`
 	ObjectID      int    `json:"id,omitempty"`
+	Process_Stage string `json:"process_stage,omitempty"`
+	Aligner_Count int    `json:"aligner_count"`
 }
 
 type Properties struct {
-	ProcessStage string `json:"process_stage"`
+	ProcessStage  string `json:"process_stage"`
+	Aligner_Count string `json:"aligner_count"`
 }
 
 type HubspotResponse struct {
@@ -232,20 +241,18 @@ type HubspotResponse struct {
 
 func getUserHubspotData(email string) (HubspotData, error) {
 
-	var empty HubspotData
-
 	BASE_URL := "https://api.hubapi.com"
 
 	HUBSPOT_ACCESS_TOKEN := os.Getenv("HUBSPOT_API_KEY")
 
-	fmt.Println("Fetching user data from hubspot under this email: ", email)
+	log.Println("Fetching user data from hubspot under this email: ", email)
 
 	client := &http.Client{}
 
 	//See: https://developers.hubspot.com/docs/api/crm/contacts
 	//Add more properties under the `properties` url query if needed
-	requestURL := BASE_URL + "/crm/v3/objects/contacts/" + email + "?idProperty=email&properties=process_stage"
-	fmt.Println("Request url is: ", requestURL)
+	requestURL := BASE_URL + "/crm/v3/objects/contacts/" + email + "?idProperty=email&properties=process_stage,aligner_count"
+	log.Println("Request url is: ", requestURL)
 	req, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {
 		log.Fatalln(err)
@@ -261,34 +268,41 @@ func getUserHubspotData(email string) (HubspotData, error) {
 	if resp.StatusCode == http.StatusOK {
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 		bodyString := string(bodyBytes)
-		fmt.Println(bodyString)
+		log.Println(bodyString)
 
 		var data HubspotResponse
 
 		err = json.Unmarshal([]byte(bodyBytes), &data)
 		if err != nil {
-			fmt.Println("Error:", err)
-			return empty, err
+			log.Println("Error:", err)
+			return HubspotData{}, err
 		}
-		fmt.Println("Returning: ", data)
+		log.Println("Returning: ", data)
 
 		var userData HubspotData
 
 		userData.ObjectID, err = strconv.Atoi(data.ID)
 		if err != nil {
-			return empty, err
+			return HubspotData{}, err
 		}
 
 		userData.Process_Stage = data.Properties.ProcessStage
+
+		if data.Properties.Aligner_Count != "" {
+			userData.Aligner_Count, err = strconv.Atoi(data.Properties.Aligner_Count)
+			if err != nil {
+				return HubspotData{}, err
+			}
+		}
 
 		return userData, nil
 
 	} else {
 
-		return empty, errors.New(fmt.Sprint("Hubspot responded with a status code: ", resp.Status))
+		return HubspotData{}, errors.New(fmt.Sprint("Hubspot responded with a status code: ", resp.Status))
 	}
 
 }

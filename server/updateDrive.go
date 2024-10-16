@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os/exec"
 )
 
 func updateDrive() {
 
-	fmt.Println("Sending to google drive")
+	log.Println("Sending to google drive")
 
 	app := "rclone"
 
@@ -19,11 +19,11 @@ func updateDrive() {
 	stdout, err := cmd.Output()
 
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 		return
 	}
 
 	// Print the output
-	fmt.Println(string(stdout))
-	fmt.Println("Should have sent to google drive now")
+	log.Println(string(stdout))
+	log.Println("Should have sent to google drive now")
 }

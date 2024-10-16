@@ -54,7 +54,7 @@ func admin_login_form(c *gin.Context, db *sql.DB) {
 	username := c.PostForm("username")
 	password := c.PostForm("pass")
 
-	fmt.Println(username, " , ", password)
+	log.Println(username, " , ", password)
 
 	var admin Admin
 	err := db.QueryRow("SELECT  username, password FROM admins WHERE username = ?", username).Scan(&admin.Username, &admin.Password)
@@ -63,7 +63,7 @@ func admin_login_form(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	fmt.Println(admin)
+	log.Println(admin)
 
 	if admin.Password != password {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
@@ -91,7 +91,7 @@ func admin_home(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	fmt.Printf("Cookie value: %s \n", cookie)
+	log.Printf("Cookie value: %s \n", cookie)
 
 	username, err := verifyToken(cookie)
 	if err != nil {
@@ -99,7 +99,7 @@ func admin_home(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	fmt.Println(username)
+	log.Println(username)
 
 	rows, err := db.Query("SELECT id, email, username, verified, stage FROM users")
 	if err != nil {
@@ -142,7 +142,7 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	fmt.Printf("Cookie value: %s \n", cookie)
+	log.Printf("Cookie value: %s \n", cookie)
 
 	username, err := verifyToken(cookie)
 	if err != nil {
@@ -150,7 +150,7 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	fmt.Println(username)
+	log.Println(username)
 
 	userPath := c.Param("userid")
 	userPath = strings.Replace(userPath, "/", "", -1)
@@ -159,7 +159,7 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
 	}
 
-	fmt.Println("the id is:", id)
+	log.Println("the id is:", id)
 
 	user, err := getTabledUserFromID(db, id)
 	if err != nil {
@@ -179,7 +179,7 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 
 	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
-		fmt.Println("Adding new image to array")
+		log.Println("Adding new image to array")
 		var image Image
 		if err := rows.Scan(&image.ImageType, &image.Path); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
@@ -194,9 +194,9 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	fmt.Println(user)
+	log.Println(user)
 
-	fmt.Println(images)
+	log.Println(images)
 
 	c.HTML(http.StatusOK, "profile.html", gin.H{
 		"User":   user,
@@ -256,7 +256,7 @@ func admin_edit_user_info_form(c *gin.Context, db *sql.DB) {
 	aligner_count := c.PostForm("aligner-count")
 	aligner_change_date := c.PostForm("aligner-change-date")
 
-	fmt.Printf("\nUsername: %s\n Email: %s\n Verified: %s\n Stage: %s\n Progress: %s\n Count: %s\n Change Date: %s\n\n", username, email, strconv.Itoa(verified), stage, aligner_progress, aligner_count, aligner_change_date)
+	log.Printf("\nUsername: %s\n Email: %s\n Verified: %s\n Stage: %s\n Progress: %s\n Count: %s\n Change Date: %s\n\n", username, email, strconv.Itoa(verified), stage, aligner_progress, aligner_count, aligner_change_date)
 
 	_, err = mail.ParseAddress(email)
 	if err != nil {
@@ -274,7 +274,7 @@ func admin_edit_user_info_form(c *gin.Context, db *sql.DB) {
 
 	stmt, err := db.Prepare("UPDATE users SET email = ?, username= ?, verified= ?, stage= ?,  alignerProgress= ?, alignerCount= ?, alignerChangeDate= ? WHERE id = ?")
 	if err != nil {
-		fmt.Println("database failed: ", err)
+		log.Println("database failed: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server Error"})
 		return
 	}
@@ -300,11 +300,11 @@ func edit_user_impression_state(c *gin.Context, db *sql.DB) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
 	}
 
-	fmt.Println("the id is:", id)
+	log.Println("the id is:", id)
 
 	quality := c.PostForm("impressionQuality")
 
-	fmt.Println(quality)
+	log.Println(quality)
 
 	if quality != "acceptable" && quality != "unacceptable" && quality != "unset" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Impression can only be `unset`, `acceptable` or `unacceptable`"})
@@ -313,7 +313,7 @@ func edit_user_impression_state(c *gin.Context, db *sql.DB) {
 
 	stmt, err := db.Prepare("UPDATE users SET impressionConfirmation = ? WHERE id = ?")
 	if err != nil {
-		fmt.Println("database failed: ", err)
+		log.Println("database failed: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server Error"})
 		return
 	}
@@ -324,7 +324,7 @@ func edit_user_impression_state(c *gin.Context, db *sql.DB) {
 		_, err = stmt.Exec(quality, id)
 	}
 	if err != nil {
-		fmt.Println("execution failed: ", err)
+		log.Println("execution failed: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Server Error"})
 		return
 	}
@@ -342,22 +342,22 @@ func getTabledUserFromID(db *sql.DB, id int) (TabledUser, error) {
 	var dateString string
 	err := db.QueryRow("SELECT id, username, stage, email, verified, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate FROM users WHERE id = ?", id).Scan(&user.ID, &user.Username, &user.Stage, &user.Email, &user.Verified, &user.ImpressionQuality, &user.AlignerProgress, &user.AlignerCount, &dateString)
 	if err != nil {
-		fmt.Println("Database broken")
-		fmt.Println(err)
+		log.Println("Database broken")
+		log.Println(err)
 		return user, err
 	}
 
 	alignerChangeDateHumanReadable, err := formatDateRFC3339ToHuman(dateString)
 	if err != nil {
-		fmt.Println("Date broken")
-		fmt.Println(err)
+		log.Println("Date broken")
+		log.Println(err)
 		return user, err
 	}
 
 	alignerChangeDate, err := formatDateRFC3339ToHTML(dateString)
 	if err != nil {
-		fmt.Println("Date broken")
-		fmt.Println(err)
+		log.Println("Date broken")
+		log.Println(err)
 		return user, err
 	}
 
@@ -383,7 +383,7 @@ func formatDateRFC3339ToHuman(dateString string) (string, error) {
 
 	date, err := time.Parse(time.RFC3339, dateString)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return "", err
 	}
 
@@ -398,7 +398,7 @@ func formatDateRFC3339ToHTML(dateString string) (string, error) {
 
 	date, err := time.Parse(time.RFC3339, dateString)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return "", err
 	}
 

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -79,11 +78,11 @@ func LogAccess() gin.HandlerFunc {
 		// After the handler has completed, access the stored JSON data
 		if val, exists := c.Get("jsonData"); exists {
 			if data, ok := val.(map[string]interface{}); ok {
-				fmt.Printf("Processed JSON Data: %v\n", data)
-				fmt.Printf("Email: %v\n", data["email"])
-				fmt.Printf("Password: %v\n", data["password"])
+				log.Printf("Processed JSON Data: %v\n", data)
+				log.Printf("Email: %v\n", data["email"])
+				log.Printf("Password: %v\n", data["password"])
 			} else {
-				fmt.Println("jsonData is not a map[string]interface{}")
+				log.Println("jsonData is not a map[string]interface{}")
 			}
 		}
 
@@ -94,7 +93,7 @@ func LogAccess() gin.HandlerFunc {
 
 func SimpleLogAccess() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("A handler was accessed")
+		log.Println("A handler was accessed")
 
 		// Continue to the handler
 		c.Next()
@@ -120,13 +119,13 @@ func checkEmailAndTokenMatch() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println("Checking email and token match...")
-		fmt.Println(dataToCheck.Token)
-		fmt.Println(dataToCheck.Email)
+		log.Println("Checking email and token match...")
+		log.Println(dataToCheck.Token)
+		log.Println(dataToCheck.Email)
 
 		tokenEmail, err := verifyToken(dataToCheck.Token)
 
-		fmt.Println(tokenEmail)
+		log.Println(tokenEmail)
 
 		if err != nil {
 			log.Println("Error parsing JSON:", err)
@@ -137,13 +136,13 @@ func checkEmailAndTokenMatch() gin.HandlerFunc {
 
 		if tokenEmail != dataToCheck.Email {
 			//User's token does not belong to the email provided
-			fmt.Println("Finished checking email and token, they do not match")
+			log.Println("Finished checking email and token, they do not match")
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Error checking user token, please try again later"})
 			c.Abort()
 			return
 		}
 
-		fmt.Println("Finished checking email and token, they match")
+		log.Println("Finished checking email and token, they match")
 
 		// Continue to the handler
 		c.Next()
@@ -177,9 +176,9 @@ func AuthoriseImageUpload() gin.HandlerFunc {
 		// After the handler has completed, access the stored JSON data
 		if val, exists := c.Get("jsonData"); exists {
 			if data, ok := val.(map[string]interface{}); ok {
-				fmt.Printf("Processed JSON Data: %v\n", data)
+				log.Printf("Processed JSON Data: %v\n", data)
 			} else {
-				fmt.Println("jsonData is not a map[string]interface{}")
+				log.Println("jsonData is not a map[string]interface{}")
 			}
 		}
 
@@ -192,7 +191,7 @@ func LowercaseEmail() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
-		fmt.Println("Changing the email to be lowercase")
+		log.Println("Changing the email to be lowercase")
 
 		// Read the request body
 		bodyBytes, err := io.ReadAll(c.Request.Body)
@@ -239,28 +238,28 @@ func check_bearer(db *sql.DB) gin.HandlerFunc {
 
 		var h Header
 		if err := c.BindHeader(&h); err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Request needs to include a auth bearer token"})
 			c.Abort()
 			return
 		}
 
-		fmt.Println(h.Authorization)
+		log.Println(h.Authorization)
 		token := strings.Replace(h.Authorization, "Bearer ", "", 1)
-		fmt.Println("Token", token)
-		fmt.Println(token)
+		log.Println("Token", token)
+		log.Println(token)
 
 		claimValue, err := verifyToken(token)
 		if err != nil {
-			fmt.Printf("Error: %v\n", err)
+			log.Printf("Error: %v\n", err)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token has expired, please login again"})
 			c.Abort()
 			return
 		} else {
-			fmt.Printf("Claim value: %v\n", claimValue)
+			log.Printf("Claim value: %v\n", claimValue)
 		}
-		fmt.Println("The decoded claim is: ", claimValue)
-		fmt.Println("The error from the token verification is: ", err)
+		log.Println("The decoded claim is: ", claimValue)
+		log.Println("The error from the token verification is: ", err)
 
 		emailInDB, err := checkEmailExists(db, claimValue.(string))
 
@@ -285,7 +284,7 @@ func check_bearer(db *sql.DB) gin.HandlerFunc {
 
 func check_verified(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("Checking whether user verified")
+		log.Println("Checking whether user verified")
 
 		email := c.GetString("email")
 
@@ -293,19 +292,19 @@ func check_verified(db *sql.DB) gin.HandlerFunc {
 		if err != nil {
 			log.Fatal(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Please login again or try again later"})
-			fmt.Println("500 - Couldn't check whether user is verified or not")
+			log.Println("500 - Couldn't check whether user is verified or not")
 			c.Abort()
 			return
 		}
 		if !verified {
 			//The user's email is already verified
 			c.JSON(http.StatusForbidden, gin.H{"error": "User not yet verified"})
-			fmt.Println("403 - User not yet verified")
+			log.Println("403 - User not yet verified")
 			c.Abort()
 			return
 		}
 
-		fmt.Println("User is verified - continue to next handler")
+		log.Println("User is verified - continue to next handler")
 		// Continue to the handler
 		c.Next()
 	}

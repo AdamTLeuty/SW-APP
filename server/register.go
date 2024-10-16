@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 	"time"
 
 	"net/http"
@@ -20,31 +20,27 @@ func register(c *gin.Context, db *sql.DB) {
 	}
 
 	if user.Email == "" || user.Password == "" {
-
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Email and Password cannot be blank"})
 		return
-
 	}
 
 	emailInDB, err := checkEmailExists(db, user.Email)
-
 	if emailInDB {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Contact already exists with that email within the database - please login or reset your password"})
-		fmt.Println("The email is in the database already")
+		log.Println("The email is in the database already")
 		return
 	}
 
 	userInHubspot := emailInHubspot(user.Email)
-
 	if !userInHubspot {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please use the email you used for your consultation"})
-		fmt.Println("The email is not present in HubSpot :(")
+		log.Println("The email is not present in HubSpot :(")
 		return
 	}
 
-	fmt.Println("Email and Password Below:")
-	fmt.Println(user.Email)
-	fmt.Println(user.Password)
+	log.Println("Email and Password Below:")
+	log.Println(user.Email)
+	log.Println(user.Password)
 
 	hashedPassword, err := hashPassword(user.Password)
 	if err != nil {
@@ -57,11 +53,18 @@ func register(c *gin.Context, db *sql.DB) {
 
 	unixEpoch := time.Unix(0, 0).UTC()
 
+	hubspotData, err := getUserHubspotData(user.Email)
+	if err != nil {
+		log.Println("Error: ", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
 	// Get a Tx for making transaction requests.
 	tx, err := db.Begin()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
-		fmt.Println("Could not start transaction: ", err)
+		log.Println("Could not start transaction: ", err)
 		return
 	}
 	// Defer a rollback in case anything fails.
@@ -70,14 +73,17 @@ func register(c *gin.Context, db *sql.DB) {
 	stmt, err := tx.Prepare("INSERT INTO users(email, password, username, verified, authcode, stage, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate, expo_notification_token ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		tx.Rollback()
-		fmt.Println("Could not prepare insert into `users` table: ", err)
+		log.Println("Could not prepare insert into `users` table: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to prepare database statement"})
 		return
 	}
-	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, "impression", "unset", 0, 0, unixEpoch.Format(time.RFC3339), "")
+
+	alignerCount := hubspotData.Aligner_Count
+
+	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, "impression", "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "")
 	if err != nil {
 		tx.Rollback()
-		fmt.Println("Could not execute insert into `users` table: ", err)
+		log.Println("Could not execute insert into `users` table: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute database statement"})
 		return
 	}
@@ -86,18 +92,8 @@ func register(c *gin.Context, db *sql.DB) {
 	userID, err := res.LastInsertId()
 	if err != nil {
 		tx.Rollback()
-		fmt.Println("Could not get last inserted ID from `users` table: ", err)
+		log.Println("Could not get last inserted ID from `users` table: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user ID"})
-		return
-	}
-
-	//This is ugly temporary code
-	//userID, processStage, objectID := 1, "testStage", 12345
-
-	hubspotData, err := getUserHubspotData("test@gmail.com")
-	if err != nil {
-		fmt.Println("Error: ", err)
-		c.Status(http.StatusInternalServerError)
 		return
 	}
 
@@ -107,21 +103,21 @@ func register(c *gin.Context, db *sql.DB) {
 	stmt, err = tx.Prepare("INSERT INTO user_hubspot_data(userID, process_stage, object_id ) VALUES(?, ?, ?)")
 	if err != nil {
 		tx.Rollback()
-		fmt.Println("Could not prepare insert into Hubspot table: ", err)
+		log.Println("Could not prepare insert into Hubspot table: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to prepare database statement"})
 		return
 	}
 	_, err = stmt.Exec(userID, processStage, objectID)
 	if err != nil {
 		tx.Rollback()
-		fmt.Println("Could not execute insert into Hubspot table: ", err)
+		log.Println("Could not execute insert into Hubspot table: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute database statement"})
 		return
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		fmt.Println("Could not commit transaction: ", err)
+		log.Println("Could not commit transaction: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute database statement"})
 		return
 	}

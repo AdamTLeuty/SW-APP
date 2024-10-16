@@ -12,14 +12,14 @@ import (
 // Function that contains the task to be executed by the cron job
 func sendAlignerChangeNotifications(loc *time.Location, db *sql.DB) {
 	//loc, _ := time.LoadLocation("Europe/London")
-	fmt.Println("Scheduled task executed at:", time.Now().In(loc))
+	log.Println("Scheduled task executed at:", time.Now().In(loc))
 
 	err := getUsersWithNowChangeDate(db)
 	if err != nil {
-		fmt.Println("Could not send user notifications:", err)
+		log.Println("Could not send user notifications:", err)
 	} else {
 
-		fmt.Println("Sent the user notifications successfully")
+		log.Println("Sent the user notifications successfully")
 
 	}
 
@@ -52,7 +52,7 @@ func setupCronJob(db *sql.DB) *cron.Cron {
 
 	// Start the cron scheduler in a goroutine
 	go func() {
-		fmt.Println("Cron scheduler started...")
+		log.Println("Cron scheduler started...")
 		c.Start()
 	}()
 
@@ -81,13 +81,13 @@ func getUsersWithNowChangeDate(db *sql.DB) error {
 	for rows.Next() {
 		var user idAndChangeDate
 		if err := rows.Scan(&user.ID, &user.ChangeDate, &user.Username); err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return err
 		}
 		users = append(users, user)
 	}
 	if err = rows.Err(); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 
@@ -96,7 +96,7 @@ func getUsersWithNowChangeDate(db *sql.DB) error {
 	for _, user := range users {
 		changeDate, err := time.Parse(time.RFC3339, user.ChangeDate)
 		if err != nil {
-			fmt.Println("Couldn't send notification: ", err)
+			log.Println("Couldn't send notification: ", err)
 		}
 		changeDate = changeDate.UTC().Truncate(24 * time.Hour)
 

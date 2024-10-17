@@ -21,9 +21,9 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
   };
 
   const onPress = () => {
-    const options = isLoggedIn ? ["Sign Out", "Cancel"] : ["Cancel"];
-    const destructiveButtonIndex = isLoggedIn ? 0 : 1;
-    const cancelButtonIndex = isLoggedIn ? 1 : 0;
+    const options = isLoggedIn ? ["Settings", "Sign Out", "Cancel"] : ["Cancel"];
+    const destructiveButtonIndex = isLoggedIn ? 1 : -1;
+    const cancelButtonIndex = isLoggedIn ? 2 : 0;
     const cancelButtonTintColor = "#5700FF";
     const destructiveColor = "#FF005C";
     //const title = "Settings";
@@ -35,21 +35,21 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
         destructiveButtonIndex,
         cancelButtonTintColor,
         destructiveColor,
-        //title,
       },
-      (selectedIndex: number) => {
+      (selectedIndex: number | undefined) => {
         switch (selectedIndex) {
-          case 2:
-            // Save
+          case 0: //"Settings"
+            if (isLoggedIn) {
+              router.navigate("/(loggedIn)/settings");
+            }
             break;
-
-          case destructiveButtonIndex:
-            // Delete
+          case destructiveButtonIndex: //"Sign out"
             handleLogout();
             break;
-
-          case cancelButtonIndex:
-          // Canceled
+          case cancelButtonIndex: //Cancel
+            break;
+          default: //Undefined - oops
+            break;
         }
       },
     );

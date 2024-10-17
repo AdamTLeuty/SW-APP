@@ -100,7 +100,11 @@ export const loginExistingUser = async (
 
     await storeToken(response.data.token);
 
-    const mockUserData = { name: "John Doe", email: email };
+    const userData = await checkUserStatus(email, response.data.token);
+    const userDataDeconstructed = userData?.userData as { username: string };
+    const name = userDataDeconstructed.username;
+
+    const mockUserData = { name: name, email: email };
     //console.log("Before the login state call");
     login(mockUserData);
     //console.log("After the login state call");
@@ -115,7 +119,7 @@ export const loginExistingUser = async (
   } catch (error) {
     const status = error?.response?.status;
     if (status == 403) {
-      const mockUserData = { name: "John Doe", email: email };
+      const mockUserData = { name: "", email: email };
       console.log("about to call `tentativeLogin` with this email" + email);
       tentativeLogin(mockUserData);
     }
@@ -150,8 +154,11 @@ export const loginExistingUserWithToken = async (
     }
 
     const userEmail = response.data.message.email;
+    const userData = await checkUserStatus(email, response.data.token);
+    const userDataDeconstructed = userData?.userData as { username: string };
+    const name = userDataDeconstructed.username;
 
-    const mockUserData = { name: "John Doe", email: userEmail };
+    const mockUserData = { name: name, email: userEmail };
     login(mockUserData);
 
     return { message: response.data.message, token: response.data.token, status: response.status };

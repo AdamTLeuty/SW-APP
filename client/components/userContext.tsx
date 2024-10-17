@@ -16,17 +16,19 @@ interface UserContextType {
   status: Status;
   impressionJudgment: ImpressionJudgment;
   user: User | null;
-  login: (userData: User) => void;
-  updateUserContext: () => void;
-  tentativeLogin: (userData: User) => void;
-  logout: () => void;
-  nextStage: () => void;
+  login: (userData: User) => Promise<void>;
+  updateUserContext: () => Promise<void>;
+  tentativeLogin: (userData: User) => Promise<void>;
+  logout: () => Promise<void>;
+  nextStage: () => Promise<void>;
   alignerCount: number;
   alignerProgress: number;
   alignerChangeDate: string;
   expoPushToken: string;
-  updateExpoPushToken: (expoToken: string) => void;
-  updateAlignerCount: (count: number) => void;
+  updateExpoPushToken: (expoToken: string) => Promise<void>;
+  updateAlignerCount: (count: number) => Promise<void>;
+  updateAlignerProgress: (count: number) => Promise<void>;
+  updateUsername: (name: string) => Promise<void>;
 }
 
 // Create the context with an initial value
@@ -81,10 +83,21 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       response = await checkUserStatus(user.email, token);
     }
     if (response?.userData != null) {
-      const userDataWithStage = response.userData as { stage: string; alignerCount: number; alignerProgress: number; alignerChangeDate: string };
+      const userDataWithStage = response.userData as { username: string; stage: string; alignerCount: number; alignerProgress: number; alignerChangeDate: string };
       console.log("stage: " + userDataWithStage.stage);
       if (userDataWithStage.stage == "aligner") {
         setStatus("alignerStage");
+      }
+      console.log("The username fetched from the server is: " + userDataWithStage.username);
+      console.log("Can we set the username?: ");
+      console.log(userDataWithStage.username && user != null);
+      if (userDataWithStage.username && user != null) {
+        console.log(user);
+        let newUser = user;
+
+        newUser.name = userDataWithStage.username;
+        console.log(newUser);
+        setUser(newUser);
       }
       if (userDataWithStage.stage == "impression") {
         setStatus("impressionStage");
@@ -147,6 +160,44 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateUsername = async (name: string) => {
+    if (name.length <= 0 || name.length > 36) {
+      console.log("Not an acceptable answer");
+    } else {
+      console.log("Set the username");
+      if (user) {
+        user.name = name;
+      }
+    }
+
+    const token = await getToken();
+    if (!token) {
+      console.error("Token is empty");
+      return;
+    }
+    setUserStatus(token, { username: name });
+
+    return;
+  };
+
+  const updateAlignerProgress = async (count: number) => {
+    if (count <= 0) {
+      console.log("Not an acceptable answer");
+    } else {
+      console.log("Set the aligner count");
+      setAlignerCount(count);
+    }
+
+    const token = await getToken();
+    if (!token) {
+      console.error("Token is empty");
+      return;
+    }
+    setUserStatus(token, { aligner_count: count });
+
+    return;
+  };
+
   const updateAlignerCount = async (count: number) => {
     await updateUserContext();
 
@@ -158,6 +209,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setAlignerCount(count);
       }
     }
+    const token = await getToken();
+    if (!token) {
+      console.error("Token is empty");
+      return;
+    }
+    setUserStatus(token, { aligner_count: count });
 
     return;
   };
@@ -180,6 +237,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         expoPushToken,
         updateExpoPushToken,
         updateAlignerCount,
+        updateAlignerProgress,
+        updateUsername,
       }}
     >
       {children}

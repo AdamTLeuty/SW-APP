@@ -164,17 +164,24 @@ export const universalStyles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    //padding: 20,
-    //flex: 1,
-    //alignItems: "center",
-    //justifyContent: "center",
     paddingVertical: 50,
     paddingHorizontal: 30,
-    //gap: 23,
+  },
+  scrollContainer: {
+    flex: 1,
+    paddingVertical: 50,
+    paddingHorizontal: 30,
+  },
+  scrollcontentContainer: {
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   title: {
     fontSize: 25,
     textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 16,
   },
   bottomMargin: {
     marginBottom: 23,

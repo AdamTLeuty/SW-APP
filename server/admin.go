@@ -205,6 +205,29 @@ func create_admin_user(db *sql.DB, username string, password string) error {
 	return nil
 }
 
+func admin_get_create_admin_form(c *gin.Context, db *sql.DB) {
+
+	cookie, err := c.Cookie("session_id")
+	if err != nil {
+		c.Redirect(http.StatusTemporaryRedirect, "/admin/login")
+		log.Print("Cookie error:", err)
+		return
+	}
+
+	log.Printf("Cookie value: %s \n", cookie)
+
+	_, err = verifyToken(cookie)
+	if err != nil {
+		c.Redirect(http.StatusTemporaryRedirect, "/admin/login")
+		log.Print("Token error:", err)
+		return
+	}
+
+	c.HTML(http.StatusOK, "adminCreateForm.html", gin.H{})
+	return
+
+}
+
 func admin_home(c *gin.Context, db *sql.DB) {
 
 	cookie, err := c.Cookie("session_id")

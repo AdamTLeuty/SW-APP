@@ -1,0 +1,29 @@
+<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+        <h6 class="text-white text-capitalize ps-3">Input the admin user's details</h6>
+    </div>
+</div>
+
+<div class="card card-body mt-n2">
+    <div class="table-responsive p-0">
+        <form hx-boost="true" hx-post="/admin/admins/create" hx-target="#form-response" hx-swap="afterend" role="form" class="text-start" action="/admin/admins/create" method="post">
+            <div class="input-group input-group-static my-3">
+                <label class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-control" />
+            </div>
+            <div class="input-group input-group-static my-3">
+                <label class="form-label">Username</label>
+                <input type="text" id="username" name="username" class="form-control" />
+            </div>
+            <div class="input-group input-group-static mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-control" />
+            </div>
+
+            <div class="text-center">
+                <input type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2" value="Create Admin" />
+            </div>
+        </form>
+        <div id="form-response" class="text-center"></div>
+    </div>
+</div>

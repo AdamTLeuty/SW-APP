@@ -166,6 +166,10 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		admin_create_admin(c, db)
 	})
 
+	router.GET("/admin/admins/create", func(c *gin.Context) {
+		admin_get_create_admin_form(c, db)
+	})
+
 	router.GET("/admin/user/:userid", rate_limit, func(c *gin.Context) {
 		admin_user_profile(c, db)
 	})
@@ -196,6 +200,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		auth_components.POST("/userInfoForm/:userid", func(c *gin.Context) {
 			admin_edit_user_info_form(c, db)
 		})
+
 	}
 
 	return router

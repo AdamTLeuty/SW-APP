@@ -133,7 +133,7 @@
                                                 <td class="align-middle text-center">
                                                     <button
                                                         onclick="deleteDialog('{{$val.ID}}', '')"
-                                                        class="text-secondary font-weight-bold text-xs link-danger"
+                                                        class="bg-gradient-primary btn font-weight-bold link-danger text-secondary text-white text-xs"
                                                         data-toggle="tooltip"
                                                         data-original-title="Delete User"
                                                     >
@@ -145,7 +145,9 @@
                                                 <button id="close" type="none">Close</button>
                                                 <h2>Are you sure you want to delete this user?</h2>
                                                 <form hx-post="/admin/admins/delete/{{$val.ID}}" hx-target="#response" hx-swap="outerHTML">
-                                                    <button class="link-danger" type="submit">Delete User</button>
+                                                    <button class="bg-gradient-primary btn font-weight-bold link-danger text-secondary text-white text-xs" type="submit">
+                                                        Delete User
+                                                    </button>
                                                 </form>
                                                 <div id="response"></div>
                                             </dialog>
@@ -157,6 +159,9 @@
                         </div>
                     </div>
                 </div>
+                <button hx-get="/admin/admins/create" hx-target="this" hx-swap="afterend" class="bg-gradient-primary btn font-weight-bold text-secondary text-white text-xs offset-11">
+                    Add
+                </button>
             </div>
         </main>
         <div class="fixed-plugin">

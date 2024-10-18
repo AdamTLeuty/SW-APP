@@ -206,6 +206,72 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 
 }
 
+func admin_user_delete(c *gin.Context, db *sql.DB) {
+	log.Print("The delete handler was accessed")
+
+	cookie, err := c.Cookie("session_id")
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
+		return
+	}
+
+	log.Printf("Cookie value: %s \n", cookie)
+
+	username, err := verifyToken(cookie)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
+		return
+	}
+
+	log.Println(username)
+
+	userPath := c.Param("userid")
+	userPath = strings.Replace(userPath, "/", "", -1)
+	id, err := strconv.Atoi(userPath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
+	}
+
+	err = delete_user(id, db)
+	if err != nil {
+		c.HTML(http.StatusOK, "response.html", gin.H{
+			"Message": fmt.Sprint("User could not be deleted: ", err),
+		})
+		return
+	}
+
+	c.HTML(http.StatusOK, "response.html", gin.H{
+		"Message": "User deleted successfully",
+	})
+	return
+
+}
+
+func delete_user(id int, db *sql.DB) error {
+
+	statement, err := db.Prepare("DELETE FROM users WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	result, err := statement.Exec(id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("no rows were deleted")
+	}
+
+	return nil
+
+}
+
 func admin_get_user_info_form(c *gin.Context, db *sql.DB) {
 
 	userPath := c.Param("userid")

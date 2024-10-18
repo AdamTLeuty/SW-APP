@@ -90,7 +90,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 
 	// Apply AuthRequired middleware to protect static files
 	authorized := router.Group("/admin/")
-	authorized.Use(rate_limit, admin_auth(db))
+	authorized.Use(admin_auth(db))
 	{
 		authorized.Static("/assets", "./admin/assets")
 		authorized.Static("/images", "./images")
@@ -160,6 +160,10 @@ func setupRouter(db *sql.DB) *gin.Engine {
 
 	router.GET("/admin/user/:userid", rate_limit, func(c *gin.Context) {
 		admin_user_profile(c, db)
+	})
+
+	router.POST("/admin/user/delete/:userid", rate_limit, func(c *gin.Context) {
+		admin_user_delete(c, db)
 	})
 
 	router.POST("/admin/user/updateImpressionState/:userid", rate_limit, admin_auth(db), func(c *gin.Context) {

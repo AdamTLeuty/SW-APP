@@ -158,6 +158,10 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		admin_home(c, db)
 	})
 
+	router.GET("/admin/admins", rate_limit, func(c *gin.Context) {
+		admin_admins(c, db)
+	})
+
 	router.POST("/admin/admins/create", rate_limit, func(c *gin.Context) {
 		admin_create_admin(c, db)
 	})
@@ -168,6 +172,10 @@ func setupRouter(db *sql.DB) *gin.Engine {
 
 	router.POST("/admin/user/delete/:userid", rate_limit, func(c *gin.Context) {
 		admin_user_delete(c, db)
+	})
+
+	router.POST("/admin/admins/delete/:userid", rate_limit, func(c *gin.Context) {
+		admin_admin_delete(c, db)
 	})
 
 	router.POST("/admin/user/updateImpressionState/:userid", rate_limit, admin_auth(db), func(c *gin.Context) {

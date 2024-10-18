@@ -52,7 +52,7 @@
             <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link text-white active bg-gradient-primary" href="/admin/home">
+                        <a class="nav-link text-white" href="/admin/home">
                             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="material-icons opacity-10">table_view</i>
                             </div>
@@ -60,7 +60,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="/admin/admins">
+                        <a class="nav-link text-white active bg-gradient-primary" href="/admin/admins">
                             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="material-icons opacity-10">table_view</i>
                             </div>
@@ -92,7 +92,7 @@
                         <div class="card my-4">
                             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                                 <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                    <h6 class="text-white text-capitalize ps-3">Users</h6>
+                                    <h6 class="text-white text-capitalize ps-3">Admins</h6>
                                 </div>
                             </div>
                             <div class="card-body px-0 pb-2">
@@ -101,9 +101,9 @@
                                         <thead>
                                             <tr>
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Username</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
-                                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Stage</th>
-                                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email Verified?</th>
+                                                <!--<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>-->
+                                                <!--<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Edit</th>-->
+                                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
                                                 <th class="text-secondary opacity-7"></th>
                                             </tr>
                                         </thead>
@@ -115,18 +115,12 @@
                                                         <h6 class="mb-0 text-sm">{{$val.Username}}</h6>
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <!--<td>
                                                     <div class="d-flex px-2 py-1">
-                                                        <p class="text-xs text-secondary mb-0">{{$val.Email}}</p>
+                                                        <p class="text-xs text-secondary mb-0">Email here</p>
                                                     </div>
-                                                </td>
-                                                <td>
-                                                    <p class="text-xs font-weight-bold mb-0 text-center">{{$val.Stage}}</p>
-                                                </td>
-                                                <td class="align-middle text-center text-sm">
-                                                    <span class="badge badge-sm bg-gradient-secondary">{{ if eq $val.Verified 1 }}✓{{ else }} ✗ {{ end }}</span>
-                                                </td>
-                                                <td class="align-middle">
+                                                </td>-->
+                                                <!--<td class="align-middle text-center">
                                                     <a
                                                         href="/admin/user/{{$val.ID}}"
                                                         class="text-secondary font-weight-bold text-xs"
@@ -135,10 +129,10 @@
                                                     >
                                                         Edit
                                                     </a>
-                                                </td>
-                                                <td class="align-middle">
+                                                </td>-->
+                                                <td class="align-middle text-center">
                                                     <button
-                                                        onclick="deleteDialog('{{$val.ID}}', '{{$val.Email}}')"
+                                                        onclick="deleteDialog('{{$val.ID}}', '')"
                                                         class="text-secondary font-weight-bold text-xs link-danger"
                                                         data-toggle="tooltip"
                                                         data-original-title="Delete User"
@@ -150,7 +144,7 @@
                                             <dialog id="deletion-modal-{{$val.ID}}">
                                                 <button id="close" type="none">Close</button>
                                                 <h2>Are you sure you want to delete this user?</h2>
-                                                <form hx-post="/admin/user/delete/{{$val.ID}}" hx-target="#response" hx-swap="outerHTML">
+                                                <form hx-post="/admin/admins/delete/{{$val.ID}}" hx-target="#response" hx-swap="outerHTML">
                                                     <button class="link-danger" type="submit">Delete User</button>
                                                 </form>
                                                 <div id="response"></div>

@@ -34,6 +34,7 @@ type TabledUser struct {
 }
 
 type Admin struct {
+	ID       int
 	Username string
 	Password string
 }
@@ -79,7 +80,56 @@ func admin_login_form(c *gin.Context, db *sql.DB) {
 	c.SetCookie("session_id", token, 3600, "/", os.Getenv("DOMAIN"), false, true)
 	c.Redirect(302, "/admin/home")
 	return
+}
 
+func admin_admins(c *gin.Context, db *sql.DB) {
+
+	cookie, err := c.Cookie("session_id")
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
+		return
+	}
+
+	log.Printf("Cookie value: %s \n", cookie)
+
+	username, err := verifyToken(cookie)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
+		return
+	}
+
+	log.Println(username)
+
+	rows, err := db.Query("SELECT id, username FROM admins")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer rows.Close()
+
+	// An userum slice to hold data from returned rows.
+	var users []Admin
+
+	// Loop through rows, using Scan to assign column data to struct fields.
+	for rows.Next() {
+		var user Admin
+		if err := rows.Scan(&user.ID, &user.Username); err != nil {
+			log.Print("Could not read all admins from DB: ", err)
+			return
+		}
+		users = append(users, user)
+	}
+	if err = rows.Err(); err != nil {
+		log.Print("Could not read all admins from DB: ", err)
+		return
+	}
+
+	c.HTML(http.StatusOK, "admins.html", gin.H{
+		"List": users,
+	})
+
+	return
 }
 
 func admin_create_admin(c *gin.Context, db *sql.DB) {
@@ -324,6 +374,72 @@ func admin_user_delete(c *gin.Context, db *sql.DB) {
 func delete_user(id int, db *sql.DB) error {
 
 	statement, err := db.Prepare("DELETE FROM users WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	result, err := statement.Exec(id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("no rows were deleted")
+	}
+
+	return nil
+
+}
+
+func admin_admin_delete(c *gin.Context, db *sql.DB) {
+	log.Print("The delete handler was accessed")
+
+	cookie, err := c.Cookie("session_id")
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
+		return
+	}
+
+	log.Printf("Cookie value: %s \n", cookie)
+
+	username, err := verifyToken(cookie)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
+		return
+	}
+
+	log.Println(username)
+
+	userPath := c.Param("userid")
+	userPath = strings.Replace(userPath, "/", "", -1)
+	id, err := strconv.Atoi(userPath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server error"})
+	}
+
+	err = delete_admin(id, db)
+	if err != nil {
+		c.HTML(http.StatusOK, "response.html", gin.H{
+			"Message": fmt.Sprint("User could not be deleted: ", err),
+		})
+		return
+	}
+
+	c.HTML(http.StatusOK, "response.html", gin.H{
+		"Message": "User deleted successfully",
+	})
+	return
+
+}
+
+func delete_admin(id int, db *sql.DB) error {
+
+	statement, err := db.Prepare("DELETE FROM admins WHERE id = ?")
 	if err != nil {
 		return err
 	}

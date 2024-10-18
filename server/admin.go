@@ -65,7 +65,7 @@ func admin_login_form(c *gin.Context, db *sql.DB) {
 
 	log.Println(admin)
 
-	if admin.Password != password {
+	if !checkPasswordHash(password, admin.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
 		return
 	}
@@ -80,6 +80,79 @@ func admin_login_form(c *gin.Context, db *sql.DB) {
 	c.Redirect(302, "/admin/home")
 	return
 
+}
+
+func admin_create_admin(c *gin.Context, db *sql.DB) {
+
+	log.Print("`Create admin user` path accessed")
+
+	cookie, err := c.Cookie("session_id")
+	if err != nil {
+		c.Redirect(http.StatusTemporaryRedirect, "/admin/login")
+		log.Print("Cookie error:", err)
+		return
+	}
+
+	log.Printf("Cookie value: %s \n", cookie)
+
+	_, err = verifyToken(cookie)
+	if err != nil {
+		c.Redirect(http.StatusTemporaryRedirect, "/admin/login")
+		log.Print("Token error:", err)
+		return
+	}
+
+	email := c.PostForm("email")
+	password := c.PostForm("password")
+	hashed_password, err := hashPassword(password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Password couldn't be hashed - please try again later"})
+		log.Print("Password could not be hashed")
+		log.Print(err)
+		return
+	}
+	username := c.PostForm("username")
+
+	address, err := mail.ParseAddress(email)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Email"})
+		return
+	}
+
+	email = address.Address
+
+	log.Printf("\nUsername: %s\n Email: %s\n Password: %s,\n Hashed Password: %s\n", username, email, password, hashed_password)
+	err = create_admin_user(db, username, hashed_password)
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user - please try again later"})
+		return
+
+	}
+
+	c.HTML(http.StatusOK, "response.html", gin.H{
+		"Message": "Admin user created successfully",
+	})
+	return
+
+}
+
+func create_admin_user(db *sql.DB, username string, password string) error {
+	statement, err := db.Prepare(`
+	    INSERT INTO admins(username, password)
+	    SELECT ?, ?
+	    WHERE NOT EXISTS (SELECT 1 FROM admins WHERE username = ?)
+    `)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = statement.Exec(username, password, username)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
 }
 
 func admin_home(c *gin.Context, db *sql.DB) {

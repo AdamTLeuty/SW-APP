@@ -158,6 +158,10 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		admin_home(c, db)
 	})
 
+	router.POST("/admin/admins/create", rate_limit, func(c *gin.Context) {
+		admin_create_admin(c, db)
+	})
+
 	router.GET("/admin/user/:userid", rate_limit, func(c *gin.Context) {
 		admin_user_profile(c, db)
 	})
@@ -237,7 +241,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = statement.Exec(os.Getenv("DEFAULT_ADMIN_NAME"), os.Getenv("DEFAULT_ADMIN_PASS"), os.Getenv("DEFAULT_ADMIN_NAME"))
+
+	adminPass, err := hashPassword(os.Getenv("DEFAULT_ADMIN_PASS"))
+	if err != nil {
+		log.Fatal("The default admin password cannot be parsed correctly: ", err)
+	}
+
+	_, err = statement.Exec(os.Getenv("DEFAULT_ADMIN_NAME"), adminPass, os.Getenv("DEFAULT_ADMIN_NAME"))
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -124,7 +124,11 @@
                                                     <p class="text-xs font-weight-bold mb-0 text-center">{{$val.Stage}}</p>
                                                 </td>
                                                 <td class="align-middle text-center text-sm">
-                                                    <span class="badge badge-sm bg-gradient-secondary">{{ if eq $val.Verified 1 }}✓{{ else }} ✗ {{ end }}</span>
+                                                    {{ if eq $val.Verified 1 }}
+                                                    <span class="badge badge-sm bg-success">✓</span>
+                                                    {{ else }}
+                                                    <span class="badge badge-sm bg-danger">✗</span>
+                                                    {{ end }}
                                                 </td>
                                                 <td class="align-middle">
                                                     <a

@@ -70,7 +70,7 @@ func register(c *gin.Context, db *sql.DB) {
 	// Defer a rollback in case anything fails.
 	defer tx.Rollback()
 
-	stmt, err := tx.Prepare("INSERT INTO users(email, password, username, verified, authcode, stage, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate, expo_notification_token ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	stmt, err := tx.Prepare("INSERT INTO users(email, password, username, verified, authcode, stage, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate, expo_notification_token, can_change_stage) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		tx.Rollback()
 		log.Println("Could not prepare insert into `users` table: ", err)
@@ -80,7 +80,7 @@ func register(c *gin.Context, db *sql.DB) {
 
 	alignerCount := hubspotData.Aligner_Count
 
-	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, "impression", "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "")
+	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, "impression", "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "", 0)
 	if err != nil {
 		tx.Rollback()
 		log.Println("Could not execute insert into `users` table: ", err)

@@ -25,6 +25,7 @@ type UserDataResponse struct {
 	AlignerProgress        int    `json:"alignerProgress"`
 	AlignerChangeDate      string `json:"alignerChangeDate,omitempty"`
 	ExpoPushToken          string `json:"expoPushToken,omitempty"`
+	CanChangeStage         bool   `json:"canChangeStage,omitempty"`
 }
 
 func getUserData(c *gin.Context, db *sql.DB) {
@@ -42,9 +43,11 @@ func getUserData(c *gin.Context, db *sql.DB) {
 		return
 	}
 
+	go updateUserFromHubspotData(db, email)
+
 	var userData UserDataResponse
 
-	err = db.QueryRow("SELECT stage, username, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate FROM users WHERE email = ?", email).Scan(&userData.Stage, &userData.Username, &userData.ImpressionConfirmation, &userData.AlignerProgress, &userData.AlignerCount, &userData.AlignerChangeDate)
+	err = db.QueryRow("SELECT stage, username, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate, can_change_stage FROM users WHERE email = ?", email).Scan(&userData.Stage, &userData.Username, &userData.ImpressionConfirmation, &userData.AlignerProgress, &userData.AlignerCount, &userData.AlignerChangeDate, &userData.CanChangeStage)
 	if err != nil {
 		log.Println("Error scanning for user data: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching user data - please try again later"})
@@ -53,6 +56,32 @@ func getUserData(c *gin.Context, db *sql.DB) {
 	log.Println(userData)
 
 	c.JSON(http.StatusOK, gin.H{"message": "User data fetched", "userData": userData})
+}
+
+func updateUserFromHubspotData(db *sql.DB, email string) error {
+
+	//Check hubspot for aligner count
+	data, err := getUserHubspotData(email)
+	if err != nil {
+		return err
+	}
+
+	//Update aligner count if available
+	if data.Aligner_Count > 0 {
+		var changeData UserDataRequest
+		changeData.Aligner_Count = data.Aligner_Count
+		updateUserData(db, email, changeData)
+	}
+
+	hubspotUserStage, err := hubspotStageToUserStage(data.Process_Stage)
+	if err != nil {
+		return err
+	}
+	if hubspotUserStage == "Aligner" {
+		setUserCanChangeStage(email, db)
+	}
+
+	return nil
 }
 
 func setUserData(c *gin.Context, db *sql.DB) {
@@ -77,14 +106,14 @@ func setUserData(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	if requestData.Stage != "" {
-		log.Println("The user has changed stages")
-		userChangingStage, err := checkUserChangingStage(db, requestData.Stage, email)
-		if userChangingStage && err == nil {
-			go userStageUpdate(db, email)
-		}
-
+	/*if requestData.Stage != "" {
+	log.Println("The user is changing stages")
+	userChangingStage, err := checkUserChangingStage(db, requestData.Stage, email)
+	if userChangingStage && err == nil {
+		go userStageUpdate(db, email)
 	}
+
+	}*/
 
 	err = updateUserData(db, email, requestData)
 
@@ -142,6 +171,92 @@ func userStageUpdate(db *sql.DB, email string) {
 		updateUserData(db, email, changeData)
 	}
 
+	hubspotUserStage, err := hubspotStageToUserStage(data.Process_Stage)
+	if err != nil {
+		log.Println("Could not parse hubspot stage : ", err)
+		return
+	}
+	if hubspotUserStage == "Aligner" {
+		setUserCanChangeStage(email, db)
+	}
+
+}
+
+func hubspotStageToUserStage(hubspotStage string) (string, error) {
+
+	fieldMap := map[string]string{
+		"Impression Kit Dispatched":               "Impression",
+		"Impression Kit Received":                 "Impression",
+		"Impression Kit Not Received":             "Impression",
+		"Impression Kit Lost In Transit":          "Impression",
+		"Impression Quality: Failed":              "Impression",
+		"Impression Quality: Passed":              "Impression",
+		"Lab Pending Receipt of Impression Kit":   "Impression",
+		"Lab: Kit Received":                       "Impression",
+		"Lab: Kit Not Received":                   "Impression",
+		"Lab: Lost In Transit":                    "Impression",
+		"Treatment Plan Created":                  "Impression",
+		"Treatment Plan Approved by Client":       "Impression",
+		"Treatment Plan Declined by Client":       "Impression",
+		"Treatment Plan Refined":                  "Impression",
+		"Medical Waiver Sent (pending signature)": "Impression",
+		"Medical Waiver Signed":                   "Impression",
+		"Aligners Being Manufactured":             "Impression",
+		"Aligners Dispatched":                     "Aligner",
+		"Client Informed Treatment Dispatched":    "Aligner",
+		"Pending":                                 "Impression",
+		"Client Received Treatment":               "Aligner",
+		"Client Not Received Treatment":           "Aligner",
+		"Cancellation Requested":                  "Aligner",
+		"Refund Due":                              "Aligner",
+		"Refund Paid":                             "Aligner",
+		"No Refund Due":                           "Impression",
+		"Client Informed - No Refund":             "Impression",
+		"Ordering Impression Kit":                 "Impression",
+		"Re-order Impression Kit":                 "Impression",
+		"Walkthrough Complete":                    "Impression",
+		"Lab: Scans Complete":                     "Impression",
+		"ALS: Scans Received":                     "Impression",
+		"ALS: Treatment Plan In-progress":         "Impression",
+		"ALS: Treatment Plan Completed":           "Impression",
+		"ALS: Being Manufactured":                 "Impression",
+		"ALS: Treatment Dispatched to Client":     "Impression",
+		"ALS: Pending Scan Retrieval":             "Impression",
+		"ALS: Plan Agreed":                        "Impression",
+		"Walkthrough Skipped":                     "Aligner",
+		"ALS: Treatment Dispatched to SW":         "Impression",
+		"Treatment Dispatched to Client":          "Aligner",
+	}
+
+	if fieldMap[hubspotStage] == "" {
+		return "", fmt.Errorf("Hubspot stage not in fieldmap")
+	} else {
+		return fieldMap[hubspotStage], nil
+	}
+}
+
+func setUserCanChangeStage(email string, db *sql.DB) error {
+	stmt, err := db.Prepare("UPDATE users SET can_change_stage = ? WHERE email = ?")
+	if err != nil {
+		log.Println("database failed: ", err)
+		return err
+	}
+
+	_, err = stmt.Exec(1, email)
+	if err != nil {
+		log.Println("execution failed: ", err)
+		return err
+	}
+	return nil
+}
+
+func checkUserCanChangeStage(email string, db *sql.DB) (bool, error) {
+	var canChangeStage bool
+	err := db.QueryRow("SELECT can_change_stage FROM users WHERE email = ?", email).Scan(&canChangeStage)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func updateUserData(db *sql.DB, email string, request UserDataRequest) error {
@@ -163,6 +278,19 @@ func updateUserData(db *sql.DB, email string, request UserDataRequest) error {
 	}
 
 	for field, value := range fields {
+
+		if field == "stage" {
+			canMoveStages, err := checkUserCanChangeStage(email, db)
+			if err != nil || !canMoveStages {
+				log.Println("Did not change user stage, user cannot change stage:", err)
+				continue
+			}
+		}
+
+		if field == "alignerCount" && value.(int) <= 0 {
+			log.Print("Did not change aligner count value, as aligner count is not positive")
+			continue
+		}
 		if value != "" {
 			if len(args) > 0 {
 				setString += ", "

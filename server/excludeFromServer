@@ -7,7 +7,12 @@ retrieveFromServer
 .DS_Store
 excludeFromServer
 images/
-env/*
+env
 .env
 hubspot.env
 sendgrid.env
+logs
+.getDBFromServer
+includeFromServer
+main
+sendToServer

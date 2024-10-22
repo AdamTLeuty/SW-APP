@@ -539,6 +539,7 @@ func admin_edit_user_info_form(c *gin.Context, db *sql.DB) {
 	_, err = mail.ParseAddress(email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Email"})
+		log.Print(err)
 		return
 	}
 
@@ -546,6 +547,7 @@ func admin_edit_user_info_form(c *gin.Context, db *sql.DB) {
 	date, err := time.Parse("2006-01-02", aligner_change_date)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err, "message": "Date Invalid"})
+		log.Print(err)
 		return
 	}
 	newDate := date.Format(time.RFC3339)
@@ -554,12 +556,14 @@ func admin_edit_user_info_form(c *gin.Context, db *sql.DB) {
 	if err != nil {
 		log.Println("database failed: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server Error"})
+		log.Print(err)
 		return
 	}
 
 	_, err = stmt.Exec(email, username, verified, stage, aligner_progress, aligner_count, newDate, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		log.Print(err)
 		return
 	}
 

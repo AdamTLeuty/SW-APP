@@ -225,13 +225,25 @@ func main() {
 
 	log.Println("Program started...")
 
+	log.Print("Testing the stage to stage converter")
+	stage, err := hubspotStageToUserStage("Treatment Dispatched to Client")
+	if err != nil {
+		log.Print(err)
+	}
+	log.Print(stage)
+	stage, err = hubspotStageToUserStage("Invalid string")
+	if err != nil {
+		log.Print(err)
+	}
+	log.Print(stage)
+
 	db, err := sql.Open("sqlite3", "./users.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER, stage TEXT, impressionConfirmation TEXT, alignerProgress INTEGER, alignerCount INTEGER, alignerChangeDate TEXT, expo_notification_token TEXT)")
+	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER, stage TEXT, impressionConfirmation TEXT, alignerProgress INTEGER, alignerCount INTEGER, alignerChangeDate TEXT, expo_notification_token TEXT, can_change_stage INTEGER)")
 	if err != nil {
 		log.Fatal(err)
 	}

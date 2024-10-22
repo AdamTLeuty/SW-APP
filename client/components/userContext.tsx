@@ -14,6 +14,7 @@ type ImpressionJudgment = null | "good" | "bad";
 interface UserContextType {
   isLoggedIn: boolean;
   status: Status;
+  canChangeStage: Boolean;
   impressionJudgment: ImpressionJudgment;
   user: User | null;
   login: (userData: User) => Promise<void>;
@@ -44,6 +45,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [alignerProgress, setAlignerProgress] = useState<number>(0);
   const [alignerChangeDate, setAlignerChangeDate] = useState<string>("");
   const [expoPushToken, setExpoPushToken] = useState<string>("");
+  const [canChangeStage, setCanChangeStage] = useState<Boolean>(false);
 
   const login = async (userData: User) => {
     setIsLoggedIn(true);
@@ -83,14 +85,20 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       response = await checkUserStatus(user.email, token);
     }
     if (response?.userData != null) {
-      const userDataWithStage = response.userData as { username: string; stage: string; alignerCount: number; alignerProgress: number; alignerChangeDate: string };
+      const userDataWithStage = response.userData as {
+        username: string;
+        stage: string;
+        alignerCount: number;
+        alignerProgress: number;
+        alignerChangeDate: string;
+        canChangeStage: Boolean;
+      };
       console.log("stage: " + userDataWithStage.stage);
-      if (userDataWithStage.stage == "aligner") {
-        setStatus("alignerStage");
-      }
+
       console.log("The username fetched from the server is: " + userDataWithStage.username);
       console.log("Can we set the username?: ");
       console.log(userDataWithStage.username && user != null);
+
       if (userDataWithStage.username && user != null) {
         console.log(user);
         let newUser = user;
@@ -99,8 +107,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         console.log(newUser);
         setUser(newUser);
       }
+      if (userDataWithStage.canChangeStage) {
+        setCanChangeStage(true);
+      }
       if (userDataWithStage.stage == "impression") {
         setStatus("impressionStage");
+      }
+      if (userDataWithStage.stage == "aligner") {
+        setStatus("alignerStage");
       }
       console.log(userDataWithStage);
       if (userDataWithStage.alignerCount) {
@@ -140,7 +154,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setUserStatus(token, { stage: "aligner" });
   };
 
-  const logout = () => {
+  const logout = async () => {
     setIsLoggedIn(false);
     setUser(null);
     deleteToken();
@@ -239,6 +253,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         updateAlignerCount,
         updateAlignerProgress,
         updateUsername,
+        canChangeStage,
       }}
     >
       {children}

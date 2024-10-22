@@ -25,7 +25,7 @@ import { universalStyles } from "@/constants/Styles";
 //import { useRoute } from "@react-navigation/native";
 
 export default function Home() {
-  const { isLoggedIn, logout, nextStage, updateUserContext } = useUserContext();
+  const { isLoggedIn, logout, nextStage, updateUserContext, canChangeStage } = useUserContext();
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(async () => {
@@ -48,16 +48,19 @@ export default function Home() {
         <Text fontWeight="600" style={styles.subheading}>
           {"Already have your aligners?"}
         </Text>
-
-        <Button
-          onPress={() => {
-            nextStage();
-          }}
-          lightColor="#FF005C"
-          darkColor="#FF005C"
-        >
-          {"Take me to the aligner stage!"}
-        </Button>
+        {canChangeStage ? (
+          <Button
+            onPress={() => {
+              nextStage();
+            }}
+            lightColor="#FF005C"
+            darkColor="#FF005C"
+          >
+            {"Take me to the aligner stage!"}
+          </Button>
+        ) : (
+          ""
+        )}
 
         <Link href="/impressions_result" asChild>
           <Button>{"Impression check results"}</Button>

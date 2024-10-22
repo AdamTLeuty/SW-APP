@@ -80,7 +80,18 @@ func register(c *gin.Context, db *sql.DB) {
 
 	alignerCount := hubspotData.Aligner_Count
 
-	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, "impression", "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "", 0)
+	hubspotUserStage, err := hubspotStageToUserStage(hubspotData.Process_Stage)
+	if err != nil {
+		log.Print(err)
+	}
+	var stage string
+	if hubspotUserStage == "Aligner" {
+		stage = "aligner"
+	} else {
+		stage = "impression"
+	}
+
+	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, stage, "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "", 0)
 	if err != nil {
 		tx.Rollback()
 		log.Println("Could not execute insert into `users` table: ", err)

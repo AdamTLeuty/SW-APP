@@ -138,9 +138,16 @@ const Viewfinder: React.FC = () => {
     <View style={styles.container}>
       <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={[styles.gallery]} onPress={openGallery} onLayout={onLayout}>
-            <GalleryIcon />
-          </TouchableOpacity>
+          {status == "alignerStage" ? (
+            <>
+              <TouchableOpacity style={[styles.gallery]} onPress={openGallery} onLayout={onLayout}>
+                <GalleryIcon />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <View style={styles.gallery} />
+          )}
+
           <TouchableOpacity style={[styles.shutter_button]} onPress={takePicture} onLayout={onLayout}>
             <Shutter_Button />
           </TouchableOpacity>
@@ -149,8 +156,12 @@ const Viewfinder: React.FC = () => {
           </TouchableOpacity>
         </View>
       </CameraView>
-      {status == "alignerStage" ? <FrameTop /> : null}
-      {status == "alignerStage" ? <FrameBottom /> : null}
+      {status == "alignerStage" && (
+        <>
+          <FrameTop />
+          <FrameBottom />
+        </>
+      )}
     </View>
   );
 };

@@ -160,17 +160,6 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="settings"
-        options={{
-          href: null,
-          title: "Settings",
-          header: ({ navigation, route, options }) => {
-            return <CustomHeader locked={false} backButton={true} nav={navigation} />;
-          },
-        }}
-      />
-
-      <Tabs.Screen
         name="gallery"
         options={{
           href: null,

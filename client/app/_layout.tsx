@@ -1,3 +1,4 @@
+import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -14,6 +15,7 @@ import { InteractionManager } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Status } from "@/components/userContext";
+import CustomHeader from "@/components/CustomHeader";
 
 import { handleRegistrationError, registerForPushNotificationsAsync } from "@/services/notificationService";
 
@@ -160,6 +162,17 @@ function RootLayoutNav() {
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           <Stack.Screen name="aligner-change-modal" options={{ presentation: "modal", headerShown: false }} />
           <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
+          <Stack.Screen
+            name="settings"
+            options={{
+              //href: null,
+              title: "Settings test",
+              header: ({ navigation, route, options }) => {
+                return <CustomHeader locked={false} backButton={true} nav={navigation} />;
+              },
+              headerShown: true,
+            }}
+          />
         </Stack>
       </ThemeProvider>
     );
@@ -171,6 +184,17 @@ function RootLayoutNav() {
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
           <Stack.Screen name="impressions_result" options={{ presentation: "modal", headerShown: false }} />
+          <Stack.Screen
+            name="settings"
+            options={{
+              //href: null,
+              title: "Settings test",
+              header: ({ navigation, route, options }) => {
+                return <CustomHeader locked={false} backButton={true} nav={navigation} />;
+              },
+              headerShown: true,
+            }}
+          />
         </Stack>
       </ThemeProvider>
     );

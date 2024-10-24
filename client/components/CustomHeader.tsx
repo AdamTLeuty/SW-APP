@@ -40,7 +40,7 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
         switch (selectedIndex) {
           case 0: //"Settings"
             if (isLoggedIn) {
-              router.navigate("/(loggedIn)/settings");
+              router.navigate("/settings");
             }
             break;
           case destructiveButtonIndex: //"Sign out"

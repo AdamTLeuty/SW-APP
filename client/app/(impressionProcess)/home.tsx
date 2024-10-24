@@ -45,21 +45,21 @@ export default function Home() {
         <Text lightColor="black" style={styles.body} fontWeight="400">
           {"More features will be unlocked once we send you your aligners"}
         </Text>
-        <Text fontWeight="600" style={styles.subheading}>
-          {"Already have your aligners?"}
-        </Text>
-        {canChangeStage ? (
-          <Button
-            onPress={() => {
-              nextStage();
-            }}
-            lightColor="#FF005C"
-            darkColor="#FF005C"
-          >
-            {"Take me to the aligner stage!"}
-          </Button>
-        ) : (
-          ""
+        {canChangeStage && (
+          <>
+            <Text fontWeight="600" style={styles.subheading}>
+              {"Already have your aligners?"}
+            </Text>
+            <Button
+              onPress={() => {
+                nextStage();
+              }}
+              lightColor="#FF005C"
+              darkColor="#FF005C"
+            >
+              {"Take me to the aligner stage!"}
+            </Button>
+          </>
         )}
 
         <Link href="/impressions_result" asChild>

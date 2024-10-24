@@ -25,7 +25,7 @@ import { universalStyles } from "@/constants/Styles";
 //import { useRoute } from "@react-navigation/native";
 
 export default function Home() {
-  const { isLoggedIn, logout, nextStage, updateUserContext, canChangeStage } = useUserContext();
+  const { isLoggedIn, logout, nextStage, updateUserContext, canChangeStage, impressionConfirmation } = useUserContext();
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(async () => {
@@ -61,10 +61,13 @@ export default function Home() {
             </Button>
           </>
         )}
-
-        <Link href="/impressions_result" asChild>
-          <Button>{"Impression check results"}</Button>
-        </Link>
+        {impressionConfirmation != "unset" && (
+          <>
+            <Link href="/impressions_result" asChild>
+              <Button>{"Impression check results"}</Button>
+            </Link>
+          </>
+        )}
       </View>
     </ScrollView>
   );

@@ -30,6 +30,7 @@ interface UserContextType {
   updateAlignerCount: (count: number) => Promise<void>;
   updateAlignerProgress: (count: number) => Promise<void>;
   updateUsername: (name: string) => Promise<void>;
+  impressionConfirmation: string;
 }
 
 // Create the context with an initial value
@@ -45,6 +46,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [alignerProgress, setAlignerProgress] = useState<number>(0);
   const [alignerChangeDate, setAlignerChangeDate] = useState<string>("");
   const [expoPushToken, setExpoPushToken] = useState<string>("");
+  const [impressionConfirmation, setImpressionConfirmation] = useState<string>("unset");
   const [canChangeStage, setCanChangeStage] = useState<Boolean>(false);
 
   const login = async (userData: User) => {
@@ -92,6 +94,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         alignerProgress: number;
         alignerChangeDate: string;
         canChangeStage: Boolean;
+        impressionConfirmation: string;
       };
       console.log("stage: " + userDataWithStage.stage);
 
@@ -125,6 +128,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
       if (userDataWithStage.alignerChangeDate) {
         setAlignerChangeDate(userDataWithStage.alignerChangeDate);
+      }
+      if (userDataWithStage.impressionConfirmation) {
+        setImpressionConfirmation(userDataWithStage.impressionConfirmation);
       }
     } else {
       console.log(response);
@@ -254,6 +260,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         updateAlignerProgress,
         updateUsername,
         canChangeStage,
+        impressionConfirmation,
       }}
     >
       {children}

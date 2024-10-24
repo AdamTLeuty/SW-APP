@@ -358,7 +358,7 @@ func serverSideControls(db *sql.DB) {
 			if err != nil {
 				return
 			}
-			notify(token, "Smile Correct Club!", "Testy, it's time to change your aligners!")
+			notify(token, "Smile Correct Club!", "Testy, it's time to change your aligners!", "")
 		case 'c':
 			getUsersWithNowChangeDate(db)
 		case 'h':

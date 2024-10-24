@@ -16,3 +16,4 @@ logs
 includeFromServer
 main
 sendToServer
+admin/assets

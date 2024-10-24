@@ -109,7 +109,7 @@ func getUsersWithNowChangeDate(db *sql.DB) error {
 
 			message := fmt.Sprintf("%s, its time to change your aligners!", user.Username)
 
-			notify(token, "Smile Correct Club", message)
+			notify(token, "Smile Correct Club", message, "")
 		}
 	}
 

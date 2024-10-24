@@ -123,6 +123,7 @@ function RootLayoutNav() {
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
   const { isLoggedIn, status, updateExpoPushToken } = useUserContext();
+  const innerStatus = useRef<Status>(status);
 
   useEffect(() => {
     //sendTokenToServer()
@@ -132,15 +133,43 @@ function RootLayoutNav() {
 
   useEffect(() => {
     userStateChanged(isLoggedIn, status);
+    console.log("The status has changed to: " + status);
+    innerStatus.current = status;
   }, [isLoggedIn, status]);
+
+  async function waitForImpressionStage(url: any) {
+    return new Promise((resolve) => {
+      let timerId = setInterval(checkState, 1000);
+
+      function checkState() {
+        if (innerStatus.current === "impressionStage") {
+          console.log("In the impression stage, we are in the stage:" + innerStatus.current);
+
+          clearInterval(timerId);
+          resolve(innerStatus.current);
+          router.push(url);
+        } else {
+          console.log("Not in the impression stage atm, we are in the stage:" + innerStatus.current);
+        }
+      }
+    });
+  }
 
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => setExpoPushToken(token ?? ""))
       .catch((error: any) => setExpoPushToken(`${error}`));
 
+    async function redirect(notification: Notifications.Notification) {
+      const url = notification.request.content.data?.url;
+      if (url && url != "") {
+        await waitForImpressionStage(url);
+      }
+    }
+
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
       setNotification(notification);
+      redirect(notification);
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {

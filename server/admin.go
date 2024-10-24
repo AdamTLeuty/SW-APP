@@ -575,6 +575,8 @@ func admin_edit_user_info_form(c *gin.Context, db *sql.DB) {
 
 func edit_user_impression_state(c *gin.Context, db *sql.DB) {
 
+	log.Println("Changing a user's impression quality")
+
 	userPath := c.Param("userid")
 	userPath = strings.Replace(userPath, "/", "", -1)
 	id, err := strconv.Atoi(userPath)
@@ -612,6 +614,16 @@ func edit_user_impression_state(c *gin.Context, db *sql.DB) {
 	}
 
 	returnAddress := "/admin/user/" + strconv.Itoa(id)
+
+	var token string
+	err = db.QueryRow("SELECT expo_notification_token FROM users WHERE id = ?", id).Scan(&token)
+	if err != nil {
+		log.Print("Could not retrieve notification token from `users` table: ", err)
+	}
+
+	if quality != "unset" {
+		go notify(token, "Smile Correct Club", "Your impressions have been checked", "/impressions_result")
+	}
 
 	c.Redirect(302, returnAddress)
 	return

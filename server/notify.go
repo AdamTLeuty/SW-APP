@@ -9,15 +9,18 @@ import (
 	"strings"
 )
 
-func notify(token string, title string, body string) {
+func notify(token string, title string, body string, url string) {
 
 	client := &http.Client{}
 
 	var data = strings.NewReader(fmt.Sprintf(`{
 		  	"to": "%s",
 			"title": "%s",
-			"body": "%s"
-		}`, token, title, body))
+			"body": "%s",
+			"data": {
+				"url": "%s"
+			}
+		}`, token, title, body, url))
 
 	req, err := http.NewRequest("POST", "https://exp.host/--/api/v2/push/send", data)
 	if err != nil {

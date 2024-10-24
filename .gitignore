@@ -156,6 +156,7 @@ ehthumbs.db
 #Server access shell scripts
 accessServer
 excludeFromServer
+includeFromServer
 sendToServer
 sendDBToServer
 fromServer/
@@ -169,9 +170,12 @@ server/users.db
 
 .commands
 .server_commands
+.getDBFromServer
 
 #Testing
 server_tests/
+testing_guide.md
+testing_notes.md
 
 client/Payload
 *.ipa

@@ -11,7 +11,7 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func sendEmail(email string, authCode string) error {
+func sendEmail(email string, authCode string, username string) error {
 	from := mail.NewEmail("Example User", "auth@app.smilecorrectclub.co.uk")
 
 	to := mail.NewEmail("Example User", email)
@@ -27,7 +27,7 @@ func sendEmail(email string, authCode string) error {
 	personalizations.AddTos(to)
 
 	// Add dynamic template data (must match the variables used in the template)
-	personalizations.SetDynamicTemplateData("name", "Testy")
+	personalizations.SetDynamicTemplateData("name", username)
 	personalizations.SetDynamicTemplateData("auth_code", authCode)
 
 	message.AddPersonalizations(personalizations)

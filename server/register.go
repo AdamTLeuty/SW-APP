@@ -136,7 +136,9 @@ func register(c *gin.Context, db *sql.DB) {
 	token, err := createToken(user.Email)
 
 	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully", "token": token})
-
-	go sendEmail(user.Email, authCode)
-
+	if user.Username != "" {
+		go sendEmail(user.Email, authCode, user.Username)
+	} else {
+		go sendEmail(user.Email, authCode, user.Email)
+	}
 }

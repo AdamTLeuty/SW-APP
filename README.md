@@ -16,7 +16,7 @@
 For a non-comprehensive list of changes that should be made to improve the app, please see `FUTURE.md`
 
 ## Continued Maintenance
-The server needs the rclone to be configured with a remote location named `remote`
+The server needs the rclone to be configured with a remote location named `remote-SCC`
 
 Documentation for this can be found here:
 -  [Rclone - Google Drive](https://rclone.org/drive/)

@@ -343,7 +343,7 @@ func serverSideControls(db *sql.DB) {
 			log.Println("Quitting...")
 			os.Exit(0)
 		case 'e':
-			sendEmail("test@gmail.com", "987654")
+			sendEmail("test@gmail.com", "987654", "Testname")
 			log.Println("Sending an email")
 		case 'u':
 			updateDrive()

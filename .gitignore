@@ -179,3 +179,5 @@ testing_notes.md
 
 client/Payload
 *.ipa
+
+credentials.json

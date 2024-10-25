@@ -70,10 +70,12 @@ const LoginArea: React.FC = () => {
 
   const handleLoginWithToken = async () => {
     try {
+      console.log("Handle login with token function");
       const token = await getToken();
+      console.log("Token from `getToken` is :" + token);
       let loginResponse;
       if (typeof token == "string") {
-        loginResponse = await loginExistingUserWithToken(token, login);
+        loginResponse = await loginExistingUserWithToken(token, login, tentativeLogin);
       } else {
         console.log("There is no saved token");
         return;

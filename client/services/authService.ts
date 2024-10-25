@@ -154,7 +154,7 @@ export const loginExistingUserWithToken = async (
     }
 
     const userEmail = response.data.message.email;
-    const userData = await checkUserStatus(email, response.data.token);
+    const userData = await checkUserStatus(userEmail, response.data.token);
     const userDataDeconstructed = userData?.userData as { username: string };
     const name = userDataDeconstructed.username;
 
@@ -165,11 +165,13 @@ export const loginExistingUserWithToken = async (
   } catch (error) {
     const status = error?.response?.status;
     const email = error?.response?.data?.email;
-    console.log("The login email from the token was: ");
+    console.log("Error status is " + status);
+    console.log("Error email is " + email);
     if (status == 403) {
       const mockUserData = { name: "John Doe", email: email };
       tentativeLogin(mockUserData);
     }
+    console.log("The error at this point is:" + error);
     throw error;
   }
 };

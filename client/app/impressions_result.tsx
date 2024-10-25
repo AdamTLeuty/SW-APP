@@ -73,7 +73,7 @@ export default function impressions_result() {
       <ScrollView contentContainerStyle={{ alignItems: "center", backgroundColor: "red", justifyContent: "center", flexGrow: 1 }}>
         <View style={styles.container}>
           <Text style={styles.title} fontWeight="800">
-            {"Let’s try that again."}
+            {"Let’s try that again..."}
           </Text>
           <Text style={styles.body} fontWeight="400">
             {"It looks like you will have to retake your impressions on this occasion."}
@@ -85,7 +85,7 @@ export default function impressions_result() {
           <Link href="/home" asChild>
             <Pressable style={styles.homeButton}>
               <Text style={styles.impressionsButtonText} lightColor="#fff" fontWeight="800">
-                {"Contact Support"}
+                {"Contact us"}
               </Text>
             </Pressable>
           </Link>
@@ -100,7 +100,7 @@ export default function impressions_result() {
             {"No news yet!"}
           </Text>
           <Text style={styles.body} fontWeight="400">
-            {"It looks like we haven't checked your impressions yet, please check back again later."}
+            {"It looks like we haven't checked your impressions yet,so please check back again later."}
           </Text>
           <Link href="/home" asChild>
             <Pressable style={styles.homeButton}>

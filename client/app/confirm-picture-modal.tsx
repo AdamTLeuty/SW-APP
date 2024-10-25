@@ -96,46 +96,9 @@ export default function ModalScreen() {
       </Button>
       <Button onPress={savePhoto} lightColor="#5700FF" darkColor="#5700FF">
         <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
-          {status == "impressionStage" ? "Send your photo!" : "Save your photo!"}
+          {status == "impressionStage" ? "Send your photo" : "Save your photo"}
         </Text>
       </Button>
     </View>
   );
 }
-/*
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 25,
-    textAlign: "center",
-  },
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 50,
-    paddingHorizontal: 30,
-    gap: 23,
-  },
-  button: {
-    borderRadius: 47,
-    backgroundColor: "#5700FF",
-    paddingHorizontal: 39,
-    paddingVertical: 10,
-    textAlign: "center",
-    width: "100%",
-  },
-  buttonText: {
-    fontSize: 16,
-    textAlign: "center",
-    lineHeight: 29,
-  },
-  retakeButton: {
-    backgroundColor: "#F7F6F8",
-  },
-  preview: {
-    flex: 1,
-    width: "100%",
-    borderRadius: 10,
-  },
-});
-*/

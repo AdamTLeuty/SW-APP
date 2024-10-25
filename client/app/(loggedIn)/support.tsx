@@ -42,11 +42,6 @@ export default function Support() {
         />
 
         <Accordion
-          buttonText={"How much do clear aligners cost?"}
-          hiddenText={"Our single-arch aligners are £1,295 or £26.96 per month. Our dual-arch clear aligners are £1,595 or £33.21 per month."}
-        />
-
-        <Accordion
           buttonText={"How long do I have to wear clear aligners?"}
           hiddenText={"For the best results, your clear aligners need to be worn for 20-22 hours every day. Ideally, you should only remove them to eat, drink and brush your teeth."}
         />

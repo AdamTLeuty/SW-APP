@@ -18,10 +18,10 @@ export default function Progress() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Title style={universalStyles.bottomMargin}>ALIGNER PROGRESS</Title>
-        <Text style={[styles.content, universalStyles.bottomMargin]}>Keep up to date with your SCC aligner journey.</Text>
+        <Title style={universalStyles.bottomMargin}>YOUR ALIGNER PROGRESS</Title>
+        <Text style={[styles.content, universalStyles.bottomMargin]}>Keep up to date with your aligner journey...</Text>
         <ProgressBar style={styles.progressHolder} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
-        <Calendar title="Calendar" rows={3} />
+        <Calendar title="Your calendar" rows={3} />
       </View>
     </ScrollView>
   );

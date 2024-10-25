@@ -31,7 +31,7 @@ const DelayButton: React.FC<DelayButtonProps> = ({ selectedIndex, delayReasons }
   if (active) {
     return (
       <Button lightColor="#FF005C" darkColor="#FF005C" onPress={delayAlignerChange}>
-        {"Delay changing Aligners"}
+        {"Delay changing aligners"}
       </Button>
     );
   } else {
@@ -103,7 +103,7 @@ const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setInd
   return (
     <View style={styles.list}>
       <Text fontWeight="400" style={styles.listHeading}>
-        {"Tell us why you are delaying your Clear Aligner journey"}
+        {"Tell us why you are delaying your clear aligner journey"}
       </Text>
       {delayReasons.map((reason, i) => (
         <View key={i}>
@@ -165,7 +165,7 @@ export default function ModalScreen() {
     return (
       <View style={styles.container}>
         <Text style={styles.title} fontWeight="800" lightColor="black">
-          {"Time to change your\nClear Aligners"}
+          {"It's time to change your\nclear aligners"}
         </Text>
         <Pressable onPress={updateAlignerProgress} style={styles.button}>
           <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">

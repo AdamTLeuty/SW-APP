@@ -40,16 +40,13 @@ export default function Home() {
         <Title lightColor="#000">WELCOME TO THE SMILE&nbsp;CORRECT&nbsp;CLUB PORTAL!</Title>
         <View style={styles.separator} />
         <Link href="/impressionsProcessPage" asChild>
-          <Button>{"Take me to impressions process"}</Button>
+          <Button>{"Show me how to take impressions"}</Button>
         </Link>
         <Text lightColor="black" style={styles.body} fontWeight="400">
           {"More features will be unlocked once we send you your aligners"}
         </Text>
         {canChangeStage && (
           <>
-            <Text fontWeight="600" style={styles.subheading}>
-              {"Already have your aligners?"}
-            </Text>
             <Button
               onPress={() => {
                 nextStage();
@@ -57,14 +54,14 @@ export default function Home() {
               lightColor="#FF005C"
               darkColor="#FF005C"
             >
-              {"Take me to the aligner stage!"}
+              {"I’ve already got my aligners"}
             </Button>
           </>
         )}
         {impressionConfirmation != "unset" && (
           <>
             <Link href="/impressions_result" asChild>
-              <Button>{"Impression check results"}</Button>
+              <Button>{"Check my impressions results"}</Button>
             </Link>
           </>
         )}

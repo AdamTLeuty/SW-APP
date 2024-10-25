@@ -44,7 +44,7 @@ export default function Home() {
         {changeDate < now ? (
           <Link href="/aligner-change-modal" asChild>
             <Button lightColor="#FF005C" darkColor="#FF005C">
-              {alignerProgress > 0 ? "Time to change your aligners" : "Time to start your first aligners"}
+              {alignerProgress > 0 ? "It's time to change your aligners" : "It's time to start your first aligners"}
             </Button>
           </Link>
         ) : (
@@ -73,7 +73,7 @@ const Content_Link: React.FC<Content_LinkProps> = () => {
       <Image style={styles.image} source={image} contentFit="cover" transition={1000} />
       <View style={styles.content_right}>
         <Text style={styles.contentHeading} lightColor="#fff" fontWeight="700">
-          {"Earn & create\nContent from\nyour journey"}
+          {"Share your smile \nwith us and earn"}
         </Text>
         <View style={styles.contentButton}>
           <Text style={styles.contentButtonText} lightColor="#000" darkColor="#000" fontWeight="600">

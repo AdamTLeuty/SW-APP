@@ -16,6 +16,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Status } from "@/components/userContext";
 import CustomHeader from "@/components/CustomHeader";
+import Toast from "react-native-toast-message";
 
 import { handleRegistrationError, registerForPushNotificationsAsync } from "@/services/notificationService";
 
@@ -86,13 +87,16 @@ export default function RootLayout() {
   }
 
   return (
-    <ActionSheetProvider>
-      <UserProvider>
-        <ImageProvider>
-          <RootLayoutNav />
-        </ImageProvider>
-      </UserProvider>
-    </ActionSheetProvider>
+    <>
+      <ActionSheetProvider>
+        <UserProvider>
+          <ImageProvider>
+            <RootLayoutNav />
+          </ImageProvider>
+        </UserProvider>
+      </ActionSheetProvider>
+      <Toast />
+    </>
   );
 }
 

@@ -87,7 +87,10 @@ const Viewfinder: React.FC = () => {
     // Camera permissions are still loading.
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: "center" }}>We need your permission to show the camera, please allow 'Camera' and 'Photos' access in settings</Text>
+        <Text style={{ textAlign: "center", marginHorizontal: 50 }}>
+          To continue, this feature requires access to your Camera and Photos. Camera access allows you to take progress pictures and verify your impressions directly within the app,
+          and Photos access enables you to store and view images later. You can enable these permissions in Settings if needed.
+        </Text>
       </View>
     );
   }
@@ -96,13 +99,16 @@ const Viewfinder: React.FC = () => {
     // Camera permissions are not granted yet.
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: "center" }}>We need your permission to show the camera and store the resulting picture</Text>
+        <Text style={{ textAlign: "center", marginHorizontal: 50 }}>
+          To continue, this feature requires access to your Camera and Photos. Camera access allows you to take progress pictures and verify your impressions directly within the app,
+          and Photos access enables you to store and view images later.
+        </Text>
         <Button
           onPress={() => {
             requestCameraPermission();
             requestLibraryPermission();
           }}
-          title="Grant Permission"
+          title="Continue"
         />
       </View>
     );

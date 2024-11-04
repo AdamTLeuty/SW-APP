@@ -1,9 +1,10 @@
 import { StatusBar } from "expo-status-bar";
-import { Platform, StyleSheet, Pressable, Image } from "react-native";
-import React from "react";
+import { Platform, StyleSheet, Pressable, Image, ActivityIndicator } from "react-native";
+import React, { useState } from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View, Button } from "@/components/Themed";
 import { router } from "expo-router";
+import Toast from "react-native-toast-message";
 
 import { universalStyles as styles } from "@/constants/Styles";
 
@@ -18,6 +19,7 @@ import { useUserContext } from "@/components/userContext";
 export default function ModalScreen() {
   const { image, clearImage } = useCurrentImageContext();
   const { status } = useUserContext();
+  const [waiting, setWaiting] = useState<Boolean>(false);
 
   // Function to create or get the album
   async function getOrCreateAlbum(albumName: string, asset: MediaLibrary.Asset): Promise<MediaLibrary.Album> {
@@ -47,15 +49,30 @@ export default function ModalScreen() {
     router.back();
   };
 
-  const savePhoto = () => {
+  const savePhoto = async () => {
+    setWaiting(true);
     console.log("Save photo");
     // Example usage
     const imageUri = image.uri;
     console.log(image);
-    saveImageToAlbum(imageUri, "SCC");
-    uploadImage(imageUri, status);
-    //router.replace("/camera");
-    router.back();
+
+    try {
+      const result = await uploadImage(imageUri, status);
+      await saveImageToAlbum(imageUri, "SCC");
+      router.back();
+      Toast.show({
+        type: "success",
+        position: "bottom",
+        text1: status == "impressionStage" ? "Impressions uploaded successfully" : "Image saved successfully",
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Could not save image, please try again",
+      });
+    }
+    setWaiting(false);
   };
 
   const getDate = () => {
@@ -96,9 +113,18 @@ export default function ModalScreen() {
       </Button>
       <Button onPress={savePhoto} lightColor="#5700FF" darkColor="#5700FF">
         <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
-          {status == "impressionStage" ? "Send your photo" : "Save your photo"}
+          {status == "impressionStage" ? (
+            <>
+              {"Send your photo"} {waiting && <ActivityIndicator size="small" color="#FFFFFF" />}
+            </>
+          ) : (
+            <>
+              {"Save your photo"} {waiting && <ActivityIndicator size="small" color="#FFFFFF" />}
+            </>
+          )}
         </Text>
       </Button>
+      <Toast />
     </View>
   );
 }

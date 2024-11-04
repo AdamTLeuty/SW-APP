@@ -73,7 +73,7 @@ const Content_Link: React.FC<Content_LinkProps> = () => {
       <Image style={styles.image} source={image} contentFit="cover" transition={1000} />
       <View style={styles.content_right}>
         <Text style={styles.contentHeading} lightColor="#fff" fontWeight="700">
-          {"Share your smile \nwith us and earn"}
+          {"Share your\n smile with us\nand earn"}
         </Text>
         <View style={styles.contentButton}>
           <Text style={styles.contentButtonText} lightColor="#000" darkColor="#000" fontWeight="600">

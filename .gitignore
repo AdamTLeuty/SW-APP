@@ -176,6 +176,7 @@ server/users.db
 server_tests/
 testing_guide.md
 testing_notes.md
+review_changes.md
 
 client/Payload
 *.ipa

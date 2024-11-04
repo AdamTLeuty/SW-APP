@@ -2,7 +2,7 @@
   "expo": {
     "name": "SCC-APP",
     "slug": "SCC-APP",
-    "version": "1.0.5",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/images/icon-white-bg.png",
     "scheme": "myapp",
@@ -16,7 +16,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.smilecorrectclub.app",
       "infoPlist": {
-        "NSCameraUsageDescription": "This app requires access to the camera for the user to take progress and verification pictures"
+        "NSCameraUsageDescription": "The app requires the camera so you can take impression kit verification and progress pictures",
+        "NSPhotoLibraryUsageDescription": "The app requires `Photos` access so you can store and view images later, and upload impression kit verification pictures."
       }
     },
     "android": {

@@ -1,7 +1,7 @@
 {
   "name": "scc-app",
   "main": "expo-router/entry",
-  "version": "1.0.5",
+  "version": "1.0.9",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
@@ -52,6 +52,7 @@
     "react-native-svg": "15.2.0",
     "react-native-svg-transformer": "^1.5.0",
     "react-native-text": "^1.2.2",
+    "react-native-toast-message": "^2.2.1",
     "react-native-video": "^6.4.5",
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.8.6"

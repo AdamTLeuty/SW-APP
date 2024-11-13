@@ -70,7 +70,14 @@ func register(c *gin.Context, db *sql.DB) {
 	// Defer a rollback in case anything fails.
 	defer tx.Rollback()
 
-	stmt, err := tx.Prepare("INSERT INTO users(email, password, username, verified, authcode, stage, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate, expo_notification_token, can_change_stage) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	stmt, err := tx.Prepare(`
+    INSERT INTO users (
+        email, password, username, verified, authcode, stage, impressionConfirmation,
+        alignerProgress, alignerCount, alignerChangeDate, expo_notification_token, can_change_stage
+    )
+    SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+    WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = ?);
+`)
 	if err != nil {
 		tx.Rollback()
 		log.Println("Could not prepare insert into `users` table: ", err)
@@ -91,7 +98,7 @@ func register(c *gin.Context, db *sql.DB) {
 		stage = "impression"
 	}
 
-	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, stage, "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "", 0)
+	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, stage, "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "", 0, user.Email)
 	if err != nil {
 		tx.Rollback()
 		log.Println("Could not execute insert into `users` table: ", err)

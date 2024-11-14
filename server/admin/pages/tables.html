@@ -107,8 +107,14 @@
                                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email Verified?</th>
                                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     <div class="d-flex align-items-stretch justify-content-center gap-2">
-                                                        <div class="">Impressions<br />need checking?</div>
-                                                        <div class="sort-arrow text-md">&#8595;</div>
+                                                        <!--<a hx-boost="true" {{ if eq .Sorted "impression_check" }}href="/admin/home" {{ else }} href="/admin/home?sort=impression_check" {{ end }}  class="">Impressions<br />need checking?</a>-->
+
+                                                        {{ if eq .Sorted "impression_check" }}
+                                                        <a hx-boost="true" href="/admin/home" href="/admin/home?sort=impression_check">Impressions<br />need checking?</a>
+                                                        <div class="text-md">&#8595;</div>
+                                                        {{ else }}
+                                                        <a hx-boost="true" href="/admin/home?sort=impression_check">Impressions<br />need checking?</a>
+                                                        {{ end }}
                                                     </div>
                                                 </th>
                                                 <th class="text-secondary opacity-7"></th>

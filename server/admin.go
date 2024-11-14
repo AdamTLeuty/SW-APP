@@ -232,6 +232,8 @@ func admin_get_create_admin_form(c *gin.Context, db *sql.DB) {
 func admin_home(c *gin.Context, db *sql.DB) {
 
 	cookie, err := c.Cookie("session_id")
+	user_sort := c.Query("sort")
+	log.Print("`sort`: ", user_sort)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
@@ -247,13 +249,49 @@ func admin_home(c *gin.Context, db *sql.DB) {
 	}
 
 	log.Println(username)
+	var rows *sql.Rows
+	if user_sort == "impression_check" {
+		rows, err = db.Query(`SELECT DISTINCT u.id,
+											u.email,
+											u.username,
+											u.verified,
+											u.stage,
+											u.impressionConfirmation,
+											CASE
+											      WHEN u.impressionConfirmation = 'unset' AND i.id IS NOT NULL THEN 1
+											      ELSE 0
+											END AS needChecking
+							FROM users u
+							LEFT JOIN images i ON u.id = i.userID AND i.imageType = 'impression'
+							ORDER BY
+							    needChecking DESC,
+							    u.id ASC; `)
+	} else {
+		rows, err = db.Query(`SELECT DISTINCT u.id,
+											u.email,
+											u.username,
+											u.verified,
+											u.stage,
+											u.impressionConfirmation,
+											CASE
+										    	WHEN u.impressionConfirmation = 'unset' AND i.id IS NOT NULL THEN 1
+											    ELSE 0
+											END AS needChecking
+							FROM users u
+							LEFT JOIN images i ON u.id = i.userID AND i.imageType = 'impression'
+							ORDER BY
+							    u.id ASC;`)
+	}
 
-	rows, err := db.Query("SELECT id, email, username, verified,  stage, impressionConfirmation FROM users")
 	if err != nil {
 		log.Print(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "An unknown error has occurred, please contact website administrator"})
 		return
 	}
+
 	defer rows.Close()
+
+	log.Print("Has fetched the rows with no errors?")
 
 	// An userum slice to hold data from returned rows.
 	var users []TabledUser
@@ -262,30 +300,10 @@ func admin_home(c *gin.Context, db *sql.DB) {
 	for rows.Next() {
 		var user TabledUser
 		if err := rows.Scan(&user.ID, &user.Email, &user.Username, &user.Verified,
-			&user.Stage, &user.ImpressionQuality); err != nil {
+			&user.Stage, &user.ImpressionQuality, &user.NeedChecking); err != nil {
 			return
 		}
 
-		if user.ImpressionQuality == "unset" {
-
-			query := `SELECT EXISTS(SELECT 1 FROM images WHERE userID = ? AND imageType = 'impression' LIMIT 1)`
-			var impressionImageExists bool
-
-			// Execute the query
-			err := db.QueryRow(query, user.ID).Scan(&impressionImageExists)
-			if err != nil {
-				log.Println("Query: ", query)
-				log.Println("USER ID: ", user.ID)
-				log.Println("Could not check if user has impression image: ", err)
-			}
-
-			user.NeedChecking = impressionImageExists
-			log.Print("User needs checking?: ", user.NeedChecking)
-			log.Print("User is verified?: ", user.Verified)
-
-		} else {
-			user.NeedChecking = false
-		}
 		users = append(users, user)
 	}
 	if err = rows.Err(); err != nil {
@@ -293,9 +311,8 @@ func admin_home(c *gin.Context, db *sql.DB) {
 	}
 
 	c.HTML(http.StatusOK, "tables.html", gin.H{
-		"Username": "Testy McTest",
-		"Email":    "test@gmail.com",
-		"List":     users,
+		"List":   users,
+		"Sorted": user_sort,
 	})
 
 	return

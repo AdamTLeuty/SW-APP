@@ -9,3 +9,7 @@
 .div:has(+ .sort-arrow):hover {
     background-color: red;
 }
+
+label:has(~ input:valid) {
+    opacity: 0;
+}

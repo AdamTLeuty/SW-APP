@@ -20,14 +20,22 @@ func admin_auth(db *sql.DB) gin.HandlerFunc {
 		cookie, err := c.Cookie("session_id")
 
 		if err != nil {
-			c.Redirect(http.StatusUnauthorized, "/admin/login")
+			c.HTML(http.StatusOK, "login.html", gin.H{
+				"Username": "Testy McTest",
+				"Email":    "test@gmail.com",
+				"Message":  "Please log in again",
+			})
 			c.Abort()
 			return
 		}
 
 		username, err := verifyToken(cookie)
 		if err != nil {
-			c.Redirect(http.StatusUnauthorized, "/admin/login")
+			c.HTML(http.StatusOK, "login.html", gin.H{
+				"Username": "Testy McTest",
+				"Email":    "test@gmail.com",
+				"Message":  "Please log in again",
+			})
 			c.Abort()
 			return
 		}
@@ -35,13 +43,21 @@ func admin_auth(db *sql.DB) gin.HandlerFunc {
 		var exists bool
 		err = db.QueryRow("SELECT COUNT(1) FROM admins WHERE username = ?", username).Scan(&exists)
 		if err != nil {
-			c.Redirect(http.StatusSeeOther, "/admin/login")
+			c.HTML(http.StatusOK, "login.html", gin.H{
+				"Username": "Testy McTest",
+				"Email":    "test@gmail.com",
+				"Message":  "Please log in again",
+			})
 			c.Abort()
 			return
 		}
 
 		if !exists {
-			c.Redirect(http.StatusUnauthorized, "/admin/login")
+			c.HTML(http.StatusOK, "login.html", gin.H{
+				"Username": "Testy McTest",
+				"Email":    "test@gmail.com",
+				"Message":  "Please log in again",
+			})
 			c.Abort()
 			return
 		}

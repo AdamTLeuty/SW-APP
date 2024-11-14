@@ -61,20 +61,33 @@ func admin_login_form(c *gin.Context, db *sql.DB) {
 	var admin Admin
 	err := db.QueryRow("SELECT  username, password FROM admins WHERE username = ?", username).Scan(&admin.Username, &admin.Password)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		c.HTML(http.StatusUnauthorized, "login.html", gin.H{
+			"Username": "Testy McTest",
+			"Email":    "test@gmail.com",
+			"Message":  "Invalid email or password",
+		})
 		return
 	}
 
 	log.Println(admin)
 
 	if !checkPasswordHash(password, admin.Password) {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		c.HTML(http.StatusUnauthorized, "login.html", gin.H{
+			"Username": "Testy McTest",
+			"Email":    "test@gmail.com",
+			"Message":  "Invalid email or password",
+		})
 		return
 	}
 
 	token, err := createToken(username)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.HTML(http.StatusInternalServerError, "login.html", gin.H{
+			"Username": "Testy McTest",
+			"Email":    "test@gmail.com",
+			"Message":  "Internal Server Error - please log in again",
+		})
+		return
 	}
 
 	//c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully"})
@@ -84,23 +97,6 @@ func admin_login_form(c *gin.Context, db *sql.DB) {
 }
 
 func admin_admins(c *gin.Context, db *sql.DB) {
-
-	cookie, err := c.Cookie("session_id")
-
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
-		return
-	}
-
-	log.Printf("Cookie value: %s \n", cookie)
-
-	username, err := verifyToken(cookie)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
-		return
-	}
-
-	log.Println(username)
 
 	rows, err := db.Query("SELECT id, username FROM admins")
 	if err != nil {
@@ -136,22 +132,6 @@ func admin_admins(c *gin.Context, db *sql.DB) {
 func admin_create_admin(c *gin.Context, db *sql.DB) {
 
 	log.Print("`Create admin user` path accessed")
-
-	cookie, err := c.Cookie("session_id")
-	if err != nil {
-		c.Redirect(http.StatusTemporaryRedirect, "/admin/login")
-		log.Print("Cookie error:", err)
-		return
-	}
-
-	log.Printf("Cookie value: %s \n", cookie)
-
-	_, err = verifyToken(cookie)
-	if err != nil {
-		c.Redirect(http.StatusTemporaryRedirect, "/admin/login")
-		log.Print("Token error:", err)
-		return
-	}
 
 	email := c.PostForm("email")
 	password := c.PostForm("password")
@@ -208,22 +188,6 @@ func create_admin_user(db *sql.DB, username string, password string) error {
 
 func admin_get_create_admin_form(c *gin.Context, db *sql.DB) {
 
-	cookie, err := c.Cookie("session_id")
-	if err != nil {
-		c.Redirect(http.StatusTemporaryRedirect, "/admin/login")
-		log.Print("Cookie error:", err)
-		return
-	}
-
-	log.Printf("Cookie value: %s \n", cookie)
-
-	_, err = verifyToken(cookie)
-	if err != nil {
-		c.Redirect(http.StatusTemporaryRedirect, "/admin/login")
-		log.Print("Token error:", err)
-		return
-	}
-
 	c.HTML(http.StatusOK, "adminCreateForm.html", gin.H{})
 	return
 
@@ -231,25 +195,13 @@ func admin_get_create_admin_form(c *gin.Context, db *sql.DB) {
 
 func admin_home(c *gin.Context, db *sql.DB) {
 
-	cookie, err := c.Cookie("session_id")
+	log.Print("Accessing the admin_home() function...")
+
 	user_sort := c.Query("sort")
 	log.Print("`sort`: ", user_sort)
 
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
-		return
-	}
-
-	log.Printf("Cookie value: %s \n", cookie)
-
-	username, err := verifyToken(cookie)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
-		return
-	}
-
-	log.Println(username)
 	var rows *sql.Rows
+	var err error
 	if user_sort == "impression_check" {
 		rows, err = db.Query(`SELECT DISTINCT u.id,
 											u.email,
@@ -285,7 +237,11 @@ func admin_home(c *gin.Context, db *sql.DB) {
 
 	if err != nil {
 		log.Print(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "An unknown error has occurred, please contact website administrator"})
+		c.HTML(http.StatusInternalServerError, "login.html", gin.H{
+			"Username": "Testy McTest",
+			"Email":    "test@gmail.com",
+			"Message":  "An unknown error has occurred, please contact website administrator",
+		})
 		return
 	}
 
@@ -319,23 +275,6 @@ func admin_home(c *gin.Context, db *sql.DB) {
 }
 
 func admin_user_profile(c *gin.Context, db *sql.DB) {
-
-	cookie, err := c.Cookie("session_id")
-
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
-		return
-	}
-
-	log.Printf("Cookie value: %s \n", cookie)
-
-	username, err := verifyToken(cookie)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
-		return
-	}
-
-	log.Println(username)
 
 	userPath := c.Param("userid")
 	userPath = strings.Replace(userPath, "/", "", -1)
@@ -399,23 +338,6 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 func admin_user_delete(c *gin.Context, db *sql.DB) {
 	log.Print("The delete handler was accessed")
 
-	cookie, err := c.Cookie("session_id")
-
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
-		return
-	}
-
-	log.Printf("Cookie value: %s \n", cookie)
-
-	username, err := verifyToken(cookie)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
-		return
-	}
-
-	log.Println(username)
-
 	userPath := c.Param("userid")
 	userPath = strings.Replace(userPath, "/", "", -1)
 	id, err := strconv.Atoi(userPath)
@@ -464,23 +386,6 @@ func delete_user(id int, db *sql.DB) error {
 
 func admin_admin_delete(c *gin.Context, db *sql.DB) {
 	log.Print("The delete handler was accessed")
-
-	cookie, err := c.Cookie("session_id")
-
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
-		return
-	}
-
-	log.Printf("Cookie value: %s \n", cookie)
-
-	username, err := verifyToken(cookie)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please log in"})
-		return
-	}
-
-	log.Println(username)
 
 	userPath := c.Param("userid")
 	userPath = strings.Replace(userPath, "/", "", -1)

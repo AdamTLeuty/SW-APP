@@ -154,41 +154,51 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		admin_login_form(c, db)
 	})
 
-	router.GET("/admin/home", rate_limit, func(c *gin.Context) {
-		admin_home(c, db)
-	})
+	admin := router.Group("/admin/")
+	admin.Use(admin_auth(db))
+	{
 
-	router.GET("/admin/admins", rate_limit, func(c *gin.Context) {
-		admin_admins(c, db)
-	})
+		admin.GET("/", rate_limit, func(c *gin.Context) {
+			admin_home(c, db)
+		})
 
-	router.POST("/admin/admins/create", rate_limit, func(c *gin.Context) {
-		admin_create_admin(c, db)
-	})
+		admin.GET("/home", rate_limit, func(c *gin.Context) {
+			admin_home(c, db)
+		})
 
-	router.GET("/admin/admins/create", func(c *gin.Context) {
-		admin_get_create_admin_form(c, db)
-	})
+		admin.GET("/admins", rate_limit, func(c *gin.Context) {
+			admin_admins(c, db)
+		})
 
-	router.GET("/admin/user/:userid", rate_limit, func(c *gin.Context) {
-		admin_user_profile(c, db)
-	})
+		admin.POST("/admins/create", rate_limit, func(c *gin.Context) {
+			admin_create_admin(c, db)
+		})
 
-	router.POST("/admin/user/delete/:userid", rate_limit, func(c *gin.Context) {
-		admin_user_delete(c, db)
-	})
+		admin.GET("/admins/create", func(c *gin.Context) {
+			admin_get_create_admin_form(c, db)
+		})
 
-	router.POST("/admin/admins/delete/:userid", rate_limit, func(c *gin.Context) {
-		admin_admin_delete(c, db)
-	})
+		admin.GET("/user/:userid", rate_limit, func(c *gin.Context) {
+			admin_user_profile(c, db)
+		})
 
-	router.POST("/admin/user/updateImpressionState/:userid", rate_limit, admin_auth(db), func(c *gin.Context) {
-		edit_user_impression_state(c, db)
-	})
+		admin.POST("/user/delete/:userid", rate_limit, func(c *gin.Context) {
+			admin_user_delete(c, db)
+		})
 
-	router.GET("/admin/components", rate_limit, func(c *gin.Context) {
-		admin_home(c, db)
-	})
+		admin.POST("/admins/delete/:userid", rate_limit, func(c *gin.Context) {
+			admin_admin_delete(c, db)
+		})
+
+		admin.POST("/user/updateImpressionState/:userid", rate_limit, admin_auth(db), func(c *gin.Context) {
+			edit_user_impression_state(c, db)
+		})
+
+		admin.GET("/components", rate_limit, func(c *gin.Context) {
+			admin_home(c, db)
+		})
+
+	}
 
 	auth_components := router.Group("/admin/components/")
 	auth_components.Use(rate_limit, admin_auth(db))

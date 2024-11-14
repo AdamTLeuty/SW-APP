@@ -32,6 +32,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
         <!-- CSS Files -->
         <link id="pagestyle" href="/admin/public/assets/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
+        <link id="pagestyle" href="/admin/public/assets/css/custom.css" rel="stylesheet" />
     </head>
 
     <body class="bg-gray-200">
@@ -46,6 +47,11 @@
                 <div class="container my-auto">
                     <div class="row">
                         <div class="col-lg-4 col-md-8 col-12 mx-auto">
+                            {{- if .Message }}
+                            <div class="alert alert-primary alert-dismissible text-white mb-6" role="alert">
+                                <span class="text-sm">{{ .Message }}</span>
+                            </div>
+                            {{ end }}
                             <div class="card z-index-0 fadeIn3 fadeInBottom">
                                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                                     <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
@@ -53,14 +59,14 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <form role="form" class="text-start" action="/admin/login" method="post">
-                                        <div class="input-group input-group-static my-3">
+                                    <form hx-boost="true" role="form" class="text-start" action="/admin/login" method="post">
+                                        <div class="input-group input-group-outline my-3">
                                             <label class="form-label">Email</label>
-                                            <input name="username" type="text" class="form-control" />
+                                            <input required name="username" type="text" class="form-control" />
                                         </div>
-                                        <div class="input-group input-group-static mb-3">
+                                        <div class="input-group input-group-outline mb-3">
                                             <label class="form-label">Password</label>
-                                            <input name="pass" type="password" class="form-control" />
+                                            <input required name="pass" type="password" class="form-control" />
                                         </div>
                                         <div class="form-check form-switch d-flex align-items-center mb-3">
                                             <input class="form-check-input" type="checkbox" id="rememberMe" checked />

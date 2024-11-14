@@ -123,13 +123,14 @@
                                 </div>
                               </div>
                             </div>
+                            {{- if .ImpressionImages }}
                             <div class="col-12 mt-4">
                                 <div class="row">
-                                    <h3>Impression images</h3>
+                                    <h3>Impression Images</h3>
                                 </div>
 
                                 <div class="row">
-                                    {{range $val := .Images}}
+                                    {{range $val := .ImpressionImages}}
 
                                     <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
                                         <div class="card card-blog card-plain">
@@ -140,9 +141,7 @@
                                             </div>
                                             <div class="card-body p-3">
                                                 <p class="mb-0 text-sm">Date</p>
-                                                <a href="javascript:;">
-                                                    <h5>{{$val.ImageType}}</h5>
-                                                </a>
+
                                                 <!--<p class="mb-4 text-sm"></p>
                                                 <div class="d-flex align-items-center justify-content-between">
                                                     <button type="button" class="btn btn-outline-primary btn-sm mb-0">View</button>
@@ -170,6 +169,39 @@
                                     </form>
                                 </div>
                             </div>
+                            {{ end }}
+                            {{- if .ProgressImages }}
+                            <div class="col-12 mt-4">
+                                <div class="row">
+                                    <h3>Progress Images</h3>
+                                </div>
+
+                                <div class="row">
+                                    {{range $val := .ProgressImages}}
+
+                                    <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+                                        <div class="card card-blog card-plain">
+                                            <div class="card-header p-0 mx-3">
+                                                <a class="d-block shadow-xl border-radius-xl">
+                                                    <img src="/admin/{{ $val.Path }}" alt="img-blur-shadow" class="img-fluid shadow border-radius-xl" />
+                                                </a>
+                                            </div>
+                                            <div class="card-body p-3">
+                                                <p class="mb-0 text-sm">Date</p>
+
+                                                <!--<p class="mb-4 text-sm"></p>
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <button type="button" class="btn btn-outline-primary btn-sm mb-0">View</button>
+                                                </div>-->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{end}}
+                                </div>
+
+                            </div>
+                            {{ end }}
                         </div>
                     </div>
                 </div>

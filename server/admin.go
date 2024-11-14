@@ -31,6 +31,7 @@ type TabledUser struct {
 	AlignerCount                   int
 	AlignerChangeDate              string
 	AlignerChangeDateHumanReadable string
+	NeedChecking                   bool
 }
 
 type Admin struct {
@@ -247,9 +248,9 @@ func admin_home(c *gin.Context, db *sql.DB) {
 
 	log.Println(username)
 
-	rows, err := db.Query("SELECT id, email, username, verified, stage FROM users")
+	rows, err := db.Query("SELECT id, email, username, verified,  stage, impressionConfirmation FROM users")
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 		return
 	}
 	defer rows.Close()
@@ -261,8 +262,29 @@ func admin_home(c *gin.Context, db *sql.DB) {
 	for rows.Next() {
 		var user TabledUser
 		if err := rows.Scan(&user.ID, &user.Email, &user.Username, &user.Verified,
-			&user.Stage); err != nil {
+			&user.Stage, &user.ImpressionQuality); err != nil {
 			return
+		}
+
+		if user.ImpressionQuality == "unset" {
+
+			query := `SELECT EXISTS(SELECT 1 FROM images WHERE userID = ? AND imageType = 'impression' LIMIT 1)`
+			var impressionImageExists bool
+
+			// Execute the query
+			err := db.QueryRow(query, user.ID).Scan(&impressionImageExists)
+			if err != nil {
+				log.Println("Query: ", query)
+				log.Println("USER ID: ", user.ID)
+				log.Println("Could not check if user has impression image: ", err)
+			}
+
+			user.NeedChecking = impressionImageExists
+			log.Print("User needs checking?: ", user.NeedChecking)
+			log.Print("User is verified?: ", user.Verified)
+
+		} else {
+			user.NeedChecking = false
 		}
 		users = append(users, user)
 	}
@@ -321,7 +343,8 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 	defer rows.Close()
 
 	// An userum slice to hold data from returned rows.
-	var images []Image
+	var impressionImages []Image
+	var progressImages []Image
 
 	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
@@ -332,7 +355,10 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 			return
 		}
 		if image.ImageType == "impression" {
-			images = append(images, image)
+			impressionImages = append(impressionImages, image)
+		}
+		if image.ImageType == "progress" {
+			progressImages = append(progressImages, image)
 		}
 	}
 	if err = rows.Err(); err != nil {
@@ -342,11 +368,12 @@ func admin_user_profile(c *gin.Context, db *sql.DB) {
 
 	log.Println(user)
 
-	log.Println(images)
+	//log.Println(impressionImages)
 
 	c.HTML(http.StatusOK, "profile.html", gin.H{
-		"User":   user,
-		"Images": images,
+		"User":             user,
+		"ImpressionImages": impressionImages,
+		"ProgressImages":   progressImages,
 	})
 	return
 

@@ -35,6 +35,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
         <!-- CSS Files -->
         <link id="pagestyle" href="../admin/assets/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
+        <link id="pagestyle" href="../admin/assets/css/custom.css" rel="stylesheet" />
         <!--HTMX -->
         <script src="/admin/assets/js/core/htmx.min.js"></script>
     </head>
@@ -104,6 +105,13 @@
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
                                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Stage</th>
                                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email Verified?</th>
+                                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    <div class="d-flex align-items-stretch justify-content-center gap-2">
+                                                        <div class="">Impressions<br />need checking?</div>
+                                                        <div class="sort-arrow text-md">&#8595;</div>
+                                                    </div>
+                                                </th>
+                                                <th class="text-secondary opacity-7"></th>
                                                 <th class="text-secondary opacity-7"></th>
                                             </tr>
                                         </thead>
@@ -125,12 +133,15 @@
                                                 </td>
                                                 <td class="align-middle text-center text-sm">
                                                     {{ if eq $val.Verified 1 }}
-                                                    <span class="badge badge-sm bg-success">✓</span>
+                                                    <span class="badge badge-sm bg-success">&#10003;</span>
                                                     {{ else }}
-                                                    <span class="badge badge-sm bg-danger">✗</span>
+                                                    <span class="badge badge-sm bg-danger">&#10007;</span>
                                                     {{ end }}
                                                 </td>
-                                                <td class="align-middle">
+                                                <td class="align-middle text-center text-sm">
+                                                    <span class="badge badge-sm bg-danger">{{ if eq $val.NeedChecking true }}&nbsp;{{ end }}</span>
+                                                </td>
+                                                <td class="align-middle text-center">
                                                     <a
                                                         href="/admin/user/{{$val.ID}}"
                                                         class="text-secondary font-weight-bold text-xs"
@@ -140,7 +151,7 @@
                                                         Edit
                                                     </a>
                                                 </td>
-                                                <td class="align-middle">
+                                                <td class="align-middle text-center">
                                                     <button
                                                         onclick="deleteDialog('{{$val.ID}}', '{{$val.Email}}')"
                                                         class="bg-gradient-primary btn font-weight-bold link-danger text-secondary text-white text-xs"

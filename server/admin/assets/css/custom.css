@@ -1,0 +1,11 @@
+.sort-arrow {
+    display: none;
+}
+
+.div:has(+ .sort-arrow) {
+    background: green;
+}
+
+.div:has(+ .sort-arrow):hover {
+    background-color: red;
+}

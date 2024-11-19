@@ -1,20 +1,21 @@
 {
   "expo": {
-    "name": "SCC-APP",
-    "slug": "SCC-APP",
-    "version": "1.0.9",
+    "name": "SW-APP",
+    "slug": "SW-APP",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon-white-bg.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/splash_screen.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ff0ff"
+      "backgroundColor": "#4378ff"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.smilecorrectclub.app",
+      "bundleIdentifier": "com.smilewhite.app",
       "infoPlist": {
         "NSCameraUsageDescription": "The app requires the camera so you can take impression kit verification and progress pictures",
         "NSPhotoLibraryUsageDescription": "The app requires `Photos` access so you can store and view images later, and upload impression kit verification pictures."

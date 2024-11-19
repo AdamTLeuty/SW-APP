@@ -1,4 +1,4 @@
-# Smile Correct Club Patient Portal
+# Smile White Patient Portal
 
 ## Tech Stack
 ### Client

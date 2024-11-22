@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
 import { Text, View } from "@/components/Themed";
+import Colors from "@/constants/Colors";
 
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
@@ -29,7 +30,7 @@ export default function Camera() {
     <View style={styles.container}>
       <Viewfinder />
       <TouchableOpacity style={styles.backButton} activeOpacity={0.5} onPress={goBack}>
-        <Icon iconName="back-arrow" color="#5700FF" />
+        <Icon iconName="back-arrow" color={Colors.light.button} />
       </TouchableOpacity>
     </View>
   );

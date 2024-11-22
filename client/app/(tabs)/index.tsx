@@ -25,7 +25,7 @@ export default function SignInScreen() {
           <LoginArea />
           <Text style={styles.orText}>Or</Text>
           <Pressable>
-            <Text style={styles.registerText} lightColor="#5700ff" darkColor="#ffffff" onPress={() => router.replace("/register")}>
+            <Text style={styles.registerText} lightColor="#4378ff" darkColor="#ffffff" onPress={() => router.replace("/register")}>
               Register
             </Text>
           </Pressable>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     textDecorationStyle: "solid",
-    textDecorationColor: "#5700ff",
+    textDecorationColor: "#4378ff",
     textDecorationLine: "underline",
   },
 });

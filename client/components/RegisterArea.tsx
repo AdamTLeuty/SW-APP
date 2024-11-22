@@ -87,7 +87,7 @@ const RegisterArea: React.FC = () => {
         placeholder="*Username"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
-        lightColor={"#5700FF"}
+        lightColor={"#4378ff"}
         darkColor={"#FFFFFF"}
         value={username}
         onChangeText={setUsername}
@@ -99,7 +99,7 @@ const RegisterArea: React.FC = () => {
         placeholder="*Email"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
-        lightColor={"#5700FF"}
+        lightColor={"#4378ff"}
         darkColor={"#FFFFFF"}
         value={email}
         onChangeText={setEmail}
@@ -110,7 +110,7 @@ const RegisterArea: React.FC = () => {
         placeholder="*Password"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
-        lightColor={"#5700FF"}
+        lightColor={"#4378ff"}
         darkColor={"#FFFFFF"}
         value={password}
         onChangeText={setPassword}
@@ -122,7 +122,7 @@ const RegisterArea: React.FC = () => {
         placeholder="*Password"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
-        lightColor={"#5700FF"}
+        lightColor={"#4378ff"}
         darkColor={"#FFFFFF"}
         value={passwordConfirm}
         onChangeText={setPasswordConfirm}
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   loginButton: {
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     color: "white",
     width: "100%",
     textAlign: "center",
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     textDecorationStyle: "solid",
-    textDecorationColor: "#5700ff",
+    textDecorationColor: "#4378ff",
     textDecorationLine: "underline",
   },
 });

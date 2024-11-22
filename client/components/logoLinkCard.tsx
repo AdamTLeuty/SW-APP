@@ -51,7 +51,7 @@ const LogoLinkCard: React.FC<LogoLinkCardProps> = ({ text, iconName, link, linkT
   return (
     <Pressable style={styles.container} onPress={() => handleClick(link, linkType)}>
       <Icon iconName={iconName} color="white" />
-      <Text style={styles.cardText} lightColor={"#5700FF"} darkColor="#000" fontWeight="600">
+      <Text style={styles.cardText} lightColor={"#4378ff"} darkColor="#000" fontWeight="600">
         {text}
       </Text>
     </Pressable>
@@ -61,7 +61,7 @@ const LogoLinkCard: React.FC<LogoLinkCardProps> = ({ text, iconName, link, linkT
 <Pressable  onPress={() => handleClick(link, linkType)}>
   <View style={styles.container}>
     <Icon iconName={iconName} color="white" />
-    <Text style={styles.cardText} lightColor={"#5700FF"} darkColor="#000" fontWeight="600">
+    <Text style={styles.cardText} lightColor={"#4378ff"} darkColor="#000" fontWeight="600">
       {text}
     </Text>
   </View>
@@ -69,7 +69,7 @@ const LogoLinkCard: React.FC<LogoLinkCardProps> = ({ text, iconName, link, linkT
 */
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "space-between",

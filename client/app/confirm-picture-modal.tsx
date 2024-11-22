@@ -111,7 +111,7 @@ export default function ModalScreen() {
           {"Retake your photo"}
         </Text>
       </Button>
-      <Button onPress={savePhoto} lightColor="#5700FF" darkColor="#5700FF">
+      <Button onPress={savePhoto} lightColor="#4378ff" darkColor="#4378ff">
         <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
           {status == "impressionStage" ? (
             <>

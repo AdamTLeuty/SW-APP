@@ -42,24 +42,11 @@ export default function RootLayout() {
       try {
         // Pre-load fonts, make any API calls you need to do here
         await Font.loadAsync({
-          Poppins_Black: require("@/assets/fonts/Poppins-Black.ttf"),
-          Poppins_BlackItalic: require("@/assets/fonts/Poppins-BlackItalic.ttf"),
-          Poppins_Bold: require("@/assets/fonts/Poppins-Bold.ttf"),
-          Poppins_BoldItalic: require("@/assets/fonts/Poppins-BoldItalic.ttf"),
-          Poppins_ExtraBold: require("@/assets/fonts/Poppins-ExtraBold.ttf"),
-          Poppins_ExtraBoldItalic: require("@/assets/fonts/Poppins-ExtraBoldItalic.ttf"),
-          Poppins_ExtraLight: require("@/assets/fonts/Poppins-ExtraLight.ttf"),
-          Poppins_ExtraLightItalic: require("@/assets/fonts/Poppins-ExtraLightItalic.ttf"),
-          Poppins_Italic: require("@/assets/fonts/Poppins-Italic.ttf"),
-          Poppins_Light: require("@/assets/fonts/Poppins-Light.ttf"),
-          Poppins_LightItalic: require("@/assets/fonts/Poppins-LightItalic.ttf"),
-          Poppins_Medium: require("@/assets/fonts/Poppins-Medium.ttf"),
-          Poppins_MediumItalic: require("@/assets/fonts/Poppins-MediumItalic.ttf"),
-          Poppins_Regular: require("@/assets/fonts/Poppins-Regular.ttf"),
-          Poppins_SemiBold: require("@/assets/fonts/Poppins-SemiBold.ttf"),
-          Poppins_SemiBoldItalic: require("@/assets/fonts/Poppins-SemiBoldItalic.ttf"),
-          Poppins_Thin: require("@/assets/fonts/Poppins-Thin.ttf"),
-          Poppins_ThinItalic: require("@/assets/fonts/Poppins-ThinItalic.ttf"),
+          ProximaNova_Black: require("@/assets/fonts/proximanova_black.otf"),
+          ProximaNova_Bold: require("@/assets/fonts/proximanova_bold.otf"),
+          ProximaNova_ExtraBold: require("@/assets/fonts/proximanova_extrabold.otf"), // Matches "extrabld"
+          ProximaNova_ExtraLight: require("@/assets/fonts/proximanova_light.otf"),
+          ProximaNova_Regular: require("@/assets/fonts/proximanova_regular.ttf"),
           ...FontAwesome.font,
         });
       } catch (e) {
@@ -186,60 +173,90 @@ function RootLayoutNav() {
     };
   }, []);
 
-  if (status == "alignerStage") {
-    //console.log("Is logged in!!");
-    return (
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(loggedIn)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          <Stack.Screen name="aligner-change-modal" options={{ presentation: "modal", headerShown: false }} />
-          <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
-          <Stack.Screen
-            name="settings"
-            options={{
-              //href: null,
-              title: "Settings test",
-              header: ({ navigation, route, options }) => {
-                return <CustomHeader locked={false} backButton={true} nav={navigation} />;
-              },
-              headerShown: true,
-            }}
-          />
-        </Stack>
-      </ThemeProvider>
-    );
-  } else if (status == "impressionStage") {
-    return (
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(impressionProcess)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
-          <Stack.Screen name="impressions_result" options={{ presentation: "modal", headerShown: false }} />
-          <Stack.Screen
-            name="settings"
-            options={{
-              //href: null,
-              title: "Settings test",
-              header: ({ navigation, route, options }) => {
-                return <CustomHeader locked={false} backButton={true} nav={navigation} />;
-              },
-              headerShown: true,
-            }}
-          />
-        </Stack>
-      </ThemeProvider>
-    );
-  } else {
-    //console.log("Isn't logged in!!!");
-    return (
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        </Stack>
-      </ThemeProvider>
-    );
-  }
+  return (
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="(loggedIn)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        <Stack.Screen name="aligner-change-modal" options={{ presentation: "modal", headerShown: false }} />
+        <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
+        <Stack.Screen
+          name="settings"
+          options={{
+            //href: null,
+            title: "Settings test",
+            header: ({ navigation, route, options }) => {
+              return <CustomHeader locked={false} backButton={true} nav={navigation} />;
+            },
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen name="(impressionProcess)" options={{ headerShown: false }} />
+        <Stack.Screen name="impressions_result" options={{ presentation: "modal", headerShown: false }} />
+
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </ThemeProvider>
+  );
 }
+
+/*
+
+if (status == "alignerStage") {
+  //console.log("Is logged in!!");
+  return (
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="(loggedIn)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        <Stack.Screen name="aligner-change-modal" options={{ presentation: "modal", headerShown: false }} />
+        <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
+        <Stack.Screen
+          name="settings"
+          options={{
+            //href: null,
+            title: "Settings test",
+            header: ({ navigation, route, options }) => {
+              return <CustomHeader locked={false} backButton={true} nav={navigation} />;
+            },
+            headerShown: true,
+          }}
+        />
+      </Stack>
+    </ThemeProvider>
+  );
+} else if (status == "impressionStage") {
+  return (
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="(impressionProcess)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
+        <Stack.Screen name="impressions_result" options={{ presentation: "modal", headerShown: false }} />
+        <Stack.Screen
+          name="settings"
+          options={{
+            //href: null,
+            title: "Settings test",
+            header: ({ navigation, route, options }) => {
+              return <CustomHeader locked={false} backButton={true} nav={navigation} />;
+            },
+            headerShown: true,
+          }}
+        />
+      </Stack>
+    </ThemeProvider>
+  );
+} else {
+  //console.log("Isn't logged in!!!");
+  return (
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+      </Stack>
+    </ThemeProvider>
+  );
+}
+
+*/

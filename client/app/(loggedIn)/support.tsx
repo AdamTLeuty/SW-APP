@@ -25,8 +25,8 @@ export default function Support() {
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text style={styles.content}>We want to make sure that you have the best experience from start to finish.</Text>
         <View style={styles.supportCards}>
-          <LogoLinkCard text="Call Us" iconName="phone" link="tel:${03308226507}" linkType="phone" />
-          <LogoLinkCard text="Email Us" iconName="mail" link="mailto:info@smilecorrectclub.co.uk" linkType="mail" />
+          <LogoLinkCard text="Call Us" iconName="phone" link="tel:${01138687615}" linkType="phone" />
+          <LogoLinkCard text="Email Us" iconName="mail" link="mailto:hello@smilewhite.co.uk" linkType="mail" />
           <LogoLinkCard text="Live Chat" iconName="support" link="/liveChat" linkType="screen" />
         </View>
 

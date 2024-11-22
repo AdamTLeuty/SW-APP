@@ -53,7 +53,7 @@ const GalleryImage: React.FC<GalleryImageProps> = ({ asset }) => {
         <Text lightColor="#000" fontWeight="700" style={styles.text}>
           {dateUnixToHuman(asset.modificationTime, "dayAndMonth")}
         </Text>
-        <Text lightColor="#5700ff" fontWeight="700" style={styles.text}>
+        <Text lightColor="#4378ff" fontWeight="700" style={styles.text}>
           {dateUnixToHuman(asset.modificationTime, "year")}
         </Text>
       </View>

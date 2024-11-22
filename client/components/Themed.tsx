@@ -61,26 +61,20 @@ export type ScrollViewProps = ScrollViewPropsSpecific & ThemeProps & DefaultView
 export type TextInputProps = ThemeProps & DefaultTextInput["props"];
 
 function chooseFont(fontWeight?: string): string {
-  if (fontWeight == "900") {
-    return "Poppins_Black";
-  } else if (fontWeight == "800") {
-    return "Poppins_ExtraBold";
-  } else if (fontWeight == "700") {
-    return "Poppins_Bold";
-  } else if (fontWeight == "600") {
-    return "Poppins_SemiBold";
-  } else if (fontWeight == "500") {
-    return "Poppins_Medium";
-  } else if (fontWeight == "400") {
-    return "Poppins_Regular";
-  } else if (fontWeight == "300") {
-    return "Poppins_Light";
-  } else if (fontWeight == "200") {
-    return "Poppins_ExtraLight";
-  } else if (fontWeight == "100") {
-    return "Poppins_Thin";
-  } else {
-    return "Poppins_Regular"; // Default font if no match is found
+  switch (fontWeight) {
+    case "900":
+      return "ProximaNova_Black"; // Matches proximanova_black.otf
+    case "800":
+      return "ProximaNova_ExtraBold"; // Matches proximanova_extrabold.otf
+    case "700":
+      return "ProximaNova_Bold"; // Matches proximanova_bold.otf
+    case "400":
+      return "ProximaNova_Regular"; // Matches proximanova_regular.ttf
+    case "200":
+    case "300":
+      return "ProximaNova_ExtraLight"; // Matches proximanova_light.otf
+    default:
+      return "ProximaNova_Regular"; // Default to regular if fontWeight is undefined or unmatched
   }
 }
 

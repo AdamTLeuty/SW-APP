@@ -90,7 +90,7 @@ const VerifyArea: React.FC = () => {
         placeholder="Eg. 123456"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
-        lightColor={"#5700FF"}
+        lightColor={"#4378ff"}
         darkColor={"#FFFFFF"}
         value={authcode}
         onChangeText={setAuthcode}
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   loginButton: {
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     color: "white",
     width: "100%",
     textAlign: "center",
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     textDecorationStyle: "solid",
-    textDecorationColor: "#5700ff",
+    textDecorationColor: "#4378ff",
     textDecorationLine: "underline",
   },
 });

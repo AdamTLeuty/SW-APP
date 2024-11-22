@@ -2,7 +2,7 @@ import { Svg, Path } from "react-native-svg";
 import { useThemeColor } from "./Themed";
 
 export function LogoTitle(props: { locked: boolean; style?: object }) {
-  const color = useThemeColor({ light: "#5700FF", dark: "#fff" }, "text");
+  const color = useThemeColor({ light: "#4378ff", dark: "#fff" }, "text");
 
   if (props.locked) {
     return (

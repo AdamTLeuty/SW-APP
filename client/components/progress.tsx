@@ -48,14 +48,14 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     borderRadius: 10,
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     paddingHorizontal: 17,
     paddingBottom: 22,
     paddingTop: 12,
     gap: 12,
   },
   headingContainer: {
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   progressBarHolder: {
     flexDirection: "row",
     width: "100%",
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
   },
   progressBar: {
     height: 9,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   alignerFraction: {
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

@@ -75,7 +75,7 @@ const AlignerCountCheck: React.FC<AlignerCountCheckProps> = ({ setGlobalAlignerC
           keyboardType="numeric"
           placeHolderTextColorLight={"#BDBDBD"}
           placeHolderTextColorDark={"#FFFFFF"}
-          lightColor={"#5700FF"}
+          lightColor={"#4378ff"}
           darkColor={"#FFFFFF"}
           value={alignerCountInput}
           //If input is invalid, set as 0, else, keep as number
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 47,
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     paddingHorizontal: 39,
     paddingVertical: 10,
     textAlign: "center",

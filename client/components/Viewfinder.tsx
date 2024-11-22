@@ -43,7 +43,7 @@ function GalleryIcon() {
 function Shutter_Button() {
   return (
     <Svg width="79" height="79" viewBox="0 0 79 79" fill="none">
-      <Rect x="8" y="8" width="63" height="63" rx="31.5" fill="#5700FF" fill-opacity="0.5" />
+      <Rect x="8" y="8" width="63" height="63" rx="31.5" fill="#4378ff" fill-opacity="0.5" />
       <Rect x="2" y="2" width="75" height="75" rx="37.5" stroke="white" strokeWidth="4" />
     </Svg>
   );

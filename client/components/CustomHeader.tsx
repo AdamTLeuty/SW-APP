@@ -24,7 +24,7 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
     const options = isLoggedIn ? ["Settings", "Sign Out", "Cancel"] : ["Cancel"];
     const destructiveButtonIndex = isLoggedIn ? 1 : -1;
     const cancelButtonIndex = isLoggedIn ? 2 : 0;
-    const cancelButtonTintColor = "#5700FF";
+    const cancelButtonTintColor = "#4378ff";
     const destructiveColor = "#FF005C";
     //const title = "Settings";
 
@@ -64,7 +64,7 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
       <View style={[styles.buttonContainer, { justifyContent: "flex-start" }]}>
         {backButton ? (
           <TouchableOpacity activeOpacity={0.5} onPress={goBack}>
-            <Icon iconName="back-arrow" color="#5700FF" />
+            <Icon iconName="back-arrow" color="#4378ff" />
           </TouchableOpacity>
         ) : null}
       </View>

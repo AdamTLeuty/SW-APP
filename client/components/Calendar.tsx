@@ -56,16 +56,16 @@ const DateCard: React.FC<DateCardProps> = ({ i }) => {
     currentDate = true;
   }
 
-  //currentCard: { backgroundColor: "#5700FF" },
+  //currentCard: { backgroundColor: "#4378ff" },
   //otherCard: { backgroundColor: "#fff" },
   const backgroundColor = currentDate ? Colors["light"]["tint"] : useThemeColor({}, "accentBackground");
 
   return (
     <View style={styles.dateCard} lightColor={backgroundColor} darkColor={backgroundColor} onLayout={handleCardLayout}>
-      <Text style={styles.dayOfWeek} lightColor={currentDate ? "#fff" : "#5700FF"} darkColor="#fff" fontWeight="500">
+      <Text style={styles.dayOfWeek} lightColor={currentDate ? "#fff" : "#4378ff"} darkColor="#fff" fontWeight="500">
         {getDayOfWeek(i)}
       </Text>
-      <Text style={styles.dateText} lightColor={currentDate ? "#fff" : "#5700FF"} darkColor="#fff" fontWeight="700">
+      <Text style={styles.dateText} lightColor={currentDate ? "#fff" : "#4378ff"} darkColor="#fff" fontWeight="700">
         {getDate(i)}
       </Text>
     </View>
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginHorizontal: 0,
   },
-  //currentCard: { backgroundColor: "#5700FF" },
+  //currentCard: { backgroundColor: "#4378ff" },
   //otherCard: { backgroundColor: "#fff" },
   dayOfWeek: {
     fontSize: 14,

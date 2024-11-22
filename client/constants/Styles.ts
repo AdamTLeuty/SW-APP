@@ -15,7 +15,7 @@ export const modalStyles = StyleSheet.create({
   },
   button: {
     borderRadius: 47,
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     paddingHorizontal: 39,
     paddingVertical: 10,
     textAlign: "center",
@@ -51,7 +51,7 @@ export const homeStyles = StyleSheet.create({
   },
   content_right: {
     flexGrow: 1,
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     alignItems: "center",
     justifyContent: "center",
     gap: 19,
@@ -132,10 +132,11 @@ export const universalStyles = StyleSheet.create({
   },
   content_right: {
     flexGrow: 1,
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     alignItems: "center",
     justifyContent: "center",
     gap: 19,
+    paddingVertical: 20,
   },
   contentHeading: {
     fontSize: 22,
@@ -214,7 +215,7 @@ export const universalStyles = StyleSheet.create({
 
   button: {
     borderRadius: 47,
-    backgroundColor: "#5700FF",
+    backgroundColor: "#4378ff",
     paddingHorizontal: 39,
     paddingVertical: 10,
     textAlign: "center",

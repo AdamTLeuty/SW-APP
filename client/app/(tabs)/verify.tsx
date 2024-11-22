@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     textDecorationStyle: "solid",
-    textDecorationColor: "#5700ff",
+    textDecorationColor: "#4378ff",
     textDecorationLine: "underline",
   },
 });

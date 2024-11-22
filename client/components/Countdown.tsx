@@ -24,13 +24,42 @@ function getTimeUntil(targetDate: Date, now: Date): string {
   return `${String(days).padStart(2, "0")}:${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
+function durationToSeconds(duration: string): number {
+  // Split the input string into parts based on ":"
+  const parts = duration.split(":").map(Number);
+
+  // Validate the input format (it should have 4 parts: dd:hh:mm:ss)
+  if (parts.length !== 4 || parts.some(isNaN)) {
+    throw new Error("Invalid duration format. Expected format is dd:hh:mm:ss.");
+  }
+
+  const [days, hours, minutes, seconds] = parts;
+
+  // Convert the duration to total seconds
+  const totalSeconds =
+    days * 24 * 60 * 60 + // Convert days to seconds
+    hours * 60 * 60 + // Convert hours to seconds
+    minutes * 60 + // Convert minutes to seconds
+    seconds; // Add seconds
+
+  return totalSeconds;
+}
+
 const Countdown: React.FC<CountdownProps> = ({ timerPercentage, changeDate }) => {
-  const [radius, setRadius] = useState(100);
+  const [radius, setRadius] = useState(0);
   const [time, setTime] = useState(new Date());
+  const [ratio, setRatio] = useState(100);
+  const ten_days = durationToSeconds("10:00:00:00");
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTime(new Date());
+      const time_left = durationToSeconds(getTimeUntil(changeDate, time));
+      console.log("Time left in seconds:", time_left);
+      console.log("Ten days is :", ten_days);
+      setRatio((time_left / ten_days) * 100);
+      console.log("Ratio:", ratio);
+      console.log("");
     }, 1000);
 
     return () => clearInterval(interval); // Cleanup on unmount
@@ -44,7 +73,7 @@ const Countdown: React.FC<CountdownProps> = ({ timerPercentage, changeDate }) =>
   return (
     <View onLayout={handleLayout} style={styles.container}>
       {radius > 0 && (
-        <CircularProgressBase radius={radius} value={timerPercentage} initialValue={100} duration={5000} activeStrokeColor={Colors.light.tint} inActiveStrokeOpacity={0.2}>
+        <CircularProgressBase radius={radius} value={ratio} initialValue={100} duration={5000} maxValue={100} activeStrokeColor={Colors.light.tint} inActiveStrokeOpacity={0.2}>
           <Text style={styles.title} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} adjustsFontSizeToFit={true} numberOfLines={1}>
             {getTimeUntil(changeDate, time)}
           </Text>

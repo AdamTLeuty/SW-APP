@@ -17,7 +17,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/JGLTechnologies/gin-rate-limit"
+	ratelimit "github.com/JGLTechnologies/gin-rate-limit"
 )
 
 type User struct {
@@ -309,17 +309,19 @@ func main() {
 	// Defer stopping the cron scheduler until the program exits
 	defer cronJob.Stop()
 
+	port := os.Getenv("PORT")
+
 	go func() {
 		router := setupRouter(db)
 		s := &http.Server{
-			Addr:           ":1234",
+			Addr:           port,
 			Handler:        router,
 			ReadTimeout:    10 * time.Second,
 			WriteTimeout:   10 * time.Second,
 			MaxHeaderBytes: 1 << 20,
 		}
 
-		log.Println("Starting server on port 1234...")
+		log.Println("Starting server on port: ", port)
 		if err := s.ListenAndServe(); err != nil {
 			log.Fatal(err)
 		}

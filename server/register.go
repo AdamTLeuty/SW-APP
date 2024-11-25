@@ -95,7 +95,8 @@ func register(c *gin.Context, db *sql.DB) {
 	if hubspotUserStage == "Aligner" {
 		stage = "aligner"
 	} else {
-		stage = "impression"
+		//stage = "impression"
+		stage = "aligner"
 	}
 
 	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, stage, "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "", 0, user.Email)

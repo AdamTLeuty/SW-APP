@@ -1,8 +1,3 @@
 #!/bin/zsh
 clear;
-rsync -avz --no-perms --no-owner --no-group --exclude-from="excludeFromServer" -e 'ssh -i ~/.ssh/molardental' . root@molar.dentahost.co.uk:/home/appauthscc/public_html/auth-server;
-cd fromServer;
-./retrieveFromServer;
-cp -f auth-server/users.db ../users.db;
-cd ..;
-open -g -a "DB Browser for SQLite" ./users.db;
+rsync -avz --no-perms --no-owner --no-group --exclude-from="excludeFromServer" -e 'ssh -i ~/.ssh/molardental' . root@molar.dentahost.co.uk:/home/app/public_html/auth-server;

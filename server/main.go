@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"database/sql"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 
@@ -227,6 +228,14 @@ func main() {
 	}
 	defer logFile.Close()
 
+	/*ginLogFile, err := os.OpenFile("logs/gin.log", os.O_RDWR|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer ginLogFile.Close()*/
+
+	gin.DefaultWriter = io.MultiWriter(logFile)
+
 	// Set log out put and enjoy :)
 	log.SetOutput(logFile)
 
@@ -312,6 +321,7 @@ func main() {
 	port := os.Getenv("PORT")
 
 	go func() {
+
 		router := setupRouter(db)
 		s := &http.Server{
 			Addr:           port,

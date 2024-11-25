@@ -154,7 +154,7 @@ func updateLocalHubspotProperty(db *sql.DB, objectID string, propertyName string
 	var fieldName string
 	var fieldValue string
 
-	if propertyName == "process_stage" {
+	if propertyName == "aftercare_stage__contact_" {
 		fieldName = "process_stage"
 		fieldValue = propertyValue
 	} else {
@@ -251,7 +251,7 @@ func getUserHubspotData(email string) (HubspotData, error) {
 
 	//See: https://developers.hubspot.com/docs/api/crm/contacts
 	//Add more properties under the `properties` url query if needed
-	requestURL := BASE_URL + "/crm/v3/objects/contacts/" + email + "?idProperty=email&properties=process_stage,aligner_count"
+	requestURL := BASE_URL + "/crm/v3/objects/contacts/" + email + "?idProperty=email&properties=aftercare_stage__contact_,aligner_count"
 	log.Println("Request url is: ", requestURL)
 	req, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {

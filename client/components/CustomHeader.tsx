@@ -68,8 +68,8 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
           </TouchableOpacity>
         ) : null}
       </View>
-      <View style={[styles.buttonContainer]}>
-        <LogoTitle style={styles.logo} {...props} locked={locked} />
+      <View style={[styles.buttonContainer, { flex: 2 }]}>
+        <LogoTitle style={styles.logo} color={"#3b3b3b"} {...props} locked={locked} />
       </View>
       <View onTouchStart={onPress} style={[styles.buttonContainer, { justifyContent: "flex-end" }]}>
         <TouchableOpacity activeOpacity={0.5}>

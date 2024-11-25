@@ -55,11 +55,7 @@ const Countdown: React.FC<CountdownProps> = ({ timerPercentage, changeDate }) =>
     const interval = setInterval(() => {
       setTime(new Date());
       const time_left = durationToSeconds(getTimeUntil(changeDate, time));
-      console.log("Time left in seconds:", time_left);
-      console.log("Ten days is :", ten_days);
       setRatio((time_left / ten_days) * 100);
-      console.log("Ratio:", ratio);
-      console.log("");
     }, 1000);
 
     return () => clearInterval(interval); // Cleanup on unmount
@@ -77,7 +73,7 @@ const Countdown: React.FC<CountdownProps> = ({ timerPercentage, changeDate }) =>
           <Text style={styles.title} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} adjustsFontSizeToFit={true} numberOfLines={1}>
             {getTimeUntil(changeDate, time)}
           </Text>
-          <Text style={{ fontSize: 20 }} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} adjustsFontSizeToFit={true} numberOfLines={1} fontVariant={["tabular-nums"]}>
+          <Text style={{ fontSize: 20 }} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} adjustsFontSizeToFit={true} numberOfLines={1}>
             {"Until your next aligner"}
           </Text>
         </CircularProgressBase>

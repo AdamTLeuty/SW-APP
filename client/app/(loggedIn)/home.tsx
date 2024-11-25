@@ -33,13 +33,10 @@ export default function Home() {
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.container}>
-        <Title style={styles.bottomMargin} lightColor="#000">
-          WELCOME TO THE SMILE&nbsp;WHITE PORTAL!
-        </Title>
+        <Title lightColor="#000">WELCOME TO THE SMILE&nbsp;WHITE PORTAL!</Title>
         <Link style={[styles.progressHolder, styles.bottomMargin]} href="/progress">
           {/*  <Progress text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} /> */}
         </Link>
-        <Countdown timerPercentage={100} changeDate={new Date(Date.parse(alignerChangeDate))} />
 
         {changeDate < now ? (
           <Link href="/aligner-change-modal" asChild>
@@ -48,7 +45,7 @@ export default function Home() {
             </Button>
           </Link>
         ) : (
-          <Text>{}</Text>
+          <Countdown timerPercentage={100} changeDate={new Date(Date.parse(alignerChangeDate))} />
         )}
         <Link href="/content">
           <Content_Link />

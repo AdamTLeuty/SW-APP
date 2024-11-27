@@ -10,7 +10,7 @@ import { Icon } from "./Icon";
 
 interface Props {
   buttonText: String;
-  hiddenText: String;
+  hiddenText: string;
 }
 
 function AccordionItem({ isExpanded, children, viewKey, style, duration = 500 }) {
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#BDBDBD",
     width: "100%",
-    paddingTop: 10,
+    paddingBottom: 15,
   },
   buttonContainer: {
     flex: 1,

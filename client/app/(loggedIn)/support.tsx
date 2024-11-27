@@ -20,7 +20,7 @@ export default function Support() {
     <ScrollView>
       <View style={styles.container}>
         <Text style={styles.title} fontWeight="800">
-          Customer Support
+          Customer support
         </Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text style={styles.content}>We want to make sure that you have the best experience from start to finish.</Text>
@@ -35,25 +35,40 @@ export default function Support() {
         </Text>
 
         <Accordion
-          buttonText={"How does Smile Correct Club work?"}
-          hiddenText={
-            "After your free e-consultation with one of our experts, we’ll send your at-home impression kit straight to your door. Use our easy-to-follow video guide to provide your impressions. If you’re eligible, we’ll create your moulds, manufacture your aligners, and send them to you within 2-3 weeks of receiving your impressions. They’ll be posted straight to your door, and your smile journey can begin right away."
-          }
-        />
-
-        <Accordion
-          buttonText={"How long do I have to wear clear aligners?"}
+          buttonText={"How often do I have to wear my clear aligners?"}
           hiddenText={"For the best results, your clear aligners need to be worn for 20-22 hours every day. Ideally, you should only remove them to eat, drink and brush your teeth."}
         />
 
         <Accordion
-          buttonText={"How long will the treatment take?"}
+          buttonText={"Can I eat and drink as normal with my clear aligners in?"}
           hiddenText={
-            "Our average aligner treatment plan is between 4-7 months. Some treatment plans may be shorter and some may be longer - it’s completely dependent on the complexity of your case."
+            "Always remove your clear aligners before eating and drinking, as they can be easily damaged or stained (even by soft drinks). You can only drink water with your clear aligners in."
           }
         />
 
-        <Accordion buttonText={"Are you Smile Direct Club?"} hiddenText={"No! We are Smile Correct Club, and are not affiliated with Smile Direct Club in any way."} />
+        <Accordion
+          buttonText={"After I eat, do I have to brush my teeth before putting my aligners back in?"}
+          hiddenText={"It’s a good idea to brush your teeth before replacing your aligners, as food particles may make the inside of your aligners dirty, leading to bad odours."}
+        />
+
+        <Accordion
+          buttonText={"Can I just wear my aligners at night?"}
+          hiddenText={
+            "If you only wear aligners at night, you won’t achieve the tooth movement necessary for a straighter smile. For the best results, your aligner should be worn for 20-22 hours per day."
+          }
+        />
+
+        <Accordion
+          buttonText={"How long do I have to wear my retainers after the aligners?"}
+          hiddenText={
+            "After you finish your aligner treatment, the bones under your teeth will still be regrowing. Without retainers, they may go back to their original position. We recommend wearing your retainers for at least six months."
+          }
+        />
+
+        <Accordion
+          buttonText={"How many trips to the dentist will I need throughout my treatment?"}
+          hiddenText={"You’ll need three visits in total. Your dentist will ensure your comfort and oversee the creation of custom clear aligners designed to achieve your ideal smile."}
+        />
       </View>
     </ScrollView>
   );

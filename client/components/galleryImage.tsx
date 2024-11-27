@@ -47,13 +47,13 @@ const GalleryImage: React.FC<GalleryImageProps> = ({ asset }) => {
   };
 
   return (
-    <View style={styles.rectangleParent} lightColor="white" darkColor={Colors.dark.accentBackground}>
+    <View style={styles.rectangleParent} lightColor={Colors.light.surface} darkColor={Colors.dark.surface}>
       <Image key={asset.id} source={asset.uri} style={styles.groupItem} />
       <View style={styles.textHolder} lightColor="#00000000" darkColor="#00000000">
-        <Text lightColor="#000" fontWeight="700" style={styles.text}>
+        <Text lightColor="#000" fontWeight="400" style={styles.text}>
           {dateUnixToHuman(asset.modificationTime, "dayAndMonth")}
         </Text>
-        <Text lightColor="#4378ff" fontWeight="700" style={styles.text}>
+        <Text lightColor={Colors.light.tint} darkColor={Colors.dark.tint} fontWeight="700" style={styles.text}>
           {dateUnixToHuman(asset.modificationTime, "year")}
         </Text>
       </View>
@@ -66,20 +66,12 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "auto",
     width: "50%",
+    maxWidth: "50%",
     //backgroundColor: "white",
     borderRadius: 10,
     minWidth: "40%",
     alignItems: "center",
-    paddingTop: 11,
-    paddingHorizontal: 11,
-    paddingBottom: 6,
-    gap: 5,
     justifyContent: "flex-start",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.25, // 40 in hex equals 25% opacity
-    shadowRadius: 4,
-    elevation: 4, // For Android shadow
   },
   groupItem: {
     //top: 11,
@@ -88,14 +80,20 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     backgroundColor: "#959595",
     width: "100%",
-    height: 136,
+    height: "auto",
+    aspectRatio: 1.16,
     //position: "absolute",
     maxWidth: "100%",
   },
   textHolder: {
     flexDirection: "row",
+    paddingTop: 8,
+    paddingHorizontal: 14,
+    paddingBottom: 12,
   },
-  text: {},
+  text: {
+    fontSize: 18,
+  },
 });
 
 export default GalleryImage;

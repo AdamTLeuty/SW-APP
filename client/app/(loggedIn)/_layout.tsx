@@ -41,11 +41,13 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1,
     margin: 0,
     marginTop: 30,
-    shadowColor: "rgba(153, 128, 172, 0.50)",
+    /*shadowColor: "rgba(153, 128, 172, 0.50)",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
-    elevation: 2,
+    elevation: 2,*/
+    fontWeight: 700,
+    color: "pink",
   },
   tabBar: {
     //height: 120,
@@ -61,7 +63,9 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     margin: 0,
-    marginTop: 35,
+    marginTop: 30,
+    fontWeight: 700,
+
     //borderColor: "blue",
     //borderWidth: 1,
     //borderStyle: "dashed",
@@ -73,9 +77,7 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   const activeTint = Colors[colorScheme ?? "light"].tabIconSelectedTint;
-  const activeBackground = Colors[colorScheme ?? "light"].tabIconSelectedBackground;
-  const inactiveBackground = Colors[colorScheme ?? "light"].tabIconDefaultBackground;
-  const inactiveTint = Colors[colorScheme ?? "light"].tabIconDefaultTint;
+  const inactiveTint = Colors[colorScheme ?? "light"].text;
   const tabBarBackground = { backgroundColor: useThemeColor({}, "background") };
 
   return (
@@ -85,7 +87,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: activeTint,
         headerShown: useClientOnlyValue(false, true),
         tabBarStyle: [styles.tabBar, tabBarBackground],
-        tabBarLabelStyle: styles.tabLabel,
+        tabBarLabelStyle: [styles.tabLabel, { color: Colors[useColorScheme() ?? "light"].text }],
       }}
     >
       <Tabs.Screen
@@ -94,9 +96,7 @@ export default function TabLayout() {
           title: "Home",
           tabBarBadgeStyle: styles.trayIcon,
 
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="home" width="30" color={focused ? inactiveTint : activeTint} backgroundColor={focused ? activeBackground : inactiveBackground} focused={focused} />
-          ),
+          tabBarIcon: ({ color, focused }) => <TabBarIcon iconName="home" width="30" color={focused ? activeTint : inactiveTint} focused={focused} />,
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} />;
           },
@@ -106,9 +106,7 @@ export default function TabLayout() {
         name="support"
         options={{
           title: "Support",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="support" width="30" color={focused ? inactiveTint : activeTint} backgroundColor={focused ? activeBackground : inactiveBackground} focused={focused} />
-          ),
+          tabBarIcon: ({ color, focused }) => <TabBarIcon iconName="support" width="30" color={focused ? activeTint : inactiveTint} focused={focused} />,
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} nav={navigation} />;
           },
@@ -118,9 +116,7 @@ export default function TabLayout() {
         name="camera"
         options={{
           title: "Photo",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="photo" width="30" color={focused ? inactiveTint : activeTint} backgroundColor={focused ? activeBackground : inactiveBackground} focused={focused} />
-          ),
+          tabBarIcon: ({ color, focused }) => <TabBarIcon iconName="photo" width="30" color={focused ? activeTint : inactiveTint} focused={focused} />,
           headerShown: false, // This hides the header
         }}
       />
@@ -128,9 +124,7 @@ export default function TabLayout() {
         name="progress"
         options={{
           title: "Progress",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="calendar" width="30" color={focused ? inactiveTint : activeTint} backgroundColor={focused ? activeBackground : inactiveBackground} focused={focused} />
-          ),
+          tabBarIcon: ({ color, focused }) => <TabBarIcon iconName="calendar" width="30" color={focused ? activeTint : inactiveTint} focused={focused} />,
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} />;
           },
@@ -140,9 +134,7 @@ export default function TabLayout() {
         name="content"
         options={{
           title: "Content",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconName="play" width="30" color={focused ? inactiveTint : activeTint} backgroundColor={focused ? activeBackground : inactiveBackground} focused={focused} />
-          ),
+          tabBarIcon: ({ color, focused }) => <TabBarIcon iconName="play" width="30" color={focused ? activeTint : inactiveTint} focused={focused} />,
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} />;
           },

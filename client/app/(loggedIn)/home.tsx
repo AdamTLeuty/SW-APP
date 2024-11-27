@@ -16,9 +16,25 @@ import Progress from "@/components/progress";
 import { Image } from "expo-image";
 import { RefreshControl } from "react-native";
 import Countdown from "@/components/Countdown";
+import Colors from "@/constants/Colors";
+
+function ordinal_suffix_of(i: number) {
+  let j = i % 10,
+    k = i % 100;
+  if (j === 1 && k !== 11) {
+    return i + "st";
+  }
+  if (j === 2 && k !== 12) {
+    return i + "nd";
+  }
+  if (j === 3 && k !== 13) {
+    return i + "rd";
+  }
+  return i + "th";
+}
 
 export default function Home() {
-  const { alignerProgress, alignerCount, updateUserContext, alignerChangeDate } = useUserContext();
+  const { alignerProgress, alignerCount, updateUserContext, alignerChangeDate, user } = useUserContext();
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(async () => {
@@ -33,19 +49,25 @@ export default function Home() {
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.container}>
-        <Title lightColor="#000">WELCOME TO THE SMILE&nbsp;WHITE PORTAL!</Title>
+        <Title>{user ? "Welcome back, " + user?.name : "Welcome back"}</Title>
+        {alignerProgress > 0 && (
+          <Text style={{ fontSize: 14 }} fontWeight="700" lightColor={Colors.light.tint} darkColor={Colors.light.tint}>
+            {"You’re on your " + ordinal_suffix_of(alignerProgress) + " aligner of your treatment."}
+          </Text>
+        )}
         <Link style={[styles.progressHolder, styles.bottomMargin]} href="/progress">
           {/*  <Progress text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} /> */}
         </Link>
 
+        {alignerProgress > 0 && <Countdown style={styles.bottomMargin} timerPercentage={100} changeDate={new Date(Date.parse(alignerChangeDate))} />}
         {changeDate < now ? (
           <Link href="/aligner-change-modal" asChild>
-            <Button lightColor="#FF005C" darkColor="#FF005C">
-              {alignerProgress > 0 ? "It's time to change your aligners" : "It's time to start your first aligners"}
+            <Button lightColor={Colors.light.tint} darkColor={Colors.dark.tint}>
+              {alignerProgress > 0 ? "Time to change your aligners" : "Time to start your first aligners"}
             </Button>
           </Link>
         ) : (
-          <Countdown timerPercentage={100} changeDate={new Date(Date.parse(alignerChangeDate))} />
+          <Text />
         )}
         <Link href="/content">
           <Content_Link />
@@ -55,22 +77,21 @@ export default function Home() {
   );
 }
 
-/*
-
-
-*/
-
 interface Content_LinkProps {}
 
 const Content_Link: React.FC<Content_LinkProps> = () => {
   const image = require("@/assets/images/content.png");
+  const [belowHeight, setBelowHeight] = useState(0);
 
   return (
     <View style={styles.content_link}>
-      <Image style={styles.image} source={image} contentFit="cover" transition={1000} />
-      <View style={styles.content_right}>
-        <Text style={styles.contentHeading} lightColor="#fff" fontWeight="700">
-          {"Share your\n smile with us\nand earn"}
+      <Image style={[styles.image, { minHeight: belowHeight }]} source={image} contentFit="cover" contentPosition={{ top: "50%", right: "center" }} transition={1000} />
+      <View style={styles.content_right} onLayout={(event) => setBelowHeight(event.nativeEvent.layout.height)}>
+        <Text style={styles.contentHeading} lightColor="#fff" fontWeight="400">
+          {`Share your smile with\nour social team to`}
+        </Text>
+        <Text style={[styles.contentHeading, { marginBottom: 19 }]} lightColor="#fff" fontWeight="800">
+          {"earn vouchers"}
         </Text>
         <View style={styles.contentButton}>
           <Text style={styles.contentButtonText} lightColor="#000" darkColor="#000" fontWeight="600">

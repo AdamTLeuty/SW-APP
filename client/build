@@ -2,8 +2,7 @@
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
-# Get rid of the keychain to manually give the password
-#export EXPO_NO_KEYCHAIN=1
+#export EXPO_NO_KEYCHAIN=1  # Get rid of the keychain to manually give the password
 clear;
 echo "Starting Expo prebuild...";
 npx expo prebuild;

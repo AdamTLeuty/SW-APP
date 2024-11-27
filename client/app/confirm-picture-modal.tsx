@@ -15,6 +15,7 @@ import { useCurrentImageContext } from "@/components/currentImageContext";
 import { uploadImage } from "@/services/uploadImage";
 
 import { useUserContext } from "@/components/userContext";
+import { SafeAreaView } from "react-native";
 
 export default function ModalScreen() {
   const { image, clearImage } = useCurrentImageContext();
@@ -101,30 +102,32 @@ export default function ModalScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={[styles.title, styles.bottomMargin]} fontWeight="800" lightColor="black">
-        {status == "impressionStage" ? "Can you clearly see your impressions?" : getDate()}
-      </Text>
-      {image ? <Image source={{ uri: image.uri }} style={[styles.preview, styles.bottomMargin]} /> : <Text>{"No image taken"}</Text>}
-      <Button onPress={toCamera} lightColor="#F7F6F8" darkColor="#F7F6F8">
-        <Text style={styles.buttonText} lightColor="#000" darkColor="#000" fontWeight="600">
-          {"Retake your photo"}
+    <SafeAreaView style={{ height: "100%" }}>
+      <View style={[styles.container, { paddingBottom: 50 }]}>
+        <Text style={[styles.title, styles.bottomMargin]} fontWeight="800" lightColor="black">
+          {status == "impressionStage" ? "Can you clearly see your impressions?" : getDate()}
         </Text>
-      </Button>
-      <Button onPress={savePhoto} lightColor="#4378ff" darkColor="#4378ff">
-        <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
-          {status == "impressionStage" ? (
-            <>
-              {"Send your photo"} {waiting && <ActivityIndicator size="small" color="#FFFFFF" />}
-            </>
-          ) : (
-            <>
-              {"Save your photo"} {waiting && <ActivityIndicator size="small" color="#FFFFFF" />}
-            </>
-          )}
-        </Text>
-      </Button>
-      <Toast />
-    </View>
+        {image ? <Image source={{ uri: image.uri }} style={[styles.preview, styles.bottomMargin]} /> : <Text>{"No image taken"}</Text>}
+        <Button onPress={toCamera} lightColor="#F7F6F8" darkColor="#F7F6F8">
+          <Text style={styles.buttonText} lightColor="#000" darkColor="#000" fontWeight="600">
+            {"Retake your photo"}
+          </Text>
+        </Button>
+        <Button onPress={savePhoto} lightColor="#4378ff" darkColor="#4378ff">
+          <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
+            {status == "impressionStage" ? (
+              <>
+                {"Send your photo"} {waiting && <ActivityIndicator size="small" color="#FFFFFF" />}
+              </>
+            ) : (
+              <>
+                {"Save your photo"} {waiting && <ActivityIndicator size="small" color="#FFFFFF" />}
+              </>
+            )}
+          </Text>
+        </Button>
+        <Toast />
+      </View>
+    </SafeAreaView>
   );
 }

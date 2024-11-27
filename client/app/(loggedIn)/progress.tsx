@@ -18,9 +18,10 @@ export default function Progress() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Title style={universalStyles.bottomMargin}>YOUR ALIGNER PROGRESS</Title>
+        <Title style={universalStyles.bottomMargin}>Your aligner progress</Title>
         <Text style={[styles.content, universalStyles.bottomMargin]}>Keep up to date with your aligner journey...</Text>
-        <ProgressBar style={styles.progressHolder} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
+        <ProgressBar text="Progress" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
+        {/*<ProgressBar style={styles.progressHolder} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />*/}
         <Calendar title="Your calendar" rows={3} />
       </View>
     </ScrollView>

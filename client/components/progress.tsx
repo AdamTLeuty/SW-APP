@@ -22,6 +22,9 @@ export const Progress: React.FC<Props> = ({ text, currentAlignerCount, totalAlig
     progressValue = 1;
   }
 
+  progressValue = Math.min(Math.max(progressValue, 0), 1);
+  progressValue = parseFloat(progressValue.toFixed(2));
+
   return (
     <View style={styles.container}>
       <View style={styles.headingContainer}>
@@ -38,7 +41,7 @@ export const Progress: React.FC<Props> = ({ text, currentAlignerCount, totalAlig
         </View>
       </View>
       <View style={styles.progressBarHolder}>
-        <LinearProgress value={progressValue} variant="determinate" style={styles.progressBar} trackColor="#F7F6F8" color={"#FFBA00"} />
+        <LinearProgress value={0.5} variant="determinate" style={styles.progressBar} trackColor="#F7F6F8" color={"#FFBA00"} />
       </View>
     </View>
   );

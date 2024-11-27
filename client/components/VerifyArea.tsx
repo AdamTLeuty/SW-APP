@@ -86,7 +86,7 @@ const VerifyArea: React.FC = () => {
   return (
     <View style={[styles.container, awaitingResponse ? styles.disabled : null]}>
       <TextInput
-        style={[styles.input, universalStyles.bottomMargin]}
+        style={[universalStyles.bottomMargin]}
         placeholder="Eg. 123456"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}

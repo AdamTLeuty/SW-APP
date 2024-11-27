@@ -83,7 +83,7 @@ const RegisterArea: React.FC = () => {
   return (
     <View style={styles.container}>
       <TextInput
-        style={styles.input}
+        style={{ marginBottom: 10 }}
         placeholder="*Username"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
@@ -95,7 +95,7 @@ const RegisterArea: React.FC = () => {
       />
 
       <TextInput
-        style={styles.input}
+        style={{ marginBottom: 10 }}
         placeholder="*Email"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
@@ -106,7 +106,7 @@ const RegisterArea: React.FC = () => {
       />
 
       <TextInput
-        style={styles.input}
+        style={{ marginBottom: 10 }}
         placeholder="*Password"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}
@@ -118,7 +118,7 @@ const RegisterArea: React.FC = () => {
       />
 
       <TextInput
-        style={[styles.input, universalStyles.bottomMargin]}
+        style={[universalStyles.bottomMargin]}
         placeholder="*Password"
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={"#FFFFFF"}

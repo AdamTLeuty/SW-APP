@@ -51,12 +51,15 @@ function Shutter_Button() {
 
 function FrameTop() {
   return (
-    <View style={styles.frameTop}>
-      <View style={[styles.rule, styles.rightCurve]} />
+    <View style={[styles.frameTopHolder]}>
       <Text style={styles.frame_text} lightColor="white" fontWeight="800">
         {"Keep face in frame"}
       </Text>
-      <View style={[styles.rule, styles.leftCurve]} />
+      <View style={styles.frameTop}>
+        <View style={[styles.rule, styles.rightCurve]} />
+        <View style={styles.rule_spacer} />
+        <View style={[styles.rule, styles.leftCurve]} />
+      </View>
     </View>
   );
 }
@@ -173,10 +176,20 @@ const Viewfinder: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  frameTop: {
+  frameTopHolder: {
     position: "absolute",
     backgroundColor: "#ffffff00",
     top: "17%",
+    //paddingTop: "13%",
+    //borderWidth: 1,
+    //borderColor: "red",
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 45,
+  },
+  frameTop: {
+    backgroundColor: "#ffffff00",
     //paddingTop: "13%",
     //borderWidth: 1,
     //borderColor: "red",

@@ -105,7 +105,7 @@ const SettingSection: React.FC<SettingSectionProps> = ({ propertyTitle, value, s
         {propertyTitle}
       </Text>
       <TextInput
-        style={{ padding: 0, paddingVertical: 0, paddingLeft: 0, margin: 0, includeFontPadding: false }}
+        style={{ padding: 0, paddingVertical: 0, paddingLeft: 0, margin: 0, includeFontPadding: false, borderColor: "#00000000", borderWidth: 0 }}
         placeHolderTextColorLight={"#BDBDBD"}
         placeHolderTextColorDark={Colors.dark.text}
         lightBgColor={Colors.light.background}

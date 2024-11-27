@@ -21,7 +21,7 @@ export default function VerifyScreen() {
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
         <View style={styles.container}>
           <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
-            VERIFY YOUR EMAIL
+            Verify your email
           </Title>
           <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
             Please check your email for a six digit code.

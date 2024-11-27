@@ -4,6 +4,7 @@ import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
 import RegisterArea from "@/components/RegisterArea";
 import { Text, View, Title, KeyboardAvoidingView, ScrollView } from "@/components/Themed";
+import Colors from "@/constants/Colors";
 
 import { useEffect, useState } from "react";
 
@@ -16,10 +17,10 @@ export default function SignInScreen() {
     <KeyboardAvoidingView style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
         <View style={styles.container}>
-          <Title style={universalStyles.bottomMargin} lightColor={"#000"} darkColor={"#fff"}>
-            LOG IN
+          <Title lightColor={"#000"} darkColor={"#fff"}>
+            Log in
           </Title>
-          <Text style={styles.greeting} lightColor={"#000"} darkColor={"#FFFFFF"} fontWeight={"500"} textBreakStrategy="balanced">
+          <Text style={styles.greeting} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} fontWeight={"700"} textBreakStrategy="balanced">
             Please enter the email you gave us when you booked your consultation.
           </Text>
           <LoginArea />
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   greeting: {
-    fontSize: 18,
+    fontSize: 14,
     textAlign: "center",
     margin: 7,
   },

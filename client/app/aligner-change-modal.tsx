@@ -30,15 +30,17 @@ const DelayButton: React.FC<DelayButtonProps> = ({ selectedIndex, delayReasons }
 
   if (active) {
     return (
-      <Button lightColor="#FF005C" darkColor="#FF005C" onPress={delayAlignerChange}>
-        {"Delay changing aligners"}
+      <Button lightColor={Colors.light.text} darkColor="#FFF" onPress={delayAlignerChange}>
+        <Text lightColor="#FFF" darkColor={Colors.dark.background} fontWeight="600">
+          {"Delay changing Aligners"}
+        </Text>
       </Button>
     );
   } else {
     return (
       <Button lightColor="#F7F6F8" darkColor={Colors.dark.accentBackground}>
         <Text lightColor="#BDBDBD" darkColor="#BDBDBD" fontWeight="600">
-          {"Delay changing Aligners "}
+          {"Delay changing Aligners"}
         </Text>
       </Button>
     );
@@ -65,12 +67,12 @@ const AlignerCountCheck: React.FC<AlignerCountCheckProps> = ({ setGlobalAlignerC
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={[styles.container, { justifyContent: "center" }]}>
-        <Title>HOW MANY ALIGNERS DO YOU HAVE?</Title>
-        <Text> {"Before you put in your first aligner, we need to know how many aligners came in your treatment kit"} </Text>
+      <View style={[styles.container]}>
+        <Title>{"How many clear aligners\ndo you have?"}</Title>
+        <Text style={{ textAlign: "center" }}> {"Before you put in your first aligner, we need to know how many aligners came in your treatment kit"} </Text>
         <Text> {"The input number is: " + alignerCount} </Text>
         <TextInput
-          style={{ textAlign: "center" }}
+          style={{ textAlign: "center", width: "100%" }}
           placeholder="Aligner Count"
           keyboardType="numeric"
           placeHolderTextColorLight={"#BDBDBD"}
@@ -120,7 +122,7 @@ const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setInd
             }}
             checkedIcon="circle"
             uncheckedIcon="circle"
-            checkedColor="#FF005C"
+            checkedColor={Colors.tint}
             title={<Text style={styles.listItem}>{reason}</Text>}
             onIconPress={() => {
               if (selectedIndex === i) {
@@ -164,7 +166,7 @@ export default function ModalScreen() {
   if (alignerCount > 0) {
     return (
       <View style={styles.container}>
-        <Text style={styles.title} fontWeight="800" lightColor="black">
+        <Text style={[styles.title]} fontWeight="800" lightColor="black">
           {"It's time to change your\nclear aligners"}
         </Text>
         <Pressable onPress={updateAlignerProgress} style={styles.button}>
@@ -184,10 +186,11 @@ export default function ModalScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    //alignItems: "center",
     justifyContent: "center",
     paddingVertical: 50,
     paddingHorizontal: 30,
+    textAlign: "center",
     gap: 23,
   },
   title: {

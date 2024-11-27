@@ -10,6 +10,7 @@ import { ScreenStackHeaderCenterView } from "react-native-screens";
 import Colors from "@/constants/Colors";
 
 import { getToken } from "../services/tokenStorage";
+import { universalStyles } from "@/constants/Styles";
 
 //import { useRoute } from "@react-navigation/native";
 
@@ -94,23 +95,23 @@ const LoginArea: React.FC = () => {
   return (
     <View style={styles.container}>
       <TextInput
-        style={styles.input}
+        style={{ marginBottom: 10 }}
         placeholder="Enter email"
-        placeHolderTextColorLight={"#BDBDBD"}
-        placeHolderTextColorDark={"#FFFFFF"}
-        lightColor={"#4378ff"}
-        darkColor={"#FFFFFF"}
+        placeHolderTextColorLight={Colors.light.text}
+        placeHolderTextColorDark={Colors.dark.text}
+        lightColor={Colors.light.text}
+        darkColor={Colors.dark.text}
         value={email}
         onChangeText={setEmail}
       />
 
       <TextInput
-        style={styles.input}
+        style={{ marginBottom: 10 }}
         placeholder="Enter password"
-        placeHolderTextColorLight={"#BDBDBD"}
-        placeHolderTextColorDark={"#FFFFFF"}
-        lightColor={"#4378ff"}
-        darkColor={"#FFFFFF"}
+        placeHolderTextColorLight={Colors.light.text}
+        placeHolderTextColorDark={Colors.dark.text}
+        lightColor={Colors.light.text}
+        darkColor={Colors.dark.text}
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
@@ -132,15 +133,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     width: "100%",
-  },
-  input: {
-    marginBottom: 10,
-    paddingHorizontal: 17,
-    paddingVertical: 15,
-    borderRadius: 10,
-    fontSize: 16,
-    verticalAlign: "bottom",
-    elevation: -100,
   },
   userInfo: {
     marginTop: 20,

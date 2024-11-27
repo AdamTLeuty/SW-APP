@@ -3,10 +3,13 @@ import { View, Text } from "./Themed";
 import { StyleSheet, LayoutChangeEvent } from "react-native";
 import CircularProgress, { CircularProgressBase } from "react-native-circular-progress-indicator";
 import Colors from "@/constants/Colors";
+import { StyleProp, ViewStyle } from "react-native";
+import { useColorScheme } from "@/components/useColorScheme";
 
 interface CountdownProps {
   timerPercentage: number;
   changeDate: Date;
+  style: StyleProp<ViewStyle>;
 }
 
 function getTimeUntil(targetDate: Date, now: Date): string {
@@ -45,11 +48,12 @@ function durationToSeconds(duration: string): number {
   return totalSeconds;
 }
 
-const Countdown: React.FC<CountdownProps> = ({ timerPercentage, changeDate }) => {
+const Countdown: React.FC<CountdownProps> = ({ timerPercentage, changeDate, style }) => {
   const [radius, setRadius] = useState(0);
   const [time, setTime] = useState(new Date());
   const [ratio, setRatio] = useState(100);
   const ten_days = durationToSeconds("10:00:00:00");
+  const inactiveStrokeOpacity = useColorScheme() == "light" ? 1 : 0.2;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -67,13 +71,27 @@ const Countdown: React.FC<CountdownProps> = ({ timerPercentage, changeDate }) =>
   };
 
   return (
-    <View onLayout={handleLayout} style={styles.container}>
+    <View onLayout={handleLayout} style={[styles.container, style]}>
       {radius > 0 && (
-        <CircularProgressBase radius={radius} value={ratio} initialValue={100} duration={5000} maxValue={100} activeStrokeColor={Colors.light.tint} inActiveStrokeOpacity={0.2}>
-          <Text style={styles.title} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} adjustsFontSizeToFit={true} numberOfLines={1}>
+        <CircularProgressBase
+          radius={radius}
+          value={ratio}
+          activeStrokeWidth={21}
+          inActiveStrokeWidth={21}
+          initialValue={100}
+          duration={5000}
+          maxValue={100}
+          activeStrokeColor={Colors.light.tint}
+          inActiveStrokeColor={"#f5f5f5"}
+          inActiveStrokeOpacity={inactiveStrokeOpacity}
+        >
+          <Text style={{ fontSize: 18 }} lightColor={"#3b3b3b"} darkColor={"#ffffff"} adjustsFontSizeToFit={true} numberOfLines={1} fontWeight="700">
+            {"Countdown"}
+          </Text>
+          <Text style={styles.title} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} adjustsFontSizeToFit={true} numberOfLines={1} fontWeight="800">
             {getTimeUntil(changeDate, time)}
           </Text>
-          <Text style={{ fontSize: 20 }} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} adjustsFontSizeToFit={true} numberOfLines={1}>
+          <Text style={{ fontSize: 14 }} lightColor={"#3b3b3b"} darkColor={"#fff"} adjustsFontSizeToFit={true} numberOfLines={1}>
             {"Until your next aligner"}
           </Text>
         </CircularProgressBase>
@@ -83,13 +101,14 @@ const Countdown: React.FC<CountdownProps> = ({ timerPercentage, changeDate }) =>
 };
 
 const styles = StyleSheet.create({
-  container: { width: "100%" },
+  container: { width: "100%", marginHorizontal: 14 },
   title: {
-    fontSize: 50,
+    fontSize: 40,
     wordWrap: "nowrap",
     flexWrap: "nowrap",
-    paddingHorizontal: 20,
+    paddingHorizontal: 21,
     fontVariant: ["tabular-nums"],
+    marginVertical: 4,
   },
   countdown: {
     width: "100%",

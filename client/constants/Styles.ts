@@ -10,7 +10,7 @@ export const modalStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 50,
-    paddingHorizontal: 30,
+    paddingHorizontal: 44,
     gap: 23,
   },
   button: {
@@ -120,28 +120,26 @@ export const homeStyles = StyleSheet.create({
 export const universalStyles = StyleSheet.create({
   content_link: {
     width: "100%",
-    minHeight: 200,
-    flexDirection: "row",
+    height: "100%",
     borderRadius: 10,
     overflow: "hidden",
   },
   image: {
     width: "100%",
     backgroundColor: "#0553",
-    flexShrink: 1,
   },
   content_right: {
     flexGrow: 1,
     backgroundColor: "#4378ff",
     alignItems: "center",
     justifyContent: "center",
-    gap: 19,
     paddingVertical: 20,
   },
   contentHeading: {
-    fontSize: 22,
+    fontSize: 26,
     lineHeight: 26,
     textAlign: "center",
+    textOverflow: "",
   },
   contentButton: {
     borderRadius: 64,
@@ -154,7 +152,6 @@ export const universalStyles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 21,
   },
-
   containerHolder: {
     flex: 1,
     alignItems: "center",
@@ -165,8 +162,8 @@ export const universalStyles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingVertical: 50,
-    paddingHorizontal: 30,
+    paddingVertical: 30,
+    paddingHorizontal: 44,
   },
   scrollContainer: {
     flex: 1,
@@ -179,6 +176,7 @@ export const universalStyles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
+    lineHeight: 33,
     textAlign: "center",
   },
   subtitle: {
@@ -230,17 +228,16 @@ export const universalStyles = StyleSheet.create({
     backgroundColor: "#F7F6F8",
   },
   preview: {
-    flex: 1,
     width: "100%",
     borderRadius: 10,
+    flexGrow: 1,
   },
   input: {
     paddingHorizontal: 17,
     paddingVertical: 15,
-    borderRadius: 10,
+    borderRadius: 43,
     fontSize: 16,
     verticalAlign: "bottom",
-    elevation: -100,
   },
 });
 

@@ -2,7 +2,7 @@
  * Learn more about Light and Dark modes:
  * https://docs.expo.io/guides/color-schemes/
  */
-import React, { ReactElement, ReactNode } from "react";
+import React, { ReactElement, ReactNode, useState } from "react";
 import {
   Pressable as DefaultPressable,
   Text as DefaultText,
@@ -236,18 +236,41 @@ export function TextInput(
     placeHolderTextColorDark?: string;
   },
 ) {
-  const { style, lightColor, darkColor, lightBgColor, darkBgColor, placeHolderTextColorLight, placeHolderTextColorDark, autoCapitalize, ...otherProps } = props;
+  const { style, lightColor, darkColor, lightBgColor, darkBgColor, placeHolderTextColorLight, placeHolderTextColorDark, autoCapitalize, fontWeight, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
-  const backgroundColor = useThemeColor({ light: lightBgColor, dark: darkBgColor }, "accentBackground");
+  //const backgroundColor = useThemeColor({ light: lightBgColor, dark: darkBgColor }, "accentBackground");
   const placeholderTextColor = useThemeColor({ light: placeHolderTextColorLight, dark: placeHolderTextColorDark }, "background");
   const autocapitalize = props.autoCapitalize ? props.autoCapitalize : "none";
-  const defaultStyle = {
-    color: color,
-    backgroundColor: backgroundColor,
-    fontFamily: "Poppins_Regular",
-    width: "100%",
-    // Add other default styles here
+  const borderColor = useThemeColor({}, "text");
+
+  const [isFilled, setIsFilled] = useState(false);
+
+  const handleInputChange = (event: { nativeEvent: { text: string } }) => {
+    setIsFilled(event.nativeEvent.text.trim().length > 0);
   };
 
-  return <DefaultTextInput autoCapitalize={autocapitalize} style={[universalStyles.input, defaultStyle, style]} placeholderTextColor={placeholderTextColor} {...otherProps} />;
+  const defaultWeight = isFilled ? "700" : "400";
+  const fontFamily = chooseFont(fontWeight ? fontWeight : defaultWeight);
+
+  const defaultStyle = {
+    color: color,
+    //backgroundColor: backgroundColor,
+    fontFamily: fontFamily,
+    borderWidth: 1,
+    borderColor: borderColor,
+    width: "100%",
+  };
+
+  return (
+    <View>
+      <DefaultTextInput
+        autoCapitalize={autocapitalize}
+        style={[universalStyles.input, defaultStyle, style]}
+        placeholderTextColor={placeholderTextColor}
+        onChangeText={(value) => console.log("Text:", value)}
+        onChange={handleInputChange}
+        {...otherProps}
+      />
+    </View>
+  );
 }

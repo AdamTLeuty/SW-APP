@@ -4,6 +4,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 
 import { LinearProgress } from "@rneui/themed";
+import Colors from "@/constants/Colors";
 
 interface Props {
   text: String;
@@ -26,22 +27,23 @@ export const Progress: React.FC<Props> = ({ text, currentAlignerCount, totalAlig
   progressValue = parseFloat(progressValue.toFixed(2));
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} lightColor="#f5f5f5" darkColor={Colors.dark.accentBackground}>
       <View style={styles.headingContainer}>
-        <Text style={styles.progressBarHeaderText} lightColor="#FFF" fontWeight="600">
+        <Text style={styles.progressBarHeaderText} lightColor="#3b3b3b" darkColor="#FFFFFF" fontWeight="700">
           {text}
         </Text>
         <View style={styles.alignerFraction}>
-          <Text style={styles.fractionText} lightColor="#FFBA00" fontWeight="600">
+          <Text style={styles.fractionText} lightColor="#4378ff" darkColor="#4378ff" fontWeight="700">
             {currentAlignerCount}
           </Text>
-          <Text style={styles.fractionText} lightColor="#FFF" fontWeight="600">
+          <Text style={styles.fractionText} lightColor="#3b3b3b" darkColor="#ffffff" fontWeight="700">
             {"/" + totalAlignerCount}
           </Text>
         </View>
       </View>
-      <View style={styles.progressBarHolder}>
-        <LinearProgress value={0.5} variant="determinate" style={styles.progressBar} trackColor="#F7F6F8" color={"#FFBA00"} />
+      <View style={styles.progressBarHolder} lightColor={"#FFFFFF"} darkColor={Colors.dark.background}>
+        {false && <LinearProgress value={progressValue} variant="determinate" style={styles.progressBar} trackColor="#F7F6F8" color={"#FFBA00"} />}
+        <View style={{ width: `${progressValue * 100}%`, height: 9, borderRadius: 10 }} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} />
       </View>
     </View>
   );
@@ -51,14 +53,13 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     borderRadius: 10,
-    backgroundColor: "#4378ff",
     paddingHorizontal: 17,
     paddingBottom: 22,
     paddingTop: 12,
     gap: 12,
   },
   headingContainer: {
-    backgroundColor: "#4378ff",
+    backgroundColor: "#f5f5f500",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
   progressBarHolder: {
     flexDirection: "row",
     width: "100%",
-    backgroundColor: "#4378ff",
+    borderRadius: 10,
   },
   progressBar: {
     height: 9,
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   alignerFraction: {
-    backgroundColor: "#4378ff",
+    backgroundColor: "#4378ff00",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

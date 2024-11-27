@@ -7,6 +7,8 @@ import { useActionSheet } from "@expo/react-native-action-sheet";
 import { Pressable } from "react-native";
 import { useUserContext } from "@/components/userContext";
 import { View } from "./Themed";
+import Colors from "@/constants/Colors";
+import { useColorScheme } from "./useColorScheme";
 
 const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any }) => {
   const { locked, backButton, ...otherProps } = props;
@@ -60,7 +62,7 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
   };
 
   return (
-    <View style={styles.headerContainer}>
+    <View style={styles.headerContainer} lightColor={Colors.light.background} darkColor={Colors.dark.background}>
       <View style={[styles.buttonContainer, { justifyContent: "flex-start" }]}>
         {backButton ? (
           <TouchableOpacity activeOpacity={0.5} onPress={goBack}>
@@ -69,11 +71,11 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
         ) : null}
       </View>
       <View style={[styles.buttonContainer, { flex: 2 }]}>
-        <LogoTitle style={styles.logo} color={"#3b3b3b"} {...props} locked={locked} />
+        <LogoTitle style={styles.logo} {...props} locked={locked} />
       </View>
       <View onTouchStart={onPress} style={[styles.buttonContainer, { justifyContent: "flex-end" }]}>
         <TouchableOpacity activeOpacity={0.5}>
-          <Icon color="#BDBDBD" iconName="three-dots" />
+          <Icon color={useColorScheme() == "light" ? "#bdbdbd" : Colors.dark.accentBackground + "ff"} iconName="three-dots" />
         </TouchableOpacity>
       </View>
     </View>

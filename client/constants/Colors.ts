@@ -7,7 +7,7 @@ export default {
   light: {
     text: "#3b3b3b",
     background: "#fff",
-    accentBackground: "#F7F6F8",
+    accentBackground: "#f5f5f5",
     button: "#4378ff",
     tint: tintColorLight,
     tabIconDefaultTint: "#fff",
@@ -15,6 +15,7 @@ export default {
     tabIconSelectedBackground: tintColorLight,
     tabIconSelectedTint: tintColorLight,
     surface: "#f5f5f5",
+    none: "#FFFFFF00",
   },
   dark: {
     text: "#fff",
@@ -27,6 +28,7 @@ export default {
     tabIconSelectedTint: tintColorDark,
     tabIconSelectedBackground: "#4378ff",
     surface: "#f5f5f533",
+    none: "#FFFFFF00",
   },
 };
 

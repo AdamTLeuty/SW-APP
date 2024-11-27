@@ -3,6 +3,7 @@ import { Button, StyleSheet, LayoutChangeEvent } from "react-native";
 
 import { Text, View, TextInput, useThemeColor } from "./Themed";
 import Colors from "@/constants/Colors";
+import { universalStyles } from "@/constants/Styles";
 
 const layoutConstants = {
   cardMinWidth: 57,
@@ -58,7 +59,7 @@ const DateCard: React.FC<DateCardProps> = ({ i }) => {
 
   //currentCard: { backgroundColor: "#4378ff" },
   //otherCard: { backgroundColor: "#fff" },
-  const backgroundColor = currentDate ? Colors["light"]["tint"] : useThemeColor({}, "accentBackground");
+  const backgroundColor = currentDate ? Colors.tint : useThemeColor({}, "background");
 
   return (
     <View style={styles.dateCard} lightColor={backgroundColor} darkColor={backgroundColor} onLayout={handleCardLayout}>
@@ -99,8 +100,8 @@ const Calendar: React.FC<CalendarProps> = ({ rows, title }) => {
   let maxCards = Math.floor((availableParentWidth + layoutConstants.minCardGap) / (layoutConstants.cardMinWidth + layoutConstants.minCardGap));
 
   return (
-    <View style={styles.container} onLayout={handleLayout}>
-      <Text style={styles.title} lightColor="#000" darkColor="#FFF" fontWeight="600">
+    <View style={styles.container} lightColor={Colors.light.accentBackground} darkColor={Colors.dark.accentBackground} onLayout={handleLayout}>
+      <Text style={[styles.title]} lightColor="#000" darkColor="#FFF" fontWeight="700">
         {title}
       </Text>
       {Array.from({ length: rows }).map((_, i) => (
@@ -116,10 +117,6 @@ const styles = StyleSheet.create({
     margin: 25,
     //backgroundColor: "white",
     elevation: 2,
-    shadowColor: "rgba(0, 0, 0, 1.0)",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
     width: "100%",
     borderRadius: 10,
     paddingVertical: 20,
@@ -130,8 +127,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 600,
-    textAlign: "center",
+    marginBottom: 10,
   },
   dateCardRow: {
     display: "flex",
@@ -151,10 +147,10 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 15,
     marginVertical: 10,
-    shadowColor: "rgba(153, 128, 172, 0.50)",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 1,
-    shadowRadius: 4,
+    //shadowColor: "rgba(153, 128, 172, 0.50)",
+    //shadowOffset: { width: 0, height: 1 },
+    //shadowOpacity: 1,
+    //shadowRadius: 4,
     elevation: 2,
     alignSelf: "flex-end",
     marginHorizontal: 0,

@@ -82,7 +82,7 @@ const Countdown: React.FC<CountdownProps> = ({ timerPercentage, changeDate, styl
           duration={5000}
           maxValue={100}
           activeStrokeColor={Colors.light.tint}
-          inActiveStrokeColor={"#f5f5f5"}
+          inActiveStrokeColor={Colors.light.accentBackground}
           inActiveStrokeOpacity={inactiveStrokeOpacity}
         >
           <Text style={{ fontSize: 18 }} lightColor={"#3b3b3b"} darkColor={"#ffffff"} adjustsFontSizeToFit={true} numberOfLines={1} fontWeight="700">
@@ -103,10 +103,10 @@ const Countdown: React.FC<CountdownProps> = ({ timerPercentage, changeDate, styl
 const styles = StyleSheet.create({
   container: { width: "100%", marginHorizontal: 14 },
   title: {
-    fontSize: 40,
+    fontSize: 50,
     wordWrap: "nowrap",
     flexWrap: "nowrap",
-    paddingHorizontal: 21,
+    paddingHorizontal: 30,
     fontVariant: ["tabular-nums"],
     marginVertical: 4,
   },

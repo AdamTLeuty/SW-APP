@@ -8,13 +8,14 @@ import { Text, View, Title } from "@/components/Themed";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
+import Colors from "@/constants/Colors";
 
 //import { useRoute } from "@react-navigation/native";
 
 export default function Content() {
   return (
-    <View style={styles.container}>
-      <Title>CONTENT CREATION</Title>
+    <View style={styles.container} lightColor={Colors.light.background} darkColor={Colors.dark.background}>
+      <Title>Content creation</Title>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.content} lightColor="#c0c0c0">
         Coming soon...

@@ -13,13 +13,17 @@ import { progressStyles as styles } from "@/constants/Styles";
 import { universalStyles } from "@/constants/Styles";
 import { Progress as ProgressBar } from "@/components/progress";
 
+import Colors from "@/constants/Colors";
+
 export default function Progress() {
   const { alignerProgress, alignerCount, updateUserContext, alignerChangeDate } = useUserContext();
   return (
     <ScrollView>
       <View style={styles.container}>
         <Title style={universalStyles.bottomMargin}>Your aligner progress</Title>
-        <Text style={[styles.content, universalStyles.bottomMargin]}>Keep up to date with your aligner journey...</Text>
+        <Text style={[universalStyles.bottomMargin]} fontWeight="700" lightColor={Colors.light.tint} darkColor={Colors.light.tint}>
+          Keep up to date with your aligner journey...
+        </Text>
         <ProgressBar text="Progress" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
         {/*<ProgressBar style={styles.progressHolder} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />*/}
         <Calendar title="Your calendar" rows={3} />

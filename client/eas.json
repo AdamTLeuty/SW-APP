@@ -7,7 +7,7 @@
     "development": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://app-auth.smilewhite.co.uk"
+        "EXPO_PUBLIC_API_URL": "https://app.smilewhite.co.uk"
       }
     },
     "preview": {
@@ -21,7 +21,7 @@
         "distribution": "store"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://app-auth.smilewhite.co.uk"
+        "EXPO_PUBLIC_API_URL": "https://app.smilewhite.co.uk"
       }
     }
   },

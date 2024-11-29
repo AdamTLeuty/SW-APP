@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "SW-APP",
+    "name": "Smile White",
     "slug": "SW-APP",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon-white-bg.png",
+    "icon": "./assets/images/app-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -17,8 +17,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.smilewhite.app",
       "infoPlist": {
-        "NSCameraUsageDescription": "The app requires the camera so you can take impression kit verification and progress pictures",
-        "NSPhotoLibraryUsageDescription": "The app requires `Photos` access so you can store and view images later, and upload impression kit verification pictures."
+        "NSCameraUsageDescription": "The app requires the camera so you can take progress pictures",
+        "NSPhotoLibraryUsageDescription": "The app requires `Photos` access so you can store and view progress images later."
       }
     },
     "android": {
@@ -26,7 +26,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": []
     },
     "web": {
       "bundler": "metro",
@@ -42,7 +43,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "68010303-9260-4ecb-9df0-0e2fc98d8926"
+        "projectId": "234610ef-a228-4f34-9b35-f7e1d504d693"
       }
     }
   }

@@ -5,7 +5,7 @@ NC='\033[0m' # No Color
 #export EXPO_NO_KEYCHAIN=1  # Get rid of the keychain to manually give the password
 clear;
 echo "Starting Expo prebuild...";
-npx expo prebuild;
+npx expo prebuild --yarn -p ios;
 if [ $? -ne 0 ]; then
     echo "${RED}Prebuild failed!";
 else

@@ -75,7 +75,7 @@ function FrameBottom() {
 }
 
 const Viewfinder: React.FC = () => {
-  const [facing, setFacing] = useState<CameraType>("back");
+  const [facing, setFacing] = useState<CameraType>("front");
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [libraryPermission, requestLibraryPermission] = MediaLibrary.usePermissions();
   const [maxHeight, setMaxHeight] = useState(0);

@@ -4,13 +4,17 @@ import { useThemeColor } from "./Themed";
 
 import { View, Text } from "./Themed";
 
-import { Pressable, StyleSheet, SafeAreaView, Button } from "react-native";
+import { Pressable, StyleSheet, SafeAreaView, Button, ViewStyle } from "react-native";
 import { useEffect } from "react";
 import { Icon } from "./Icon";
+
+import { useColorScheme } from "./useColorScheme";
+import Colors from "@/constants/Colors";
 
 interface Props {
   buttonText: String;
   hiddenText: string;
+  style?: ViewStyle;
 }
 
 function AccordionItem({ isExpanded, children, viewKey, style, duration = 500 }) {
@@ -92,7 +96,7 @@ function Parent({ open, children }: ParentProps) {
   );
 }
 
-const Accordion: React.FC<Props> = ({ buttonText, hiddenText }) => {
+const Accordion: React.FC<Props> = ({ buttonText, hiddenText, style }) => {
   const open = useSharedValue(false);
   const onPress = () => {
     open.value = !open.value;
@@ -100,14 +104,16 @@ const Accordion: React.FC<Props> = ({ buttonText, hiddenText }) => {
 
   const text_color = useThemeColor({}, "text");
 
+  const borderColor = useThemeColor({}, "text"); //(useColorScheme() ?? "light") ? Colors.light.text : Colors.dark.text;
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { borderBottomColor: borderColor }, style]}>
       <Pressable onPress={onPress}>
         <View style={styles.buttonTextHolder}>
-          <Icon width={"10"} height={"10"} color={useThemeColor({ light: "black", dark: "#fff" }, "text")} style={styles.cross} iconName="cross" />
           <Text style={styles.accordionText} fontWeight="600">
             {buttonText}
           </Text>
+          <Icon width={"10"} height={"10"} color={useThemeColor({ light: "black", dark: "#fff" }, "text")} style={styles.cross} iconName="cross" />
         </View>
       </Pressable>
       <Parent open={open}>{hiddenText}</Parent>
@@ -120,10 +126,8 @@ const Accordion: React.FC<Props> = ({ buttonText, hiddenText }) => {
 const styles = StyleSheet.create({
   none: {},
   container: {
-    borderColor: "#00000000",
-    borderTopColor: "#F7F6F8",
-    borderBottomColor: "#F7F6F8",
     borderWidth: 1,
+    borderColor: "#00000000",
     borderStyle: "solid",
     paddingVertical: 13,
     paddingLeft: 17,
@@ -132,6 +136,7 @@ const styles = StyleSheet.create({
   },
   accordionText: {
     fontSize: 16,
+    flex: 1,
   },
   hidden_text: {
     fontSize: 16,
@@ -154,6 +159,7 @@ const styles = StyleSheet.create({
   },
   parent: {
     width: "100%",
+    paddingLeft: 17,
   },
   wrapper: {
     width: "100%",
@@ -175,13 +181,16 @@ const styles = StyleSheet.create({
     backgroundColor: "green",
   },
   cross: {
-    transform: [{ rotate: "45deg" }],
+    //transform: [{ rotate: "45deg" }],
+    flex: 1,
   },
   buttonTextHolder: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     gap: 7.5,
     padding: 10,
+    width: "100%",
   },
 });
 

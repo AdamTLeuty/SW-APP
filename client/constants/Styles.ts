@@ -175,7 +175,7 @@ export const universalStyles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   title: {
-    fontSize: 25,
+    fontSize: 26,
     lineHeight: 33,
     textAlign: "center",
   },

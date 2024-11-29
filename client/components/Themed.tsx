@@ -144,7 +144,7 @@ export function Title(props: TextProps) {
   const { style, lightColor, darkColor, fontWeight, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
-  const defaultWeight = "900";
+  const defaultWeight = "800";
   const fontFamily = chooseFont(fontWeight ? fontWeight : defaultWeight);
 
   const textBreakStrategy = props.textBreakStrategy ? props.textBreakStrategy : "balanced";

@@ -3,17 +3,19 @@ import React, { useState, useEffect } from "react";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
-import { Text, View, ScrollView } from "@/components/Themed";
+import { Text, View, ScrollView, Title } from "@/components/Themed";
 
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
 
-import LogoLinkCard from "@/components/logoLinkCard";
+import ImageLinkCard from "@/components/ImageLinkCard";
 
 import Accordion from "@/components/accordion";
 import Colors from "@/constants/Colors";
 import { universalStyles } from "@/constants/Styles";
+
+import { useThemeColor } from "@/components/Themed";
 
 //import { useRoute } from "@react-navigation/native";
 
@@ -21,23 +23,21 @@ export default function Support() {
   return (
     <ScrollView>
       <View style={[styles.container]}>
-        <Text style={[styles.title, { marginBottom: 10 }]} fontWeight="800">
-          Customer support
-        </Text>
+        <Title style={{ marginBottom: 0 }} fontWeight="800">
+          Support
+        </Title>
         <Text style={[universalStyles.bottomMargin, { fontSize: 14, textAlign: "center" }]} fontWeight="700" lightColor={Colors.light.tint} darkColor={Colors.light.tint}>
-          We want to make sure that you have the best experience from start to finish.
+          Have the best experience from start to finish.
         </Text>
         <View style={styles.supportCards}>
-          <LogoLinkCard text="Call Us" iconName="phone" link="tel:${01138687615}" linkType="phone" />
-          <LogoLinkCard text="Email Us" iconName="mail" link="mailto:hello@smilewhite.co.uk" linkType="mail" />
-          <LogoLinkCard text="Live Chat" iconName="support" link="/liveChat" linkType="screen" />
+          <ImageLinkCard source={require("@/assets/images/call_us.png")} text="Call Us" iconName="phone" link="tel:${01138687615}" linkType="phone" />
+          <ImageLinkCard source={require("@/assets/images/email_us.png")} text="Email Us" iconName="mail" link="mailto:hello@smilewhite.co.uk" linkType="mail" />
         </View>
 
-        <Text style={styles.faqTitle} fontWeight="600">
-          Frequently asked questions
-        </Text>
+        <Title style={[universalStyles.bottomMargin, { marginTop: 30 }]}>{"FAQs"}</Title>
 
         <Accordion
+          style={{ borderTopColor: useThemeColor({}, "text") }}
           buttonText={"How often do I have to wear my clear aligners?"}
           hiddenText={"For the best results, your clear aligners need to be worn for 20-22 hours every day. Ideally, you should only remove them to eat, drink and brush your teeth."}
         />
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     padding: 20,
+    paddingHorizontal: 44,
   },
   title: {
     fontSize: 25,
@@ -102,11 +103,11 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     justifyContent: "space-between",
     width: "100%",
-    marginVertical: 10,
+    marginVertical: 26,
     flexWrap: "wrap",
     maxWidth: "100%",
-    rowGap: 10,
-    columnGap: 10,
+    rowGap: 25,
+    columnGap: 25,
     //flex: 1,
   },
   content: {

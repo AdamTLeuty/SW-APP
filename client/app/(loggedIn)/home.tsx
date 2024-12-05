@@ -6,7 +6,7 @@ import { Link } from "expo-router";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
 import { ScrollView, Text, Title, View, Button } from "@/components/Themed";
-import { universalStyles as styles } from "@/constants/Styles";
+import { universalStyles as styles, universalStyles } from "@/constants/Styles";
 import { useUserContext } from "@/components/userContext";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
@@ -17,6 +17,10 @@ import { Image } from "expo-image";
 import { RefreshControl } from "react-native";
 import Countdown from "@/components/Countdown";
 import Colors from "@/constants/Colors";
+import Card from "@/components/Card";
+import ToDo from "@/components/ToDo";
+import Collapsible from "@/components/Collapsible";
+import Collapsible2 from "@/components/Collapsible copy";
 
 function ordinal_suffix_of(i: number) {
   let j = i % 10,
@@ -58,6 +62,20 @@ export default function Home() {
         <Link style={[styles.progressHolder, styles.bottomMargin]} href="/progress">
           {/*  <Progress text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} /> */}
         </Link>
+
+        <Card style={universalStyles.bottomMargin}>
+          <ToDo checked={false} title="Sign medical waiver" subtitle="Take me there." link="https://google.com"></ToDo>
+        </Card>
+
+        <Card style={universalStyles.bottomMargin}>
+          <Collapsible>
+            <Text fontWeight="800">{"Practice name"}</Text>
+            <Text>{"Yorkshire Dental Suite\n"}</Text>
+            <Text fontWeight="800">{"Practice Address"}</Text>
+            <Text>{"347 Oakwood Ln, Leeds\nLS8 3HA\n"}</Text>
+            <Text>{"Request change"}</Text>
+          </Collapsible>
+        </Card>
 
         {alignerProgress > 0 && <Countdown style={styles.bottomMargin} timerPercentage={100} changeDate={new Date(Date.parse(alignerChangeDate))} />}
         {changeDate < now ? (

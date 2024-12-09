@@ -228,12 +228,6 @@ func main() {
 	}
 	defer logFile.Close()
 
-	/*ginLogFile, err := os.OpenFile("logs/gin.log", os.O_RDWR|os.O_CREATE, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer ginLogFile.Close()*/
-
 	gin.DefaultWriter = io.MultiWriter(logFile)
 
 	// Set log out put and enjoy :)
@@ -262,7 +256,13 @@ func main() {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER, authcode INTEGER, stage TEXT, impressionConfirmation TEXT, alignerProgress INTEGER, alignerCount INTEGER, alignerChangeDate TEXT, expo_notification_token TEXT, can_change_stage INTEGER)")
+	statement, err := db.Prepare(`
+		CREATE TABLE IF NOT EXISTS users
+		(id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER,
+	 	authcode INTEGER, stage TEXT, impressionConfirmation TEXT, alignerProgress INTEGER,
+		alignerCount INTEGER, alignerChangeDate TEXT, expo_notification_token TEXT, can_change_stage INTEGER,
+		dentistID INTEGER, medical_waiver TEXT, medical_waiver_signed INTEGER, FOREIGN KEY (dentistID) REFERENCES dentists(jarvisID))
+		`)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -306,7 +306,13 @@ func main() {
 	//Each image has a userID for a corresponding user in the `users` table
 	//Each image has an `imageType`, showing either that the image is of an aligner update or impression check (`aligner`/`impression`)
 	//Each image has a file path for it's location on the server
-	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS images (id INTEGER PRIMARY KEY,userID INTEGER, imageType TEXT, path TEXT,FOREIGN KEY (userID) REFERENCES users(id) ON DELETE CASCADE) ")
+	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS images (id INTEGER PRIMARY KEY,userID INTEGER, imageType TEXT, path TEXT, FOREIGN KEY (userID) REFERENCES users(id) ON DELETE CASCADE) ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	statement.Exec()
+
+	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS dentists (id INTEGER PRIMARY KEY, jarvisID INTEGER, name TEXT, street_number TEXT, street TEXT, city TEXT, region TEXT, country TEXT, postcode TEXT, UNIQUE(jarvisID))")
 	if err != nil {
 		log.Fatal(err)
 	}

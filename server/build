@@ -3,6 +3,7 @@ clear;
 #Sources the email provider environment variables
 source ./env/sendgrid.env
 source ./env/hubspot.env
+source ./env/jarvis.env
 source ./env/.env
 #Builds the server
 echo "Building the server binary...";

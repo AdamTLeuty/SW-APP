@@ -12,7 +12,7 @@ import (
 )
 
 func sendEmail(email string, authCode string, username string) error {
-	from := mail.NewEmail("Example User", "auth@app.smilecorrectclub.co.uk")
+	from := mail.NewEmail("Example User", "auth@app.smilewhite.co.uk")
 
 	to := mail.NewEmail("Example User", email)
 
@@ -46,7 +46,8 @@ func sendEmail(email string, authCode string, username string) error {
 		// Send the email
 		response, err := client.Send(message)
 		if err != nil {
-			log.Fatal(err)
+			log.Println("Could not send verification email for user", email)
+			log.Println(err)
 			return err
 		} else {
 			log.Println(response.StatusCode)

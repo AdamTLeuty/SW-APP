@@ -59,12 +59,14 @@ func resendVerifyEmail(c *gin.Context, db *sql.DB) {
 	err = updateUserAuthCode(db, emailResendData.Email, authCode)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate a new authorisation code, please try again later"})
+		return
 	}
 
 	var username string
-	err = db.QueryRow("SELECT username FROM admins WHERE email = ?", username).Scan(&username)
+	err = db.QueryRow("SELECT username FROM users WHERE email = ?", emailResendData.Email).Scan(&username)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		log.Print(err)
 		return
 	}
 

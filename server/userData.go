@@ -96,7 +96,7 @@ func updateUserFromJarvis(db *sql.DB, email string) error {
 	log.Println(data)
 
 	stmt, err := db.Prepare(`
-			UPDATE users SET medicalWaiverSigned = ? WHERE email = ?
+			UPDATE users SET medical_waiver_signed = ? WHERE email = ?
 		`)
 	if err != nil {
 		log.Println("database failed: ", err)

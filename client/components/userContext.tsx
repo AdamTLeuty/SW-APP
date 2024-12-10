@@ -31,6 +31,7 @@ interface UserContextType {
   updateAlignerProgress: (count: number) => Promise<void>;
   updateUsername: (name: string) => Promise<void>;
   impressionConfirmation: string;
+  medicalWaiverSigned: boolean;
 }
 
 // Create the context with an initial value
@@ -48,6 +49,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [expoPushToken, setExpoPushToken] = useState<string>("");
   const [impressionConfirmation, setImpressionConfirmation] = useState<string>("unset");
   const [canChangeStage, setCanChangeStage] = useState<Boolean>(false);
+  const [medicalWaiverSigned, setMedicalWaiverSigned] = useState<Boolean>(false);
 
   const login = async (userData: User) => {
     setIsLoggedIn(true);
@@ -95,6 +97,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         alignerChangeDate: string;
         canChangeStage: Boolean;
         impressionConfirmation: string;
+        medicalWaiverSigned: Boolean;
       };
       console.log("stage: " + userDataWithStage.stage);
 
@@ -131,6 +134,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
       if (userDataWithStage.impressionConfirmation) {
         setImpressionConfirmation(userDataWithStage.impressionConfirmation);
+      }
+      if (userDataWithStage.medicalWaiverSigned) {
+        setMedicalWaiverSigned(userDataWithStage.medicalWaiverSigned);
       }
     } else {
       console.log(response);

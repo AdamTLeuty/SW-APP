@@ -99,25 +99,6 @@ export default function TabLayout() {
           },
         }}
       />
-      <Tabs.Screen
-        name="impressionsProcessPage"
-        options={{
-          href: null,
-          title: "impressionsProcessPage",
-
-          header: ({ navigation, route, options }) => {
-            return <CustomHeader locked={false} backButton={true} nav={navigation} />;
-          },
-        }}
-      />
-      <Tabs.Screen
-        name="camera"
-        options={{
-          href: null,
-          title: "Camera",
-          headerShown: false, // This hides the header
-        }}
-      />
     </Stack>
   );
 }

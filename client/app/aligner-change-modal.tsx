@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 import React, { useEffect } from "react";
 import EditScreenInfo from "@/components/EditScreenInfo";
-import { Button, Text, TextInput, View, Title, Checkbox } from "@/components/Themed";
+import { Button, Text, TextInput, View, Title, Radio } from "@/components/Themed";
 import { Link, router } from "expo-router";
 import { Pressable } from "react-native";
 //import { CheckBox } from "@rneui/themed";
@@ -109,7 +109,7 @@ const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setInd
       </Text>
       {delayReasons.map((reason, i) => (
         <View key={i}>
-          <Checkbox
+          <Radio
             checked={selectedIndex === i}
             onPress={() => {
               if (selectedIndex === i) {

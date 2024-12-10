@@ -15,9 +15,15 @@ import {
   TextStyle,
   KeyboardAvoidingView as DefaultKeyboardAvoidingView,
   Platform,
+  SafeAreaView as DefaultSafeAreaView,
 } from "react-native";
+import { LinearGradient as DefaultLinearGradient } from "expo-linear-gradient";
 
-import { CheckBox as DefaultCheckbox } from "@rneui/base";
+import { BlurView as DefaultBlurView } from "expo-blur";
+
+import { Checkbox as DefaultCheckbox } from "expo-checkbox";
+
+import { CheckBox as DefaultCheckboxRNEUI } from "@rneui/base";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
@@ -39,7 +45,14 @@ type ScrollViewPropsSpecific = {
 export type TextProps = ThemeProps & DefaultText["props"];
 export type TitleProps = TextProps;
 export type ViewProps = ThemeProps & DefaultView["props"];
-export type CheckboxProps = ThemeProps & {
+
+export type LinearGradientProps = ViewProps & React.ComponentProps<typeof DefaultLinearGradient>;
+
+export type BlurViewProps = ViewProps & {
+  opacity: number;
+} & React.ComponentProps<typeof DefaultBlurView>;
+
+export type RadioProps = ThemeProps & {
   style?: StyleProp<ViewStyle>;
   onPressIn?: () => void; // Include onPressIn event
   onPressOut?: () => void; // Include onPressOut event
@@ -50,7 +63,16 @@ export type CheckboxProps = ThemeProps & {
   title: string | React.ReactElement<{}, string | React.JSXElementConstructor<any>> | undefined;
   onIconPress: () => void;
   textStyle: StyleProp<TextStyle>;
+} & React.ComponentProps<typeof DefaultCheckboxRNEUI>;
+
+export type CheckboxProps = ThemeProps & {
+  lightColor?: string;
+  darkColor?: string;
+  style?: StyleProp<ViewStyle>;
+  isChecked: boolean;
+  setChecked: (value: boolean) => void;
 } & React.ComponentProps<typeof DefaultCheckbox>;
+
 export type ButtonProps = ThemeProps & {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
@@ -100,7 +122,7 @@ title: string | React.ReactElement<{}, string | React.JSXElementConstructor<any>
 onIconPress: () => void;
 textStyle: StyleProp<TextStyle>; */
 
-export function Checkbox(props: CheckboxProps) {
+export function Radio(props: RadioProps) {
   const { style, checked, lightColor, darkColor, checkedIcon, uncheckedIcon, checkedColor, textStyle, title, ...otherProps } = props;
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "background");
 
@@ -111,7 +133,7 @@ export function Checkbox(props: CheckboxProps) {
   };
 
   return (
-    <DefaultCheckbox
+    <DefaultCheckboxRNEUI
       //style={[defaultStyle, style, { backgroundColor: "red", borderColor: "blue", borderWidth: 3 }]}
       checked={checked}
       checkedIcon={checkedIcon}
@@ -168,6 +190,52 @@ export function View(props: ViewProps) {
   };
 
   return <DefaultView style={[defaultStyle, style]} {...otherProps} />;
+}
+
+export function LinearGradient(props: LinearGradientProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "none");
+
+  const defaultStyle = {
+    backgroundColor: backgroundColor,
+    fontFamily: "Poppins_Regular",
+    // Add other default styles here
+  };
+
+  return <DefaultLinearGradient style={[defaultStyle, style]} {...otherProps} />;
+}
+
+const opacityToHex = (opacity: number): string => {
+  const clamped = Math.min(100, Math.max(0, opacity));
+  const hexValue = Math.round((clamped / 100) * 255);
+  return hexValue.toString(16).padStart(2, "0").toLowerCase();
+};
+
+export function BlurView(props: BlurViewProps) {
+  const { style, lightColor, darkColor, opacity, intensity, ...otherProps } = props;
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "none");
+  const hexOpacity = opacityToHex(opacity);
+
+  const defaultStyle = {
+    backgroundColor: backgroundColor + hexOpacity,
+    fontFamily: "Poppins_Regular",
+    // Add other default styles here
+  };
+
+  return <DefaultBlurView intensity={intensity} style={[defaultStyle, style]} {...otherProps} />;
+}
+
+export function SafeAreaView(props: ViewProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "none");
+
+  const defaultStyle = {
+    backgroundColor: backgroundColor,
+    fontFamily: "Poppins_Regular",
+    // Add other default styles here
+  };
+
+  return <DefaultSafeAreaView style={[defaultStyle, style]} {...otherProps} />;
 }
 
 export function ScrollView(props: ScrollViewProps) {
@@ -273,4 +341,13 @@ export function TextInput(
       />
     </View>
   );
+}
+
+export function Checkbox(props: CheckboxProps) {
+  const { style, lightColor, darkColor, children, isChecked, setChecked, ...otherProps } = props;
+
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, "tint");
+  const inactiveColor = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+
+  return <DefaultCheckbox style={[universalStyles.checkbox, style]} value={isChecked} onValueChange={setChecked} color={isChecked ? color : inactiveColor} />;
 }

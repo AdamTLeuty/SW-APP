@@ -2037,6 +2037,11 @@
     "@babel/runtime" "^7.13.10"
     "@radix-ui/react-compose-refs" "1.0.0"
 
+"@react-native-community/checkbox@^0.5.17":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@react-native-community/checkbox/-/checkbox-0.5.17.tgz#80dd335ca5c61ac2ca4525a21d8fef3f7a021ef7"
+  integrity sha512-ZZx/eOH3SIxBg+hvA2zRd7lX5zPQEWcZU8C8Dn7WLdpJkiTkPmIUDFHWrmzxCnwZcyoD+BIt6gUZPKGGb9WmeQ==
+
 "@react-native-community/slider@^4.5.2":
   version "4.5.5"
   resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-4.5.5.tgz#d70fc5870477760033769bbd6625d57e7d7678b2"
@@ -4526,12 +4531,22 @@ expo-av@~15.0.1:
   resolved "https://registry.yarnpkg.com/expo-av/-/expo-av-15.0.1.tgz#c337f831c2e29174de7117c37d2f92c1275bb4c4"
   integrity sha512-2d4j7RTH9Y5nI1FoC0woRjqnj5G8sF0al2iW6kG21PPs/CgS4QARbHxMrPxKpUXrC6iu+6EMj2h5H6T0nqteFg==
 
+expo-blur@~14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-14.0.1.tgz#4bdbec43b5015891990e78d31d8ff2f1f5d27464"
+  integrity sha512-3Q6jFBLbY8n2vwk28ycUC+eIlVhnlqwkXUKk/Lfaj+SGV3AZMQyrixe7OYwJdUfwqETBrnYYMB6uNrJzOSbG+g==
+
 expo-camera@~16.0.5:
   version "16.0.7"
   resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-16.0.7.tgz#45e73a86c63106639cf1ff611a365d79e9d5842e"
   integrity sha512-F4msGjXMa2WJ6Gest9HVA8i0txwfuwNSbGtlbgcTr5givNWfxIwx5DuW+i7w+Xstv2YqSJL3qFAAIZgHfygHTQ==
   dependencies:
     invariant "^2.2.4"
+
+expo-checkbox@~4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/expo-checkbox/-/expo-checkbox-4.0.0.tgz#beceea701896d67e68b8383b3d54135b1a89e074"
+  integrity sha512-kgmdau1cmlztRVEdjAQkdBCBSvI3W1Z6B+gTTr5ickbItxz07qt3j6dQEB3VDL69/bnIN/h9/iwNLVxuSn/C2Q==
 
 expo-constants@~17.0.0, expo-constants@~17.0.3:
   version "17.0.3"
@@ -4609,6 +4624,11 @@ expo-keep-awake@~14.0.1:
   version "14.0.1"
   resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-14.0.1.tgz#77c38feefa95c494aa167e6df5a6eacd17af2358"
   integrity sha512-c5mGCAIk2YM+Vsdy90BlEJ4ZX+KG5Au9EkJUIxXWlpnuKmDAJ3N+5nEZ7EUO1ZTheqoSBeAo4jJ8rTWPU+JXdw==
+
+expo-linear-gradient@~14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/expo-linear-gradient/-/expo-linear-gradient-14.0.1.tgz#f93c518014b6eb5ee17ed6562db716640ad27f3e"
+  integrity sha512-apGtUO9AZ52ZWvX9f6K9TamWw8XcUby7jZ0Pcvd5LxUO7pl7tDPx2VlKqpzbhhS4yfCiUwX58wqocwVnE/0ZVg==
 
 expo-linking@~7.0.2:
   version "7.0.3"

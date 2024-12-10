@@ -239,6 +239,11 @@ export const universalStyles = StyleSheet.create({
     fontSize: 16,
     verticalAlign: "bottom",
   },
+  checkbox: {
+    width: 25,
+    aspectRatio: 1 / 1,
+    padding: 5,
+  },
 });
 
 export const progressStyles = StyleSheet.create({

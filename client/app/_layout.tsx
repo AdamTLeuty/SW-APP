@@ -87,12 +87,16 @@ export default function RootLayout() {
   );
 }
 
-const userStateChanged = (isLoggedIn: boolean, status: Status) => {
+const userStateChanged = (isLoggedIn: boolean, status: Status, medicalWaiverSigned: Boolean) => {
   if (isLoggedIn) {
     if (status == "impressionStage") {
       router.replace("/(impressionProcess)/home");
     } else if (status == "alignerStage") {
-      router.replace("/(loggedIn)/home");
+      if (medicalWaiverSigned) {
+        router.replace("/(loggedIn)/home");
+      } else {
+        router.replace("/(medicalWaiverProcess)/home");
+      }
     }
   } else {
     router.replace("/");
@@ -113,7 +117,7 @@ function RootLayoutNav() {
   const [notification, setNotification] = useState<Notifications.Notification | undefined>(undefined);
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
-  const { isLoggedIn, status, updateExpoPushToken } = useUserContext();
+  const { isLoggedIn, status, updateExpoPushToken, medicalWaiverSigned } = useUserContext();
   const innerStatus = useRef<Status>(status);
 
   useEffect(() => {
@@ -123,10 +127,10 @@ function RootLayoutNav() {
   }, [expoPushToken]);
 
   useEffect(() => {
-    userStateChanged(isLoggedIn, status);
+    userStateChanged(isLoggedIn, status, medicalWaiverSigned);
     console.log("The status has changed to: " + status);
     innerStatus.current = status;
-  }, [isLoggedIn, status]);
+  }, [isLoggedIn, status, medicalWaiverSigned]);
 
   async function waitForImpressionStage(url: any) {
     return new Promise((resolve) => {
@@ -193,7 +197,7 @@ function RootLayoutNav() {
         />
         <Stack.Screen name="(impressionProcess)" options={{ headerShown: false }} />
         <Stack.Screen name="impressions_result" options={{ presentation: "modal", headerShown: false }} />
-
+        <Stack.Screen name="(medicalWaiverProcess)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </ThemeProvider>

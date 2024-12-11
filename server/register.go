@@ -73,9 +73,10 @@ func register(c *gin.Context, db *sql.DB) {
 	stmt, err := tx.Prepare(`
     INSERT INTO users (
         email, password, username, verified, authcode, stage, impressionConfirmation,
-        alignerProgress, alignerCount, alignerChangeDate, expo_notification_token, can_change_stage
+        alignerProgress, alignerCount, alignerChangeDate, expo_notification_token, can_change_stage,
+        medical_waiver_signed
     )
-    SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+    SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
     WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = ?);
 `)
 	if err != nil {
@@ -99,11 +100,11 @@ func register(c *gin.Context, db *sql.DB) {
 		stage = "aligner"
 	}
 
-	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, stage, "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "", 0, user.Email)
+	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, stage, "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "", 0, false, user.Email)
 	if err != nil {
 		tx.Rollback()
 		log.Println("Could not execute insert into `users` table: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute database statement"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
 
@@ -112,7 +113,7 @@ func register(c *gin.Context, db *sql.DB) {
 	if err != nil {
 		tx.Rollback()
 		log.Println("Could not get last inserted ID from `users` table: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user ID"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
 
@@ -123,21 +124,27 @@ func register(c *gin.Context, db *sql.DB) {
 	if err != nil {
 		tx.Rollback()
 		log.Println("Could not prepare insert into Hubspot table: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to prepare database statement"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
 	_, err = stmt.Exec(userID, processStage, objectID)
 	if err != nil {
 		tx.Rollback()
 		log.Println("Could not execute insert into Hubspot table: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute database statement"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
+	}
+
+	err = updateUserFromJarvisTx(tx, user.Email)
+	if err != nil {
+		log.Println("Could not retrieve data from Jarvis:", err)
+		//return
 	}
 
 	err = tx.Commit()
 	if err != nil {
 		log.Println("Could not commit transaction: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute database statement"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
 

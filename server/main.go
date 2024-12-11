@@ -143,6 +143,9 @@ func setupRouter(db *sql.DB) *gin.Engine {
 			authorized.POST("/changeAlignerDate", func(c *gin.Context) {
 				updateAlignerChangeDate(c, db)
 			})
+			authorized.PUT("/signWaiver", func(c *gin.Context) {
+				signWaiver(c, db)
+			})
 		}
 
 	}

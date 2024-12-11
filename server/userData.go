@@ -46,8 +46,6 @@ func getUserData(c *gin.Context, db *sql.DB) {
 
 	go updateUserFromHubspotData(db, email)
 
-	updateUserFromJarvis(db, email)
-
 	var userData UserDataResponse
 
 	err = db.QueryRow(`SELECT stage, username, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate, can_change_stage, medical_waiver_signed FROM users WHERE email = ?`, email).Scan(&userData.Stage, &userData.Username, &userData.ImpressionConfirmation, &userData.AlignerProgress, &userData.AlignerCount, &userData.AlignerChangeDate, &userData.CanChangeStage, &userData.MedicalWaiverSigned)
@@ -87,28 +85,54 @@ func updateUserFromHubspotData(db *sql.DB, email string) error {
 	return nil
 }
 
-func updateUserFromJarvis(db *sql.DB, email string) error {
-
+func updateUserFromJarvisDB(db *sql.DB, email string) error {
 	data, err := jarvis_get_customer_data(email)
 	if err != nil {
 		log.Println("Could not fetch jarvis data:", err)
+		return err
 	}
 	log.Println(data)
 
 	stmt, err := db.Prepare(`
-			UPDATE users SET medical_waiver_signed = ? WHERE email = ?
-		`)
+		UPDATE users SET medical_waiver_signed = ? WHERE email = ?
+	`)
 	if err != nil {
-		log.Println("database failed: ", err)
+		log.Println("Prepare failed:", err)
 		return err
 	}
+	defer stmt.Close()
+
 	_, err = stmt.Exec(data.TermsAccepted, email)
 	if err != nil {
-		log.Println("execution failed: ", err)
+		log.Println("Execution failed:", err)
 		return err
 	}
 	return nil
+}
 
+func updateUserFromJarvisTx(tx *sql.Tx, email string) error {
+	data, err := jarvis_get_customer_data(email)
+	if err != nil {
+		log.Println("Could not fetch jarvis data:", err)
+		return err
+	}
+	log.Println(data)
+
+	stmt, err := tx.Prepare(`
+		UPDATE users SET medical_waiver_signed = ? WHERE email = ?
+	`)
+	if err != nil {
+		log.Println("Prepare failed:", err)
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(data.TermsAccepted, email)
+	if err != nil {
+		log.Println("Execution failed:", err)
+		return err
+	}
+	return nil
 }
 
 func setUserData(c *gin.Context, db *sql.DB) {

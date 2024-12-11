@@ -72,3 +72,9 @@ func jarvis_get_customer_data(email string) (JarvisResponse, error) {
 	}
 
 }
+
+func jarvis_sign_medical_waiver(email string) error {
+
+	return nil
+
+}

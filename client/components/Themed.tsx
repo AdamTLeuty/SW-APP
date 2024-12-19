@@ -29,6 +29,7 @@ import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
 
 import { universalStyles } from "@/constants/Styles";
+import { ActivityIndicator } from "react-native";
 
 type ThemeProps = {
   lightColor?: string;
@@ -78,6 +79,7 @@ export type ButtonProps = ThemeProps & {
   children?: ReactNode;
   onPressIn?: () => void; // Include onPressIn event
   onPressOut?: () => void; // Include onPressOut event
+  waiting?: Boolean;
 } & Omit<DefaultButton["props"], "title">;
 export type ScrollViewProps = ScrollViewPropsSpecific & ThemeProps & DefaultView["props"];
 export type TextInputProps = ThemeProps & DefaultTextInput["props"];
@@ -275,7 +277,7 @@ export function KeyboardAvoidingView(props: ScrollViewProps) {
 }
 
 export function Button(props: ButtonProps) {
-  const { style, lightColor, darkColor, children, onPress, onPressIn, onPressOut, ...otherProps } = props;
+  const { style, lightColor, darkColor, children, onPress, onPressIn, onPressOut, waiting, ...otherProps } = props;
 
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "button");
   const customStyle =
@@ -290,6 +292,7 @@ export function Button(props: ButtonProps) {
       <Text style={universalStyles.alignerChangeText} lightColor="#fff" fontWeight="600" numberOfLines={1} adjustsFontSizeToFit={true}>
         {children}
       </Text>
+      {waiting && <ActivityIndicator style={{ position: "absolute", top: "50%", right: "10%" }} size="small" color="#FFFFFF" />}
     </DefaultPressable>
   );
 }

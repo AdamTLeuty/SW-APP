@@ -206,6 +206,7 @@ export const universalStyles = StyleSheet.create({
     verticalAlign: "middle",
     lineHeight: 29,
     width: "100%",
+    justifyContent: "center",
   },
   progressHolder: {
     width: "100%",

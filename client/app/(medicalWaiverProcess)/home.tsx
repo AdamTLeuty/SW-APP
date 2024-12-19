@@ -16,26 +16,69 @@ import Calendar from "@/components/Calendar";
 import Progress from "@/components/progress";
 import { RefreshControl } from "react-native";
 import Toast from "react-native-toast-message";
+import { ActivityIndicator } from "react-native";
 
 import { Status } from "@/components/userContext";
 import { universalStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
 import { BlurView } from "@/components/Themed";
-//import { Audio, Video } from "expo-av";
+import { sign_medical_waiver } from "@/services/authService";
 
-//import { useRoute } from "@react-navigation/native";
+const handleClick = async (setWaiting: React.Dispatch<React.SetStateAction<Boolean>>, updateUserContext: () => Promise<void>) => {
+  setWaiting(true);
+  try {
+    const response = await sign_medical_waiver();
+    if (response) {
+      console.log("Medical waiver signed successfully.");
+      updateUserContext();
+      setWaiting(false);
+    } else {
+      console.error("Failed to sign medical waiver.");
+      setWaiting(false);
+    }
+  } catch (error) {
+    setWaiting(false);
+    console.error("An error occurred:", error);
+  }
+};
+
+interface TermsButtonProps {
+  boxChecked: boolean;
+  updateUserContext: () => Promise<void>;
+}
+
+const TermsButton: React.FC<TermsButtonProps> = ({ boxChecked, updateUserContext }) => {
+  const [waiting, setWaiting] = useState<Boolean>(false);
+
+  if (boxChecked) {
+    return (
+      <Button
+        onPressIn={() => {
+          handleClick(setWaiting, updateUserContext);
+        }}
+        waiting={waiting}
+      >
+        <Text lightColor={Colors.dark.text} darkColor={Colors.dark.text}>
+          {"Accept terms and conditions"}
+        </Text>
+      </Button>
+    );
+  } else {
+    return (
+      <Button lightColor={Colors.light.accentBackground} darkColor={Colors.dark.accentBackground}>
+        <Text lightColor={Colors.dark.text} darkColor={Colors.light.text}>
+          {"Accept terms and conditions"}
+        </Text>
+      </Button>
+    );
+  }
+};
 
 export default function Home() {
   const { updateUserContext } = useUserContext();
   const [refreshing, setRefreshing] = React.useState(false);
   const [isChecked, setChecked] = useState(false);
   const [confirmationBoxHeight, setConfirmationBoxHeight] = useState(0);
-
-  const onRefresh = React.useCallback(async () => {
-    setRefreshing(true);
-    await updateUserContext();
-    setRefreshing(false);
-  }, []);
 
   return (
     <SafeAreaView lightColor={Colors.light.background} darkColor={Colors.dark.background} style={{ width: "100%", flex: 1 }}>
@@ -145,17 +188,6 @@ export default function Home() {
           >{`- I understand that actual clinical results may vary and that refinement aligners may incur extra costs.\n- I may need attachments or IPR, and I accept the associated costs and treatment implications.\n- Lost or broken aligners will incur additional costs.\n- I must wear a retainer after treatment to maintain results.\n- I accept the possible side effects and limitations of aligner treatment.I understand that no guarantees are made regarding the fit of aligners.`}</Text>
         </ScrollView>
       </View>
-      {/*<BlurView
-        opacity={50}
-        lightColor={Colors.light.background}
-        darkColor={Colors.dark.background}
-        onLayout={(event) => {
-          const { height } = event.nativeEvent.layout;
-          setConfirmationBoxHeight(height);
-        }}
-        intensity={5}
-        style={[styles.container, { position: "absolute", bottom: 0, width: "100%" }]}
-      >*/}
       <LinearGradient
         onLayout={(event) => {
           const { height } = event.nativeEvent.layout;
@@ -164,7 +196,7 @@ export default function Home() {
         colors={[useThemeColor({}, "background") + "00", useThemeColor({}, "background")]}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 0.2 }}
-        style={[styles.container, { position: "absolute", bottom: 0, width: "100%", paddingTop: 50 }]}
+        style={[styles.container, { position: "absolute", bottom: 0, width: "100%", paddingTop: 75 }]}
       >
         <Title style={styles.subtitle} fontWeight="700">
           {"Agreement to Terms and Conditions"}
@@ -175,9 +207,8 @@ export default function Home() {
             style={styles.body}
           >{`I have reviewed and understood the terms and conditions for Smile White treatment. I accept the risks and agree to proceed with the treatment, acknowledging that Smile White makes no guarantees regarding the outcome.`}</Text>
         </View>
-        <Button>{"Accept terms and conditions"}</Button>
+        <TermsButton boxChecked={isChecked} updateUserContext={updateUserContext} />
       </LinearGradient>
-      {/*</BlurView>*/}
     </SafeAreaView>
   );
 }

@@ -314,3 +314,28 @@ export const updateAlignerChangeDate = async (delay: boolean): Promise<ResponseM
     throw error;
   }
 };
+
+export const sign_medical_waiver = async (): Promise<ResponseMessage | null> => {
+  try {
+    const token = await getToken();
+
+    console.log(token);
+
+    const response = await authService.put(
+      "/api/v1/signWaiver",
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return { message: response.data.message, token: response.data.token, status: response.status, userData: response.data.userData };
+  } catch (error) {
+    console.error("Error signing medical waiver`:", error);
+    throw error;
+  }
+};

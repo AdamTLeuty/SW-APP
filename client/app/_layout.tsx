@@ -89,9 +89,7 @@ export default function RootLayout() {
 
 const userStateChanged = (isLoggedIn: boolean, status: Status, medicalWaiverSigned: Boolean) => {
   if (isLoggedIn) {
-    if (status == "impressionStage") {
-      router.replace("/(impressionProcess)/home");
-    } else if (status == "alignerStage") {
+    if (status == "alignerStage") {
       if (medicalWaiverSigned) {
         router.replace("/(loggedIn)/home");
       } else {

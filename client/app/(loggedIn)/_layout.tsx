@@ -102,16 +102,7 @@ export default function TabLayout() {
           },
         }}
       />
-      <Tabs.Screen
-        name="support"
-        options={{
-          title: "Support",
-          tabBarIcon: ({ color, focused }) => <TabBarIcon iconName="support" width="30" color={focused ? activeTint : inactiveTint} focused={focused} />,
-          header: ({ navigation, route, options }) => {
-            return <CustomHeader locked={false} nav={navigation} />;
-          },
-        }}
-      />
+
       <Tabs.Screen
         name="camera"
         options={{
@@ -130,11 +121,24 @@ export default function TabLayout() {
           },
         }}
       />
+
+      <Tabs.Screen
+        name="support"
+        options={{
+          title: "Support",
+          tabBarIcon: ({ color, focused }) => <TabBarIcon iconName="support" width="30" color={focused ? activeTint : inactiveTint} focused={focused} />,
+          header: ({ navigation, route, options }) => {
+            return <CustomHeader locked={false} nav={navigation} />;
+          },
+        }}
+      />
+
       <Tabs.Screen
         name="content"
         options={{
           title: "Content",
-          tabBarIcon: ({ color, focused }) => <TabBarIcon iconName="play" width="30" color={focused ? activeTint : inactiveTint} focused={focused} />,
+          href: null,
+          //tabBarIcon: ({ color, focused }) => <TabBarIcon iconName="play" width="30" color={focused ? activeTint : inactiveTint} focused={focused} />,
           header: ({ navigation, route, options }) => {
             return <CustomHeader locked={false} />;
           },

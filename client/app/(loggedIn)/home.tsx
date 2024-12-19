@@ -87,9 +87,6 @@ export default function Home() {
         ) : (
           <Text />
         )}
-        <Link href="/content">
-          <Content_Link />
-        </Link>
       </View>
     </ScrollView>
   );

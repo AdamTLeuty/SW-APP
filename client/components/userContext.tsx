@@ -54,31 +54,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const login = async (userData: User) => {
     setIsLoggedIn(true);
     setUser(userData);
-    const token = await getToken();
-    let response;
-    if (token) {
-      response = await checkUserStatus(userData.email, token);
-    }
-    if (response?.userData != null) {
-      const userDataWithStage = response.userData as { stage: string; alignerCount: number; alignerProgress: number; alignerChangeDate: string };
-      if (userDataWithStage.stage == "aligner") {
-        setStatus("alignerStage");
-      }
-      if (userDataWithStage.stage == "impression") {
-        setStatus("impressionStage");
-      }
-      if (userDataWithStage.alignerCount) {
-        setAlignerCount(userDataWithStage.alignerCount);
-      }
-      if (userDataWithStage.alignerProgress) {
-        setAlignerProgress(userDataWithStage.alignerProgress);
-      }
-      if (userDataWithStage.alignerChangeDate) {
-        setAlignerChangeDate(userDataWithStage.alignerChangeDate);
-      }
-    } else {
-      console.log(response);
-    }
+    await updateUserContext();
   };
 
   const updateUserContext = async () => {

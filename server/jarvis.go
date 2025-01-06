@@ -29,9 +29,7 @@ func jarvis_get_customer_data(email string) (JarvisResponse, error) {
 
 	client := &http.Client{}
 
-	//See: https://developers.hubspot.com/docs/api/crm/contacts
-	//Add more properties under the `properties` url query if needed
-	requestURL := BASE_URL + "api/smilewhite_app/customer?email=" + email
+	requestURL := fmt.Sprintf("%sapi/smilewhite_app/customer/%s/", BASE_URL, email)
 	log.Println("Request url is: ", requestURL)
 	req, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {
@@ -67,9 +65,68 @@ func jarvis_get_customer_data(email string) (JarvisResponse, error) {
 		return data, nil
 
 	} else {
-
 		return JarvisResponse{}, errors.New(fmt.Sprint("Jarvis responded with a status code: ", resp.Status))
 	}
+
+}
+
+func jarvis_get_dentist_data(dentistID int) (*Dentist, error) {
+
+	BASE_URL := os.Getenv("JARVIS_BASE_URL")
+
+	apiKey := os.Getenv("JARVIS_AUTH_TOKEN")
+	url := fmt.Sprintf("%sapi/smilewhite_app/dentist/%d/", BASE_URL, dentistID)
+
+	log.Println(url)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.Header.Set("Authorization", "Api-Key "+apiKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("received non-200 response code: %d", resp.StatusCode)
+	}
+
+	var response struct {
+		ID      int `json:"id"`
+		Address struct {
+			Country      string `json:"country"`
+			City         string `json:"city"`
+			Region       string `json:"region"`
+			Street       string `json:"street"`
+			StreetNumber string `json:"street_number"`
+		} `json:"address"`
+		Name        string `json:"name"`
+		Postcode    string `json:"postcode"`
+		DentistUser int    `json:"dentist_user"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %w", err)
+	}
+
+	dentist := &Dentist{
+		JarvisID:     response.ID,
+		Name:         response.Name,
+		StreetNumber: response.Address.StreetNumber,
+		Street:       response.Address.Street,
+		City:         response.Address.City,
+		Region:       response.Address.Region,
+		Country:      response.Address.Country,
+		Postcode:     response.Postcode,
+	}
+
+	return dentist, nil
 
 }
 

@@ -140,6 +140,10 @@ func setupRouter(db *sql.DB) *gin.Engine {
 			authorized.POST("/userData", func(c *gin.Context) {
 				setUserData(c, db)
 			})
+			authorized.GET("/dentist/:dentistid", func(c *gin.Context) {
+				log.Println("Getting dentist data...")
+				getDentistData(c, db)
+			})
 			authorized.POST("/changeAlignerDate", func(c *gin.Context) {
 				updateAlignerChangeDate(c, db)
 			})
@@ -315,7 +319,7 @@ func main() {
 	}
 	statement.Exec()
 
-	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS dentists (id INTEGER PRIMARY KEY, jarvisID INTEGER, name TEXT, street_number TEXT, street TEXT, city TEXT, region TEXT, country TEXT, postcode TEXT, UNIQUE(jarvisID))")
+	statement, err = db.Prepare("CREATE TABLE IF NOT EXISTS dentists (id INTEGER PRIMARY KEY, jarvisID INTEGER UNIQUE, name TEXT, street_number TEXT, street TEXT, city TEXT, region TEXT, country TEXT, postcode TEXT)")
 	if err != nil {
 		log.Fatal(err)
 	}

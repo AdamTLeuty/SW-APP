@@ -26,7 +26,7 @@ type UserDataResponse struct {
 	AlignerChangeDate      string `json:"alignerChangeDate,omitempty"`
 	ExpoPushToken          string `json:"expoPushToken,omitempty"`
 	CanChangeStage         bool   `json:"canChangeStage,omitempty"`
-	MedicalWaiverSigned    bool   `json:"medicalWaiverSigned,omitempty"`
+	MedicalWaiverSigned    bool   `json:"medicalWaiverSigned"`
 }
 
 func getUserData(c *gin.Context, db *sql.DB) {

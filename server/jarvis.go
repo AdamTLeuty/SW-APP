@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -130,8 +131,63 @@ func jarvis_get_dentist_data(dentistID int) (*Dentist, error) {
 
 }
 
+type PatchResponse struct {
+}
+
 func jarvis_sign_medical_waiver(email string) error {
+	BASE_URL := os.Getenv("JARVIS_BASE_URL")
+	JARVIS_AUTH_TOKEN := os.Getenv("JARVIS_AUTH_TOKEN")
 
-	return nil
+	log.Println("Updating terms accepted for user: ", email)
 
+	client := &http.Client{}
+
+	requestURL := fmt.Sprintf("%sapi/smilewhite_app/customer/%s/", BASE_URL, email)
+
+	payload := map[string]bool{
+		"terms_accepted": true,
+	}
+	jsonPayload, err := json.Marshal(payload)
+	if err != nil {
+		log.Println("Error marshalling payload: ", err)
+		return err
+	}
+
+	req, err := http.NewRequest("PATCH", requestURL, bytes.NewBuffer(jsonPayload))
+	if err != nil {
+		log.Println("Error creating request: ", err)
+		return err
+	}
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Api-Key "+JARVIS_AUTH_TOKEN)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println("Error executing request: ", err)
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusNoContent {
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Println("Error reading response body: ", err)
+			return err
+		}
+
+		var data PatchResponse
+		err = json.Unmarshal(bodyBytes, &data)
+		if err != nil {
+			log.Println("Error unmarshalling response: ", err)
+			return err
+		}
+
+		log.Println("Successfully updated terms_accepted for user:", email)
+		return nil
+	} else {
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		log.Println("Response body: ", string(bodyBytes))
+		return errors.New(fmt.Sprintf("Jarvis responded with a status code: %d", resp.StatusCode))
+	}
 }

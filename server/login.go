@@ -52,7 +52,7 @@ func login(c *gin.Context, db *sql.DB) {
 }
 
 type tokenLoginDetails struct {
-	Email string `json;"email"`
+	Email string `json:"email"`
 }
 
 type Header struct {

@@ -38,13 +38,12 @@ func register(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	log.Println("Email and Password Below:")
+	log.Println("Email Below:")
 	log.Println(user.Email)
-	log.Println(user.Password)
 
 	hashedPassword, err := hashPassword(user.Password)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Sorry, please try again later"})
 		return
 	}
 
@@ -56,14 +55,14 @@ func register(c *gin.Context, db *sql.DB) {
 	hubspotData, err := getUserHubspotData(user.Email)
 	if err != nil {
 		log.Println("Error: ", err)
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Sorry, please try again later"})
 		return
 	}
 
 	// Get a Tx for making transaction requests.
 	tx, err := db.Begin()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Sorry, please try again later"})
 		log.Println("Could not start transaction: ", err)
 		return
 	}

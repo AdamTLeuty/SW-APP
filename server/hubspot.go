@@ -212,7 +212,11 @@ func emailInHubspot(email string) bool {
 	}
 	defer resp.Body.Close()
 
-	//body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln("Error reading response body:", err)
+	}
+	log.Printf("Response Body: %s", string(body))
 
 	if resp.Status == "200 OK" {
 		return true

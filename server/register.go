@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"log"
+	"strings"
 	"time"
 
 	"net/http"
@@ -19,19 +20,21 @@ func register(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	if user.Email == "" || user.Password == "" {
+	userEmail := strings.TrimSpace(user.Email)
+
+	if userEmail == "" || user.Password == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Email and Password cannot be blank"})
 		return
 	}
 
-	emailInDB, err := checkEmailExists(db, user.Email)
+	emailInDB, err := checkEmailExists(db, userEmail)
 	if emailInDB {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Contact already exists with that email within the database - please login or reset your password"})
 		log.Println("The email is in the database already")
 		return
 	}
 
-	userInHubspot := emailInHubspot(user.Email)
+	userInHubspot := emailInHubspot(userEmail)
 	if !userInHubspot {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please use the email you used for your consultation"})
 		log.Println("The email is not present in HubSpot :(")
@@ -39,7 +42,7 @@ func register(c *gin.Context, db *sql.DB) {
 	}
 
 	log.Println("Email Below:")
-	log.Println(user.Email)
+	log.Println(userEmail)
 
 	hashedPassword, err := hashPassword(user.Password)
 	if err != nil {
@@ -52,7 +55,7 @@ func register(c *gin.Context, db *sql.DB) {
 
 	unixEpoch := time.Unix(0, 0).UTC()
 
-	hubspotData, err := getUserHubspotData(user.Email)
+	hubspotData, err := getUserHubspotData(userEmail)
 	if err != nil {
 		log.Println("Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Sorry, please try again later"})
@@ -99,7 +102,7 @@ func register(c *gin.Context, db *sql.DB) {
 		stage = "aligner"
 	}
 
-	res, err := stmt.Exec(user.Email, hashedPassword, user.Username, false, authCode, stage, "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "", 0, false, user.Email)
+	res, err := stmt.Exec(userEmail, hashedPassword, user.Username, false, authCode, stage, "unset", 0, alignerCount, unixEpoch.Format(time.RFC3339), "", 0, false, userEmail)
 	if err != nil {
 		tx.Rollback()
 		log.Println("Could not execute insert into `users` table: ", err)
@@ -134,7 +137,7 @@ func register(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	err = updateUserFromJarvisTx(tx, user.Email)
+	err = updateUserFromJarvisTx(tx, userEmail)
 	if err != nil {
 		log.Println("Could not retrieve data from Jarvis:", err)
 		//return
@@ -147,12 +150,12 @@ func register(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	token, err := createToken(user.Email)
+	token, err := createToken(userEmail)
 
 	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully", "token": token})
 	if user.Username != "" {
-		go sendEmail(user.Email, authCode, user.Username)
+		go sendEmail(userEmail, authCode, user.Username)
 	} else {
-		go sendEmail(user.Email, authCode, user.Email)
+		go sendEmail(userEmail, authCode, userEmail)
 	}
 }

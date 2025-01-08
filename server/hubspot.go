@@ -12,6 +12,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -200,7 +201,27 @@ func emailInHubspot(email string) bool {
 
 	client := &http.Client{}
 
-	req, err := http.NewRequest("GET", BASE_URL+"/crm/v3/objects/contacts/"+email+"?idProperty=email", nil)
+	// Parse the base URL
+	u, err := url.Parse(BASE_URL)
+	if err != nil {
+		log.Println("Error parsing URL:", err)
+		return false
+	}
+
+	// Add path parameter
+	u.Path += "/crm/v3/objects/contacts/" + email
+
+	log.Printf("Email without trimming: `%s`, email with trimming: `%s`", email, email)
+
+	// Add query parameters
+	q := u.Query()
+	q.Set("idProperty", "email")
+	u.RawQuery = q.Encode()
+
+	// Construct the full URL
+	fullURL := u.String()
+
+	req, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -221,6 +242,7 @@ func emailInHubspot(email string) bool {
 	if resp.Status == "200 OK" {
 		return true
 	} else {
+		log.Println("Request URL was: ", fullURL)
 		return false
 	}
 

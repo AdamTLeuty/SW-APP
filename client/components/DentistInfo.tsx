@@ -1,10 +1,11 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import Card from "./Card";
 import { Text, Title } from "./Themed";
 import { universalStyles as styles } from "@/constants/Styles";
 import { getDentistInfo } from "@/services/authService";
 import { ActivityIndicator } from "react-native";
+import { useUserContext } from "./userContext";
 
 // Define the type for the dentist info
 interface DentistInfoType {
@@ -22,10 +23,11 @@ interface DentistInfoType {
 export default function DentistInfo() {
   const [dentistInfo, setDentistInfo] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const { dentistID } = useUserContext();
 
   const fetchDentistInfo = useCallback(async () => {
     try {
-      const info = await getDentistInfo(15);
+      const info = await getDentistInfo(dentistID);
       if (info != null) {
         setDentistInfo(info.dentistData);
         setError(null);
@@ -33,18 +35,19 @@ export default function DentistInfo() {
     } catch (err) {
       setError((err as Error).message);
     }
-  }, []);
+  }, [dentistID]);
 
   useFocusEffect(
     useCallback(() => {
       if (!dentistInfo) {
         fetchDentistInfo();
-      } else {
-        console.log(dentistInfo);
-        console.log(error);
       }
-    }, [fetchDentistInfo]),
+    }, [fetchDentistInfo, dentistInfo]),
   );
+
+  useEffect(() => {
+    fetchDentistInfo();
+  }, [dentistID, fetchDentistInfo]);
 
   if (error) {
     console.log("ERROR: " + error);

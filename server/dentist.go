@@ -58,6 +58,7 @@ func getDentistData(c *gin.Context, db *sql.DB) {
 
 	dentistID, err := strconv.Atoi(c.Param("dentistid"))
 	if err != nil {
+		log.Println("Error parsing dentist ID: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching dentist data - please try again later"})
 		return
 	}

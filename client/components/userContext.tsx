@@ -32,6 +32,7 @@ interface UserContextType {
   updateUsername: (name: string) => Promise<void>;
   impressionConfirmation: string;
   medicalWaiverSigned: boolean;
+  dentistID: number;
 }
 
 // Create the context with an initial value
@@ -50,6 +51,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [impressionConfirmation, setImpressionConfirmation] = useState<string>("unset");
   const [canChangeStage, setCanChangeStage] = useState<Boolean>(false);
   const [medicalWaiverSigned, setMedicalWaiverSigned] = useState<boolean>(false);
+  const [dentistID, setDentistID] = useState<number>(-1);
 
   const login = async (userData: User) => {
     setIsLoggedIn(true);
@@ -74,6 +76,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         canChangeStage: Boolean;
         impressionConfirmation: string;
         medicalWaiverSigned: boolean;
+        dentistID: number;
       };
       console.log("stage: " + userDataWithStage.stage);
 
@@ -101,6 +104,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       console.log(userDataWithStage);
       if (userDataWithStage.alignerCount) {
         setAlignerCount(userDataWithStage.alignerCount);
+      }
+      if (userDataWithStage.dentistID) {
+        setDentistID(userDataWithStage.dentistID);
       }
       if (userDataWithStage.alignerProgress != null) {
         setAlignerProgress(userDataWithStage.alignerProgress);
@@ -244,6 +250,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         canChangeStage,
         impressionConfirmation,
         medicalWaiverSigned,
+        dentistID,
       }}
     >
       {children}

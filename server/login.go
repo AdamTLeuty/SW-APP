@@ -19,9 +19,11 @@ func login(c *gin.Context, db *sql.DB) {
 		return
 	}
 
+	userEmail := strings.TrimSpace(loginDetails.Email)
+
 	start := time.Now() // Record start time
 	var user User
-	err := db.QueryRow("SELECT id, email, password FROM users WHERE email = ?", loginDetails.Email).Scan(&user.ID, &user.Email, &user.Password)
+	err := db.QueryRow("SELECT id, email, password FROM users WHERE email = ?", userEmail).Scan(&user.ID, &user.Email, &user.Password)
 	duration := time.Since(start) // Calculate the duration
 	log.Printf("Duration of database read is %s\n", duration)
 	if err != nil {
@@ -35,7 +37,7 @@ func login(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	verified, err := checkUserEmailVerified(db, loginDetails.Email)
+	verified, err := checkUserEmailVerified(db, userEmail)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "There has been an issue verifying your email. Please try again, or contact support"})
 		log.Println(err)
@@ -46,7 +48,7 @@ func login(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	token, err := createToken(loginDetails.Email)
+	token, err := createToken(userEmail)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully", "token": token})
 }
@@ -89,26 +91,28 @@ func loginWithToken(c *gin.Context, db *sql.DB) {
 	log.Println("The decoded claim is: ", claimValue)
 	log.Println("The error from the token verification is: ", err)
 
-	emailInDB, err := checkEmailExists(db, claimValue.(string))
+	claimEmail := strings.TrimSpace(claimValue.(string))
+
+	emailInDB, err := checkEmailExists(db, claimEmail)
 
 	if !emailInDB {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User does not exist"})
 		return
 	}
 
-	verified, err := checkUserEmailVerified(db, claimValue.(string))
+	verified, err := checkUserEmailVerified(db, claimEmail)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "There has been an issue verifying your email. Please try again, or contact support"})
 		log.Println(err)
 		return
 	}
 	if !verified {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Your email has not yet been verified", "email": claimValue.(string)})
+		c.JSON(http.StatusForbidden, gin.H{"error": "Your email has not yet been verified", "email": claimEmail})
 		return
 	}
 
-	token, err = createToken(claimValue.(string))
-	log.Println(claimValue.(string))
+	token, err = createToken(claimEmail)
+	log.Println(claimEmail)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error - please try again later"})

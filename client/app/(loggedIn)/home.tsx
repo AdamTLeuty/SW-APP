@@ -21,6 +21,7 @@ import Card from "@/components/Card";
 import ToDo from "@/components/ToDo";
 import Collapsible from "@/components/Collapsible";
 import Collapsible2 from "@/components/Collapsible copy";
+import DentistInfo from "@/components/DentistInfo";
 
 function ordinal_suffix_of(i: number) {
   let j = i % 10,
@@ -67,15 +68,7 @@ export default function Home() {
           <ToDo checked={false} title="Sign medical waiver" subtitle="Take me there." link="https://google.com"></ToDo>
         </Card>
 
-        <Card style={universalStyles.bottomMargin}>
-          <Collapsible>
-            <Text fontWeight="800">{"Practice name"}</Text>
-            <Text>{"Yorkshire Dental Suite\n"}</Text>
-            <Text fontWeight="800">{"Practice Address"}</Text>
-            <Text>{"347 Oakwood Ln, Leeds\nLS8 3HA\n"}</Text>
-            <Text>{"Request change"}</Text>
-          </Collapsible>
-        </Card>
+        <DentistInfo />
 
         {alignerProgress > 0 && <Countdown style={styles.bottomMargin} timerPercentage={100} changeDate={new Date(Date.parse(alignerChangeDate))} />}
         {changeDate < now ? (

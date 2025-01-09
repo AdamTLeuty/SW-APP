@@ -28,6 +28,7 @@ interface ResponseMessage {
   token: string;
   status: number;
   userData?: object;
+  dentistData?: object;
 }
 
 export const registerNewUser = async (
@@ -336,6 +337,25 @@ export const sign_medical_waiver = async (): Promise<ResponseMessage | null> => 
     return { message: response.data.message, token: response.data.token, status: response.status, userData: response.data.userData };
   } catch (error) {
     console.error("Error signing medical waiver`:", error);
+    throw error;
+  }
+};
+
+export const getDentistInfo = async (dentistid: number): Promise<ResponseMessage | null> => {
+  try {
+    const token = await getToken();
+
+    const response = await authService.get(`/api/v1/dentist/${dentistid}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return { message: response.data.message, token: response.data.token, status: response.status, dentistData: response.data.dentist };
+  } catch (error) {
+    console.error("Error getting dentist info:", error);
     throw error;
   }
 };

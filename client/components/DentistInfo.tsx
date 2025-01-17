@@ -6,6 +6,7 @@ import { universalStyles as styles } from "@/constants/Styles";
 import { getDentistInfo } from "@/services/authService";
 import { ActivityIndicator } from "react-native";
 import { useUserContext } from "./userContext";
+import Colors from "@/constants/Colors";
 
 // Define the type for the dentist info
 interface DentistInfoType {
@@ -56,9 +57,9 @@ export default function DentistInfo() {
 
   if (!dentistInfo) {
     return (
-      <Card style={styles.bottomMargin}>
+      <Card lightColor={Colors.tint} darkColor={Colors.tint} style={styles.bottomMargin}>
         <Title style={{ textAlign: "left" }}>{"Practice details"}</Title>
-        <Text>
+        <Text lightColor={Colors.dark.text} darkColor={Colors.dark.text}>
           {"Loading..."}
           <ActivityIndicator size="small" color="#FFFFFF" />
         </Text>
@@ -67,12 +68,23 @@ export default function DentistInfo() {
   }
 
   return (
-    <Card style={styles.bottomMargin}>
-      <Title style={{ textAlign: "left", marginBottom: 10 }}>{"Practice details"}</Title>
-      <Text fontWeight="800">{"Practice name"}</Text>
-      <Text>{dentistInfo.name}</Text>
-      <Text fontWeight="800">{"Practice Address"}</Text>
-      <Text>{`${dentistInfo["address.street_number"]} ${dentistInfo["address.street"]}, ${dentistInfo["address.city"]}\n${dentistInfo["address.region"]}, ${dentistInfo["address.country"]}\n${dentistInfo.postcode}`}</Text>
+    <Card lightColor={Colors.tint} darkColor={Colors.tint} style={styles.bottomMargin}>
+      <Title lightColor={Colors.dark.text} darkColor={Colors.dark.text} style={{ textAlign: "left", marginBottom: 10 }}>
+        {"Practice details"}
+      </Title>
+      <Text lightColor={Colors.dark.text} darkColor={Colors.dark.text} fontWeight="800">
+        {"Practice name"}
+      </Text>
+      <Text lightColor={Colors.dark.text} darkColor={Colors.dark.text}>
+        {dentistInfo.name + `\n`}
+      </Text>
+      <Text lightColor={Colors.dark.text} darkColor={Colors.dark.text} fontWeight="800">
+        {"Practice Address"}
+      </Text>
+      <Text
+        lightColor={Colors.dark.text}
+        darkColor={Colors.dark.text}
+      >{`${dentistInfo["address.street_number"]} ${dentistInfo["address.street"]}, ${dentistInfo["address.city"]}\n${dentistInfo["address.region"]}, ${dentistInfo["address.country"]}\n${dentistInfo.postcode}`}</Text>
     </Card>
   );
 }

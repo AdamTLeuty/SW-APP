@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -51,6 +52,44 @@ func updateDentistData(db *sql.DB, id int) error {
 	if err != nil {
 		return err
 	}
+
+	err = updateDentistAvailability(db, data.JarvisID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func updateDentistAvailability(db *sql.DB, dentistID int) error {
+	// Get the most up-to-date availability information from Jarvis
+	data, err := jarvis_get_dentist_availability(dentistID)
+	if err != nil {
+		return err
+	}
+
+	// Prepare the statement for inserting availability slots
+	stmt, err := db.Prepare(`
+		INSERT INTO dentist_availability (dentistID, start_time, finish_time, available_duration)
+		VALUES (?, ?, ?, ?)
+		ON CONFLICT (dentistID, start_time)
+		DO UPDATE SET
+		    finish_time = excluded.finish_time,
+		    available_duration = excluded.available_duration;
+	`)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	// Insert each availability slot into the database
+	for _, slot := range data {
+		_, err = stmt.Exec(dentistID, slot.StartTime.Format(time.RFC3339), slot.FinishTime.Format(time.RFC3339), slot.AvailableDuration)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -106,4 +145,58 @@ func getDentistData(c *gin.Context, db *sql.DB) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Dentist data fetched", "dentist": dentist})
 	return
+}
+
+type DentistAvailability struct {
+	StartTime         time.Time `json:"start_time"`
+	FinishTime        time.Time `json:"finish_time"`
+	AvailableDuration int       `json:"available_duration"`
+}
+
+func getDentistAvailability(c *gin.Context, db *sql.DB) {
+	dentistID, err := strconv.Atoi(c.Param("dentistid"))
+	if err != nil {
+		log.Println("Error parsing dentist ID: ", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid dentist ID"})
+		return
+	}
+
+	// Fetch the availability data from the database
+	rows, err := db.Query(`
+		SELECT start_time, finish_time, available_duration
+		FROM dentist_availability
+		WHERE dentistID = ?
+	`, dentistID)
+	if err != nil {
+		log.Println("Error querying dentist availability: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching dentist availability"})
+		return
+	}
+	defer rows.Close()
+
+	var availability []AvailabilitySlot
+	for rows.Next() {
+		var slot AvailabilitySlot
+		var startTime, finishTime string
+		if err := rows.Scan(&startTime, &finishTime, &slot.AvailableDuration); err != nil {
+			log.Println("Error scanning availability slot: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching dentist availability"})
+			return
+		}
+		slot.StartTime, err = time.Parse(time.RFC3339, startTime)
+		if err != nil {
+			log.Println("Error parsing start time: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error parsing start time"})
+			return
+		}
+		slot.FinishTime, err = time.Parse(time.RFC3339, finishTime)
+		if err != nil {
+			log.Println("Error parsing finish time: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error parsing finish time"})
+			return
+		}
+		availability = append(availability, slot)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"availability": availability})
 }

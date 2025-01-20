@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type JarvisResponse struct {
@@ -190,4 +191,47 @@ func jarvis_sign_medical_waiver(email string) error {
 		log.Println("Response body: ", string(bodyBytes))
 		return errors.New(fmt.Sprintf("Jarvis responded with a status code: %d", resp.StatusCode))
 	}
+}
+
+type AvailabilitySlot struct {
+	StartTime         time.Time `json:"start_time"`
+	FinishTime        time.Time `json:"finish_time"`
+	AvailableDuration int       `json:"available_duration"`
+	PractitionerID    int       `json:"practitioner_id"`
+}
+
+func jarvis_get_dentist_availability(dentistID int) ([]AvailabilitySlot, error) {
+	BASE_URL := os.Getenv("JARVIS_BASE_URL")
+	apiKey := os.Getenv("JARVIS_AUTH_TOKEN")
+	url := fmt.Sprintf("%sapi/smilewhite_app/dentist/%d/availability/", BASE_URL, dentistID)
+
+	log.Println(url)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.Header.Set("Authorization", "Api-Key "+apiKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("received non-200 response code: %d", resp.StatusCode)
+	}
+
+	var response struct {
+		AvailableSlots []AvailabilitySlot `json:"available_slots"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %w", err)
+	}
+
+	return response.AvailableSlots, nil
 }

@@ -144,6 +144,12 @@ func setupRouter(db *sql.DB) *gin.Engine {
 				log.Println("Getting dentist data...")
 				getDentistData(c, db)
 			})
+
+			authorized.GET("/dentist/:dentistid/availability", func(c *gin.Context) {
+				log.Println("Getting dentist availability...")
+				getDentistAvailability(c, db)
+			})
+
 			authorized.POST("/changeAlignerDate", func(c *gin.Context) {
 				updateAlignerChangeDate(c, db)
 			})
@@ -268,7 +274,7 @@ func main() {
 		(id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT, verified INTEGER,
 	 	authcode INTEGER, stage TEXT, impressionConfirmation TEXT, alignerProgress INTEGER,
 		alignerCount INTEGER, alignerChangeDate TEXT, expo_notification_token TEXT, can_change_stage INTEGER,
-		dentistID INTEGER, medical_waiver TEXT, medical_waiver_signed INTEGER, FOREIGN KEY (dentistID) REFERENCES dentists(jarvisID))
+		dentistID INTEGER, medical_waiver TEXT, medical_waiver_signed INTEGER)
 		`)
 	if err != nil {
 		log.Fatal(err)
@@ -323,7 +329,30 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	statement.Exec()
+	_, err = statement.Exec()
+	if err != nil {
+		log.Print(err)
+	}
+
+	//Create a table for storing the availability of dentists
+	statement, err = db.Prepare(`
+		CREATE TABLE IF NOT EXISTS dentist_availability (
+			id INTEGER PRIMARY KEY,
+			dentistID INTEGER,
+			start_time TEXT,
+			finish_time TEXT,
+			available_duration INTEGER,
+			FOREIGN KEY (dentistID) REFERENCES dentists(jarvisID) ON DELETE CASCADE,
+			UNIQUE(dentistID, start_time)
+		)
+`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = statement.Exec()
+	if err != nil {
+		log.Print(err)
+	}
 
 	// Set up and start the cron job (in a separate function)
 	cronJob := setupCronJob(db)
@@ -357,6 +386,7 @@ func main() {
 	if useControls {
 		go serverSideControls(db)
 	}
+
 	select {}
 
 }

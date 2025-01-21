@@ -359,3 +359,22 @@ export const getDentistInfo = async (dentistid: number): Promise<ResponseMessage
     throw error;
   }
 };
+
+export const getDentistAvailability = async (dentistid: number): Promise<ResponseMessage | null> => {
+  try {
+    const token = await getToken();
+
+    const response = await authService.get(`/api/v1/dentist/${dentistid}/availability`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return { message: response.data.message, token: response.data.token, status: response.status, availability: response.data.availability };
+  } catch (error) {
+    console.error("Error getting dentist availability:", error);
+    throw error;
+  }
+};

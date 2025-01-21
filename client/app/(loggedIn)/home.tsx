@@ -22,6 +22,7 @@ import ToDo from "@/components/ToDo";
 import Collapsible from "@/components/Collapsible";
 import Collapsible2 from "@/components/Collapsible copy";
 import DentistInfo from "@/components/DentistInfo";
+import DentistAvailability from "@/components/DentistAvailability";
 
 function ordinal_suffix_of(i: number) {
   let j = i % 10,
@@ -65,6 +66,7 @@ export default function Home() {
         </Link>
 
         <DentistInfo />
+        <DentistAvailability />
 
         <Card style={universalStyles.bottomMargin}>
           <ToDo checked={false} title="Sign medical waiver" subtitle="Take me there." link="https://google.com"></ToDo>

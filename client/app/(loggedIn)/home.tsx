@@ -65,6 +65,8 @@ export default function Home() {
           {/*  <Progress text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} /> */}
         </Link>
 
+        {alignerProgress > 0 && <Countdown style={styles.bottomMargin} timerPercentage={100} changeDate={new Date(Date.parse(alignerChangeDate))} />}
+
         <DentistInfo />
         <DentistAvailability />
 
@@ -72,7 +74,6 @@ export default function Home() {
           <ToDo checked={false} title="Sign medical waiver" subtitle="Take me there." link="https://google.com"></ToDo>
         </Card>
 
-        {alignerProgress > 0 && <Countdown style={styles.bottomMargin} timerPercentage={100} changeDate={new Date(Date.parse(alignerChangeDate))} />}
         {changeDate < now ? (
           <Link href="/aligner-change-modal" asChild>
             <Button lightColor={Colors.light.tint} darkColor={Colors.dark.tint}>

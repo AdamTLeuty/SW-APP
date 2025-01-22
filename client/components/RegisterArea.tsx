@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Pressable, StyleSheet, Animated } from "react-native";
-
+import Toast from "react-native-toast-message";
 import { Text, View, TextInput } from "./Themed";
 import { registerNewUser, loginExistingUser } from "../services/authService";
 import { storeToken } from "../services/tokenStorage";
@@ -61,6 +61,11 @@ const RegisterArea: React.FC = () => {
       const errorMessage = (err as any)?.response?.data?.error;
       setError(typeof errorMessage == "string" ? errorMessage : "Registration FAILED :(");
       setResponse(null);
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error ? error : "Registration failed",
+      });
     }
   };
 
@@ -134,9 +139,6 @@ const RegisterArea: React.FC = () => {
           {"Create Account"}
         </Button>
       </Animated.View>
-
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      {response ? <Text style={styles.userInfo}>{response}</Text> : null}
     </View>
   );
 };

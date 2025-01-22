@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Pressable, StyleSheet, Animated } from "react-native";
-
+import Toast from "react-native-toast-message";
 import { Text, View, TextInput } from "./Themed";
 import { registerNewUser, loginExistingUser, verifyEmail, requestNewAuthCode } from "../services/authService";
 import { storeToken } from "../services/tokenStorage";
@@ -39,7 +39,12 @@ const VerifyArea: React.FC = () => {
     } catch (err) {
       console.error(err);
       const errorMessage = (err as any)?.response?.data?.error;
-      setError(typeof errorMessage == "string" ? errorMessage : "Registration FAILED :(");
+      setError(typeof errorMessage == "string" ? errorMessage : "Verification failed");
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error ? error : "Verification failed",
+      });
       setResponse(null);
     }
   };
@@ -76,6 +81,11 @@ const VerifyArea: React.FC = () => {
       console.error(err);
       const errorMessage = (err as any)?.response?.data?.error;
       setError(typeof errorMessage == "string" ? errorMessage : "Failed to request new confirmation email");
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error ? error : "Failed to request new confirmation email",
+      });
       setResponse(null);
       setTimeout(() => {
         setAwaitingResponse(false);
@@ -107,9 +117,6 @@ const VerifyArea: React.FC = () => {
       <Pressable onPress={handleResend}>
         <Text style={styles.resendText}>Resend confirmation email</Text>
       </Pressable>
-
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      {response ? <Text style={styles.userInfo}>{response}</Text> : null}
     </View>
   );
 };

@@ -5,6 +5,7 @@ import LoginArea from "@/components/LoginArea";
 import RegisterArea from "@/components/RegisterArea";
 import { Text, View, Title, KeyboardAvoidingView, ScrollView } from "@/components/Themed";
 import Colors from "@/constants/Colors";
+import Toast from "react-native-toast-message";
 
 import { useEffect, useState } from "react";
 

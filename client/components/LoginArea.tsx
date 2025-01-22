@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Pressable, StyleSheet, Animated } from "react-native";
-
+import Toast from "react-native-toast-message";
 import { Text, View, TextInput, useThemeColor, Button, ScrollView } from "./Themed";
 import { registerNewUser, loginExistingUser, loginExistingUserWithToken } from "../services/authService";
 import { storeToken, deleteToken } from "../services/tokenStorage";
@@ -65,6 +65,11 @@ const LoginArea: React.FC = () => {
         router.navigate("/(tabs)/verify");
       }
       setError(typeof errorMessage == "string" ? errorMessage : "Login failed");
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: error ? error : "Login failed",
+      });
       setResponse(null);
     }
   };
@@ -122,9 +127,6 @@ const LoginArea: React.FC = () => {
           Login
         </Button>
       </Animated.View>
-
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      {response ? <Text style={styles.userInfo}>{response}</Text> : null}
     </View>
   );
 };

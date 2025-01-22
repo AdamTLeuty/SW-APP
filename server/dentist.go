@@ -169,7 +169,7 @@ func getDentistAvailability(c *gin.Context, db *sql.DB) {
 	`, dentistID)
 	if err != nil {
 		log.Println("Error querying dentist availability: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching dentist availability"})
+		c.JSON(http.StatusNoContent, gin.H{"availability": nil})
 		return
 	}
 	defer rows.Close()

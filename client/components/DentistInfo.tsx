@@ -88,8 +88,8 @@ export default function DentistInfo() {
           `${dentistInfo["address.region"]}, ${dentistInfo["address.country"]}`,
           `${dentistInfo.postcode}`,
         ]
-          .filter((line) => line.trim() !== "") // Filter out empty lines
-          .join("\n")}{" "}
+          .filter((line) => line.trim() !== "" && line.trim() != ",") // Filter out empty lines
+          .join("\n")}
       </Text>
     </Card>
   );

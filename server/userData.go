@@ -24,7 +24,7 @@ type UserDataResponse struct {
 	AlignerCount           int    `json:"alignerCount,omitempty"`
 	AlignerProgress        int    `json:"alignerProgress"`
 	AlignerChangeDate      string `json:"alignerChangeDate,omitempty"`
-	DentistID              string `json:"dentistID,omitempty"`
+	DentistID              int64  `json:"dentistID,omitempty"`
 	ExpoPushToken          string `json:"expoPushToken,omitempty"`
 	CanChangeStage         bool   `json:"canChangeStage,omitempty"`
 	MedicalWaiverSigned    bool   `json:"medicalWaiverSigned"`
@@ -47,14 +47,35 @@ func getUserData(c *gin.Context, db *sql.DB) {
 
 	go updateUserFromHubspotData(db, email)
 
-	var userData UserDataResponse
+	go updateUserFromJarvisDB(db, email)
 
-	err = db.QueryRow(`SELECT stage, username, impressionConfirmation, alignerProgress, alignerCount, alignerChangeDate, can_change_stage, medical_waiver_signed, dentistID FROM users WHERE email = ?`, email).Scan(&userData.Stage, &userData.Username, &userData.ImpressionConfirmation, &userData.AlignerProgress, &userData.AlignerCount, &userData.AlignerChangeDate, &userData.CanChangeStage, &userData.MedicalWaiverSigned, &userData.DentistID)
+	var userData UserDataResponse
+	var dentistID *sql.NullInt64
+
+	err = db.QueryRow(`SELECT
+							stage,
+							username,
+							impressionConfirmation,
+							alignerProgress,
+							alignerCount,
+							alignerChangeDate,
+							can_change_stage,
+							medical_waiver_signed,
+							dentistID
+						FROM users
+						WHERE email = ?`, email).Scan(&userData.Stage, &userData.Username, &userData.ImpressionConfirmation, &userData.AlignerProgress, &userData.AlignerCount, &userData.AlignerChangeDate, &userData.CanChangeStage, &userData.MedicalWaiverSigned, &dentistID)
 	if err != nil {
 		log.Println("Error scanning for user data: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching user data - please try again later"})
 		return
 	}
+
+	if dentistID.Valid {
+		userData.DentistID = dentistID.Int64
+	} else {
+		userData.DentistID = -1
+	}
+
 	log.Println(userData)
 
 	c.JSON(http.StatusOK, gin.H{"message": "User data fetched", "userData": userData})
@@ -95,7 +116,7 @@ func updateUserFromJarvisDB(db *sql.DB, email string) error {
 	log.Println(data)
 
 	stmt, err := db.Prepare(`
-		UPDATE users SET medical_waiver_signed = ? WHERE email = ?
+		UPDATE users SET medical_waiver_signed = ?, dentistID = ? WHERE email = ?
 	`)
 	if err != nil {
 		log.Println("Prepare failed:", err)
@@ -103,7 +124,7 @@ func updateUserFromJarvisDB(db *sql.DB, email string) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(data.TermsAccepted, email)
+	_, err = stmt.Exec(data.TermsAccepted, data.AssignedDentist, email)
 	if err != nil {
 		log.Println("Execution failed:", err)
 		return err
@@ -120,7 +141,7 @@ func updateUserFromJarvisTx(tx *sql.Tx, email string) error {
 	log.Println(data)
 
 	stmt, err := tx.Prepare(`
-		UPDATE users SET medical_waiver_signed = ? WHERE email = ?
+		UPDATE users SET medical_waiver_signed = ?, dentistID = ? WHERE email = ?
 	`)
 	if err != nil {
 		log.Println("Prepare failed:", err)
@@ -128,7 +149,7 @@ func updateUserFromJarvisTx(tx *sql.Tx, email string) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(data.TermsAccepted, email)
+	_, err = stmt.Exec(data.TermsAccepted, data.AssignedDentist, email)
 	if err != nil {
 		log.Println("Execution failed:", err)
 		return err

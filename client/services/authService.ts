@@ -29,6 +29,7 @@ interface ResponseMessage {
   status: number;
   userData?: object;
   dentistData?: object;
+  availability?: object;
 }
 
 export const registerNewUser = async (

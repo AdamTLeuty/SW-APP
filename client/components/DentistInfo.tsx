@@ -81,10 +81,16 @@ export default function DentistInfo() {
       <Text lightColor={Colors.dark.text} darkColor={Colors.dark.text} fontWeight="800">
         {"Practice Address"}
       </Text>
-      <Text
-        lightColor={Colors.dark.text}
-        darkColor={Colors.dark.text}
-      >{`${dentistInfo["address.street_number"]} ${dentistInfo["address.street"]}, ${dentistInfo["address.city"]}\n${dentistInfo["address.region"]}, ${dentistInfo["address.country"]}\n${dentistInfo.postcode}`}</Text>
+      <Text lightColor={Colors.dark.text} darkColor={Colors.dark.text}>
+        {[
+          `${dentistInfo["address.street_number"]} ${dentistInfo["address.street"]}`,
+          `${dentistInfo["address.city"]}`,
+          `${dentistInfo["address.region"]}, ${dentistInfo["address.country"]}`,
+          `${dentistInfo.postcode}`,
+        ]
+          .filter((line) => line.trim() !== "") // Filter out empty lines
+          .join("\n")}{" "}
+      </Text>
     </Card>
   );
 }

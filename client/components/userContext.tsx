@@ -106,7 +106,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setAlignerCount(userDataWithStage.alignerCount);
       }
       if (userDataWithStage.dentistID) {
-        setDentistID(userDataWithStage.dentistID);
+        setDentistID(Number(userDataWithStage.dentistID));
       }
       if (userDataWithStage.alignerProgress != null) {
         setAlignerProgress(userDataWithStage.alignerProgress);

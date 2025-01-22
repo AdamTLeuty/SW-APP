@@ -4,7 +4,7 @@ import Card from "./Card";
 import { Text, Title } from "./Themed";
 import { universalStyles as styles } from "@/constants/Styles";
 import { getDentistAvailability } from "@/services/authService";
-import { ActivityIndicator, View, ScrollView } from "react-native";
+import { ActivityIndicator, View, ScrollView, Button } from "react-native";
 import { useUserContext } from "./userContext";
 import Colors from "@/constants/Colors";
 
@@ -18,23 +18,28 @@ interface AvailabilitySlot {
 export default function DentistAvailability() {
   const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const { dentistID } = useUserContext();
 
   const fetchAvailability = useCallback(async () => {
     try {
-      const info = await getDentistAvailability(dentistID);
-      if (info != null) {
+      const info = (await getDentistAvailability(dentistID)) as { availability: AvailabilitySlot[] };
+      if (info?.availability != null) {
+        console.log("Availability");
+        console.log(info.availability);
         setAvailability(info.availability);
         setError(null);
       }
+      setIsLoaded(true);
     } catch (err) {
       setError((err as Error).message);
+      setIsLoaded(true);
     }
   }, [dentistID]);
 
   useFocusEffect(
     useCallback(() => {
-      if (availability.length === 0) {
+      if (availability.length === 0 && !isLoaded) {
         fetchAvailability();
       }
 
@@ -42,7 +47,7 @@ export default function DentistAvailability() {
         console.log(slot);
         console.log(index);
       });
-    }, [fetchAvailability, availability]),
+    }, [fetchAvailability, availability, isLoaded]),
   );
 
   useEffect(() => {
@@ -54,16 +59,12 @@ export default function DentistAvailability() {
     return <></>;
   }
 
+  if (!isLoaded) {
+    return <></>;
+  }
+
   if (availability.length === 0) {
-    return (
-      <Card lightColor={Colors.tint} darkColor={Colors.tint} style={styles.bottomMargin}>
-        <Title style={{ textAlign: "left" }}>{"Availability Slots"}</Title>
-        <Text lightColor={Colors.dark.text} darkColor={Colors.dark.text}>
-          {"Loading..."}
-          <ActivityIndicator size="small" color="#FFFFFF" />
-        </Text>
-      </Card>
-    );
+    return <></>;
   }
 
   return (

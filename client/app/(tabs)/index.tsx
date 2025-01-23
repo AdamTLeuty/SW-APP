@@ -3,7 +3,7 @@ import React, { StyleSheet, Pressable } from "react-native";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import LoginArea from "@/components/LoginArea";
 import RegisterArea from "@/components/RegisterArea";
-import { Text, View, Title, KeyboardAvoidingView, ScrollView } from "@/components/Themed";
+import { Text, View, Title, KeyboardAvoidingView, ScrollView, Button } from "@/components/Themed";
 import Colors from "@/constants/Colors";
 import Toast from "react-native-toast-message";
 
@@ -12,8 +12,10 @@ import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
 import { universalStyles } from "@/constants/Styles";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SignInScreen() {
+  const { authTokens, promptAsync, logout } = useAuth();
   return (
     <KeyboardAvoidingView style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
@@ -31,6 +33,18 @@ export default function SignInScreen() {
               Register
             </Text>
           </Pressable>
+          <View>
+            {authTokens ? (
+              <>
+                <Text>Welcome! {authTokens.accessToken}</Text>
+                <Button title="Logout" onPress={logout} />
+              </>
+            ) : (
+              <Button title="Login" onPress={() => promptAsync()}>
+                Bruh
+              </Button>
+            )}
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

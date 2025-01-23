@@ -4,10 +4,10 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native
 import { useFonts } from "expo-font";
 import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import "react-native-reanimated";
 import { UserProvider, useUserContext } from "@/components/userContext";
-import { ImageProvider, useCurrentImageContext } from "@/components/currentImageContext";
+import { ImageProvider } from "@/components/currentImageContext";
 import { useColorScheme } from "@/components/useColorScheme";
 import * as Font from "expo-font";
 import { View } from "@/components/Themed";
@@ -17,6 +17,7 @@ import * as Notifications from "expo-notifications";
 import { Status } from "@/components/userContext";
 import CustomHeader from "@/components/CustomHeader";
 import Toast from "react-native-toast-message";
+import { AuthProvider } from "@/context/AuthContext";
 
 import { handleRegistrationError, registerForPushNotificationsAsync } from "@/services/notificationService";
 
@@ -76,11 +77,13 @@ export default function RootLayout() {
   return (
     <>
       <ActionSheetProvider>
-        <UserProvider>
-          <ImageProvider>
-            <RootLayoutNav />
-          </ImageProvider>
-        </UserProvider>
+        <AuthProvider>
+          <UserProvider>
+            <ImageProvider>
+              <RootLayoutNav />
+            </ImageProvider>
+          </UserProvider>
+        </AuthProvider>
       </ActionSheetProvider>
       <Toast />
     </>
@@ -116,7 +119,6 @@ function RootLayoutNav() {
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
   const { isLoggedIn, status, updateExpoPushToken, medicalWaiverSigned } = useUserContext();
-  const innerStatus = useRef<Status>(status);
 
   useEffect(() => {
     //sendTokenToServer()
@@ -127,26 +129,7 @@ function RootLayoutNav() {
   useEffect(() => {
     userStateChanged(isLoggedIn, status, medicalWaiverSigned);
     console.log("The status has changed to: " + status);
-    innerStatus.current = status;
   }, [isLoggedIn, status, medicalWaiverSigned]);
-
-  async function waitForImpressionStage(url: any) {
-    return new Promise((resolve) => {
-      let timerId = setInterval(checkState, 1000);
-
-      function checkState() {
-        if (innerStatus.current === "impressionStage") {
-          console.log("In the impression stage, we are in the stage:" + innerStatus.current);
-
-          clearInterval(timerId);
-          resolve(innerStatus.current);
-          router.push(url);
-        } else {
-          console.log("Not in the impression stage atm, we are in the stage:" + innerStatus.current);
-        }
-      }
-    });
-  }
 
   useEffect(() => {
     registerForPushNotificationsAsync()
@@ -156,7 +139,7 @@ function RootLayoutNav() {
     async function redirect(notification: Notifications.Notification) {
       const url = notification.request.content.data?.url;
       if (url && url != "") {
-        await waitForImpressionStage(url);
+        router.push(url);
       }
     }
 
@@ -193,7 +176,6 @@ function RootLayoutNav() {
             headerShown: true,
           }}
         />
-        <Stack.Screen name="(impressionProcess)" options={{ headerShown: false }} />
         <Stack.Screen name="impressions_result" options={{ presentation: "modal", headerShown: false }} />
         <Stack.Screen name="(medicalWaiverProcess)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -201,64 +183,3 @@ function RootLayoutNav() {
     </ThemeProvider>
   );
 }
-
-/*
-
-if (status == "alignerStage") {
-  //console.log("Is logged in!!");
-  return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(loggedIn)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        <Stack.Screen name="aligner-change-modal" options={{ presentation: "modal", headerShown: false }} />
-        <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
-        <Stack.Screen
-          name="settings"
-          options={{
-            //href: null,
-            title: "Settings test",
-            header: ({ navigation, route, options }) => {
-              return <CustomHeader locked={false} backButton={true} nav={navigation} />;
-            },
-            headerShown: true,
-          }}
-        />
-      </Stack>
-    </ThemeProvider>
-  );
-} else if (status == "impressionStage") {
-  return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(impressionProcess)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
-        <Stack.Screen name="impressions_result" options={{ presentation: "modal", headerShown: false }} />
-        <Stack.Screen
-          name="settings"
-          options={{
-            //href: null,
-            title: "Settings test",
-            header: ({ navigation, route, options }) => {
-              return <CustomHeader locked={false} backButton={true} nav={navigation} />;
-            },
-            headerShown: true,
-          }}
-        />
-      </Stack>
-    </ThemeProvider>
-  );
-} else {
-  //console.log("Isn't logged in!!!");
-  return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-      </Stack>
-    </ThemeProvider>
-  );
-}
-
-*/

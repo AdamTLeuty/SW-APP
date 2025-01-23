@@ -182,6 +182,7 @@ function RootLayoutNav() {
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
         <Stack.Screen name="aligner-change-modal" options={{ presentation: "modal", headerShown: false }} />
         <Stack.Screen name="confirm-picture-modal" options={{ presentation: "modal", headerShown: false }} />
+        <Stack.Screen name="view-picture" options={{ presentation: "modal", headerShown: false }} />
         <Stack.Screen
           name="settings"
           options={{

@@ -53,7 +53,6 @@ export default function ModalScreen() {
   const savePhoto = async () => {
     setWaiting(true);
     console.log("Save photo");
-    // Example usage
     const imageUri = image.uri;
     console.log(image);
 

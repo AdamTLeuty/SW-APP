@@ -17,6 +17,11 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.smilewhite.app",
       "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["smilewhite"]
+          }
+        ],
         "NSCameraUsageDescription": "The app requires the camera so you can take progress pictures",
         "NSPhotoLibraryUsageDescription": "The app requires `Photos` access so you can store and view progress images later."
       }
@@ -27,6 +32,18 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "smilewhite",
+              "host": "oauthredirect"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "permissions": []
     },
     "web": {

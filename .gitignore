@@ -184,3 +184,5 @@ client/Payload
 *.ipa
 
 credentials.json
+
+myenv

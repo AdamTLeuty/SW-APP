@@ -37,12 +37,10 @@ export default function SignInScreen() {
             {authTokens ? (
               <>
                 <Text>Welcome! {authTokens.accessToken}</Text>
-                <Button title="Logout" onPress={logout} />
+                <Button onPress={logout}>Logout</Button>
               </>
             ) : (
-              <Button title="Login" onPress={() => promptAsync()}>
-                Bruh
-              </Button>
+              <Button onPress={() => promptAsync()}>Login/Register</Button>
             )}
           </View>
         </View>

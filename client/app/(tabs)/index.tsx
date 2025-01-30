@@ -6,6 +6,7 @@ import RegisterArea from "@/components/RegisterArea";
 import { Text, View, Title, KeyboardAvoidingView, ScrollView, Button } from "@/components/Themed";
 import Colors from "@/constants/Colors";
 import Toast from "react-native-toast-message";
+import { useUserContext } from "@/components/userContext";
 
 import { useEffect, useState } from "react";
 
@@ -16,6 +17,14 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function SignInScreen() {
   const { authTokens, promptAsync, logout } = useAuth();
+  const { oauthToken, updateOauthToken } = useUserContext();
+
+  useEffect(() => {
+    if (authTokens) {
+      updateOauthToken(authTokens?.accessToken);
+    }
+  }, [authTokens]);
+
   return (
     <KeyboardAvoidingView style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>

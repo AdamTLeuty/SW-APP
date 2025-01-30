@@ -40,7 +40,7 @@ function ordinal_suffix_of(i: number) {
 }
 
 export default function Home() {
-  const { alignerProgress, alignerCount, updateUserContext, alignerChangeDate, user } = useUserContext();
+  const { alignerProgress, alignerCount, updateUserContext, alignerChangeDate, user, oauthToken } = useUserContext();
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(async () => {

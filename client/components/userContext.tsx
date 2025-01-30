@@ -33,6 +33,8 @@ interface UserContextType {
   impressionConfirmation: string;
   medicalWaiverSigned: boolean;
   dentistID: number;
+  oauthToken: string;
+  updateOauthToken: (token: string) => Promise<void>;
 }
 
 // Create the context with an initial value
@@ -52,6 +54,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [canChangeStage, setCanChangeStage] = useState<Boolean>(false);
   const [medicalWaiverSigned, setMedicalWaiverSigned] = useState<boolean>(false);
   const [dentistID, setDentistID] = useState<number>(-1);
+  const [oauthToken, setOauthtoken] = useState<string>("");
 
   const login = async (userData: User) => {
     setIsLoggedIn(true);
@@ -227,6 +230,19 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     return;
   };
 
+  const updateOauthToken = async (token: string) => {
+    console.log("Setting Oauth Token as: ", token);
+    const userToken = await getToken();
+    if (!userToken) {
+      console.error("Token is empty");
+      return;
+    }
+    if (token != "" && token != oauthToken) {
+      setOauthtoken(token);
+      setUserStatus(userToken, { oauthToken: token });
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -251,6 +267,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         impressionConfirmation,
         medicalWaiverSigned,
         dentistID,
+        oauthToken,
+        updateOauthToken,
       }}
     >
       {children}

@@ -1,11 +1,20 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { router } from "expo-router";
 import { deleteToken, getToken } from "@/services/tokenStorage";
-import { checkUserStatus, setUserStatus } from "@/services/authService";
+import { checkUserStatus, setUserStatus, getCustomerDataJarvis } from "@/services/authService";
 // Define the types for the context state and functions
 interface User {
   name: string;
   email: string;
+}
+
+interface JarvisData {
+  assigned_dentist: number;
+  id: number;
+  last_name: string;
+  name: string;
+  terms_accepted: boolean;
+  terms_links: string;
 }
 
 export type Status = "loggedOut" | "impressionStage" | "alignerStage";
@@ -14,7 +23,7 @@ type ImpressionJudgment = null | "good" | "bad";
 interface UserContextType {
   isLoggedIn: boolean;
   status: Status;
-  canChangeStage: Boolean;
+
   impressionJudgment: ImpressionJudgment;
   user: User | null;
   login: (userData: User) => Promise<void>;
@@ -30,7 +39,6 @@ interface UserContextType {
   updateAlignerCount: (count: number) => Promise<void>;
   updateAlignerProgress: (count: number) => Promise<void>;
   updateUsername: (name: string) => Promise<void>;
-  impressionConfirmation: string;
   medicalWaiverSigned: boolean;
   dentistID: number;
   oauthToken: string;
@@ -50,8 +58,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [alignerProgress, setAlignerProgress] = useState<number>(0);
   const [alignerChangeDate, setAlignerChangeDate] = useState<string>("");
   const [expoPushToken, setExpoPushToken] = useState<string>("");
-  const [impressionConfirmation, setImpressionConfirmation] = useState<string>("unset");
-  const [canChangeStage, setCanChangeStage] = useState<Boolean>(false);
   const [medicalWaiverSigned, setMedicalWaiverSigned] = useState<boolean>(false);
   const [dentistID, setDentistID] = useState<number>(-1);
   const [oauthToken, setOauthtoken] = useState<string>("");
@@ -63,11 +69,31 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateUserContext = async () => {
-    console.log("Should send a request to the server");
     const token = await getToken();
     let response;
+    let responseJarvis;
+    let jarvisData;
+    const apiKey = process.env.EXPO_PUBLIC_JARVIS_API_KEY;
     if (token) {
       response = await checkUserStatus(user.email, token);
+      responseJarvis = await getCustomerDataJarvis(apiKey, user.email);
+    }
+    if (responseJarvis != null) {
+      jarvisData = responseJarvis as JarvisData;
+
+      if (jarvisData.name != null && jarvisData?.last_name != null) {
+        let newUser = user;
+        newUser.name = jarvisData.name + "\u00A0" + jarvisData.last_name;
+        setUser(newUser);
+      }
+
+      if (jarvisData.assigned_dentist != null) {
+        setDentistID(jarvisData.assigned_dentist);
+      }
+
+      if (jarvisData.terms_accepted != null) {
+        setMedicalWaiverSigned(jarvisData.terms_accepted);
+      }
     }
     if (response?.userData != null) {
       const userDataWithStage = response.userData as {
@@ -76,40 +102,19 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         alignerCount: number;
         alignerProgress: number;
         alignerChangeDate: string;
-        canChangeStage: Boolean;
-        impressionConfirmation: string;
         medicalWaiverSigned: boolean;
         dentistID: number;
       };
-      console.log("stage: " + userDataWithStage.stage);
 
-      console.log("The username fetched from the server is: " + userDataWithStage.username);
-      console.log("Can we set the username?: ");
-      console.log(userDataWithStage.username && user != null);
-
-      if (userDataWithStage.username && user != null) {
-        console.log(user);
-        let newUser = user;
-
-        newUser.name = userDataWithStage.username;
-        console.log(newUser);
-        setUser(newUser);
-      }
-      if (userDataWithStage.canChangeStage) {
-        setCanChangeStage(true);
-      }
       if (userDataWithStage.stage == "impression") {
         setStatus("impressionStage");
       }
       if (userDataWithStage.stage == "aligner") {
         setStatus("alignerStage");
       }
-      console.log(userDataWithStage);
+
       if (userDataWithStage.alignerCount) {
         setAlignerCount(userDataWithStage.alignerCount);
-      }
-      if (userDataWithStage.dentistID) {
-        setDentistID(Number(userDataWithStage.dentistID));
       }
       if (userDataWithStage.alignerProgress != null) {
         setAlignerProgress(userDataWithStage.alignerProgress);
@@ -117,30 +122,18 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (userDataWithStage.alignerChangeDate) {
         setAlignerChangeDate(userDataWithStage.alignerChangeDate);
       }
-      if (userDataWithStage.impressionConfirmation) {
-        setImpressionConfirmation(userDataWithStage.impressionConfirmation);
-      }
-      if (userDataWithStage.medicalWaiverSigned != null) {
-        setMedicalWaiverSigned(userDataWithStage.medicalWaiverSigned);
-      }
-    } else {
-      console.log(response);
     }
     return;
   };
 
   const tentativeLogin = async (userData: User) => {
-    console.log(userData);
     setUser(userData);
     setIsLoggedIn(false);
-    console.log("User data is:" + user);
-    console.log("Just tentatively logged in: " + userData.email);
   };
 
   const nextStage = async () => {
     setIsLoggedIn(true);
     if (status == "impressionStage") {
-      console.log("Moving from impressions stage to aligner stage");
       setStatus("alignerStage");
     }
     const token = await getToken();
@@ -159,7 +152,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateExpoPushToken = async (expoToken: string) => {
-    console.log("Setting Expo Push Token as: ", expoToken);
     const userToken = await getToken();
     if (!userToken) {
       console.error("Token is empty");
@@ -173,9 +165,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const updateUsername = async (name: string) => {
     if (name.length <= 0 || name.length > 36) {
-      console.log("Not an acceptable answer");
     } else {
-      console.log("Set the username");
       if (user) {
         user.name = name;
       }
@@ -193,9 +183,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const updateAlignerProgress = async (count: number) => {
     if (count <= 0) {
-      console.log("Not an acceptable answer");
     } else {
-      console.log("Set the aligner count");
       setAlignerCount(count);
     }
 
@@ -214,9 +202,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     if (alignerCount == 0) {
       if (count < 0) {
-        console.log("Not an acceptable answer");
       } else {
-        console.log("Set the aligner count");
         setAlignerCount(count);
       }
     }
@@ -231,7 +217,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateOauthToken = async (token: string) => {
-    console.log("Setting Oauth Token as: ", token);
     const userToken = await getToken();
     if (!userToken) {
       console.error("Token is empty");
@@ -263,8 +248,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         updateAlignerCount,
         updateAlignerProgress,
         updateUsername,
-        canChangeStage,
-        impressionConfirmation,
         medicalWaiverSigned,
         dentistID,
         oauthToken,

@@ -4,6 +4,7 @@ import axios from "axios";
 import { getToken, storeToken } from "./tokenStorage";
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+const JARVIS_BASE_URL = process.env.EXPO_PUBLIC_JARVIS_URL;
 
 const authService = axios.create({
   baseURL: BASE_URL,
@@ -263,6 +264,28 @@ export const checkUserStatus = async (email: string, token: string): Promise<Res
     return { message: response.data.message, token: response.data.token, status: response.status, userData: response.data.userData };
   } catch (error) {
     console.error("Error fetching user data from auth server:", error);
+    throw error;
+  }
+};
+
+export const getCustomerDataJarvis = async (apiKey: string, email: string): Promise<any> => {
+  try {
+    console.log(apiKey);
+    console.log(email);
+
+    const url = `${JARVIS_BASE_URL}/smilewhite_app/customer/${email}/`;
+
+    console.log(url);
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Api-Key ${apiKey}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching customer data:", error);
     throw error;
   }
 };

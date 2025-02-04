@@ -3,11 +3,19 @@ import { View, Text, StyleSheet, ActivityIndicator, SafeAreaView } from "react-n
 import React, { useState, useEffect } from "react";
 import * as MediaLibrary from "expo-media-library";
 import { Image } from "expo-image";
+import { Title } from "@/components/Themed";
+import { universalStyles } from "@/constants/Styles";
 
 export default function ModalScreen() {
   const { date } = useLocalSearchParams();
   const [image, setImage] = useState<MediaLibrary.Asset | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const humanReadableDate = new Date(date).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -48,10 +56,13 @@ export default function ModalScreen() {
   return (
     <SafeAreaView style={{ width: "100%", height: "100%" }}>
       <View style={styles.container}>
+        <Title style={universalStyles.bottomMargin}>{humanReadableDate}</Title>
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : image ? (
-          <Image key={image.id} source={image.uri} style={styles.image} />
+          <View style={{ width: "100%", backgroundColor: "black", aspectRatio: "9/16" }}>
+            <Image key={image.id} source={image.uri} style={styles.image} />
+          </View>
         ) : (
           <Text>No image found for this date.</Text>
         )}

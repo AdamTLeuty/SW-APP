@@ -70,10 +70,6 @@ export default function Home() {
         <DentistInfo />
         <DentistAvailability />
 
-        <Card style={universalStyles.bottomMargin}>
-          <ToDo checked={false} title="Sign medical waiver" subtitle="Take me there." link="https://google.com"></ToDo>
-        </Card>
-
         {changeDate < now ? (
           <Link href="/aligner-change-modal" asChild>
             <Button lightColor={Colors.light.tint} darkColor={Colors.dark.tint}>

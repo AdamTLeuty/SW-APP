@@ -17,7 +17,7 @@ interface JarvisData {
   terms_links: string;
 }
 
-export type Status = "loggedOut" | "impressionStage" | "alignerStage";
+export type Status = "loggedOut" | "alignerStage";
 type ImpressionJudgment = null | "good" | "bad";
 
 interface UserContextType {
@@ -58,25 +58,32 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [alignerProgress, setAlignerProgress] = useState<number>(0);
   const [alignerChangeDate, setAlignerChangeDate] = useState<string>("");
   const [expoPushToken, setExpoPushToken] = useState<string>("");
-  const [medicalWaiverSigned, setMedicalWaiverSigned] = useState<boolean>(false);
+  const [medicalWaiverSigned, setMedicalWaiverSigned] = useState<boolean>(true);
   const [dentistID, setDentistID] = useState<number>(-1);
   const [oauthToken, setOauthtoken] = useState<string>("");
 
   const login = async (userData: User) => {
     setIsLoggedIn(true);
+    setStatus("alignerStage");
     setUser(userData);
-    await updateUserContext();
+    await updateUserContext(userData);
   };
 
-  const updateUserContext = async () => {
+  const updateUserContext = async (userData?: User) => {
+    let userEmail;
+    if (user == null) {
+      userEmail = userData.email;
+    } else {
+      userEmail = user.email;
+    }
     const token = await getToken();
     let response;
     let responseJarvis;
     let jarvisData;
     const apiKey = process.env.EXPO_PUBLIC_JARVIS_API_KEY;
     if (token) {
-      response = await checkUserStatus(user.email, token);
-      responseJarvis = await getCustomerDataJarvis(apiKey, user.email);
+      response = await checkUserStatus(userEmail, token);
+      responseJarvis = await getCustomerDataJarvis(apiKey, userEmail);
     }
     if (responseJarvis != null) {
       jarvisData = responseJarvis as JarvisData;

@@ -108,9 +108,9 @@ export const loginExistingUser = async (
     const name = userDataDeconstructed.username;
 
     const mockUserData = { name: name, email: email };
-    //console.log("Before the login state call");
+    console.log("Before the login state call");
     login(mockUserData);
-    //console.log("After the login state call");
+    console.log("After the login state call");
 
     for (let key in response.data) {
       if (response.data.hasOwnProperty(key)) {

@@ -15,7 +15,7 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
   const router = useRouter();
   const { showActionSheetWithOptions } = useActionSheet();
 
-  const { isLoggedIn, logout, nextStage } = useUserContext();
+  const { isLoggedIn, logout } = useUserContext();
   //const routeTest = useRoute();
 
   const handleLogout = async () => {

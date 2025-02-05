@@ -27,7 +27,7 @@ const LoginArea: React.FC = () => {
       console.log("Not logged in");
       const token = async () => await getToken();
       if (token != null) {
-        handleLoginWithToken();
+        //handleLoginWithToken();
       }
     }
   }, [isLoggedIn]);

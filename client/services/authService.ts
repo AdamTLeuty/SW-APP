@@ -33,53 +33,6 @@ interface ResponseMessage {
   availability?: object;
 }
 
-export const registerNewUser = async (
-  username: string,
-  email: string,
-  password: string,
-  tentativeLogin: (userData: { name: string; email: string }) => void,
-): Promise<ResponseMessage | null> => {
-  try {
-    const response = await authService.post(
-      `/api/v1/register`,
-      {
-        username: username,
-        email: email,
-        password: password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-cache",
-        },
-      },
-    );
-
-    await storeToken(response.data.token);
-
-    const mockUserData = { name: username, email: email };
-    //console.log("Before the login state call");
-    tentativeLogin(mockUserData);
-
-    for (let key in response.data) {
-      if (response.data.hasOwnProperty(key)) {
-        // Ensure it is the object's own property
-        //console.log(key + ": " + response.data[key]);
-      }
-    }
-
-    console.log("Response Message: " + response.data.message);
-
-    return { message: response.data.message, token: response.data.token, status: response.status };
-
-    //Object.keys(response.data.properties).length > 0 ? response.data.properties : null;
-    //return response.data.properties;
-  } catch (error) {
-    console.error("Error registering user:", error);
-    throw error;
-  }
-};
-
 export const loginExistingUser = async (
   email: string,
   password: string,
@@ -107,10 +60,7 @@ export const loginExistingUser = async (
     const userDataDeconstructed = userData?.userData as { username: string };
     const name = userDataDeconstructed.username;
 
-    const mockUserData = { name: name, email: email };
-    console.log("Before the login state call");
-    login(mockUserData);
-    console.log("After the login state call");
+    login(email);
 
     for (let key in response.data) {
       if (response.data.hasOwnProperty(key)) {
@@ -121,11 +71,6 @@ export const loginExistingUser = async (
     return { message: response.data.message, token: response.data.token, status: response.status };
   } catch (error) {
     const status = error?.response?.status;
-    if (status == 403) {
-      const mockUserData = { name: "", email: email };
-      console.log("about to call `tentativeLogin` with this email" + email);
-      tentativeLogin(mockUserData);
-    }
     throw error;
   }
 };

@@ -45,8 +45,15 @@ export default function Home() {
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    await updateUserContext();
-    setRefreshing(false);
+    console.log("User:", user);
+    console.log("User Email:", user?.email);
+    try {
+      await updateUserContext(user?.email);
+    } catch (error) {
+      console.error("Failed to update user context:", error);
+    } finally {
+      setRefreshing(false);
+    }
   }, []);
 
   const now = new Date();

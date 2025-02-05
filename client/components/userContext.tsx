@@ -23,14 +23,12 @@ type ImpressionJudgment = null | "good" | "bad";
 interface UserContextType {
   isLoggedIn: boolean;
   status: Status;
-
   impressionJudgment: ImpressionJudgment;
   user: User | null;
   login: (userData: User) => Promise<void>;
-  updateUserContext: () => Promise<void>;
+  updateUserContext: (userEmail: string) => Promise<void>;
   tentativeLogin: (userData: User) => Promise<void>;
   logout: () => Promise<void>;
-  nextStage: () => Promise<void>;
   alignerCount: number;
   alignerProgress: number;
   alignerChangeDate: string;
@@ -62,20 +60,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [dentistID, setDentistID] = useState<number>(-1);
   const [oauthToken, setOauthtoken] = useState<string>("");
 
-  const login = async (userData: User) => {
+  const login = async (email: string) => {
     setIsLoggedIn(true);
     setStatus("alignerStage");
-    setUser(userData);
-    await updateUserContext(userData);
+    await updateUserContext(email);
   };
 
-  const updateUserContext = async (userData?: User) => {
-    let userEmail;
-    if (user == null) {
-      userEmail = userData.email;
-    } else {
-      userEmail = user.email;
-    }
+  const updateUserContext = async (userEmail: string) => {
     const token = await getToken();
     let response;
     let responseJarvis;
@@ -89,8 +80,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       jarvisData = responseJarvis as JarvisData;
 
       if (jarvisData.name != null && jarvisData?.last_name != null) {
-        let newUser = user;
-        newUser.name = jarvisData.name + "\u00A0" + jarvisData.last_name;
+        let newUser: User = { name: jarvisData.name + "\u00A0" + jarvisData.last_name, email: userEmail };
+        setUser(newUser);
+      } else {
+        let newUser: User = { name: userEmail, email: userEmail };
         setUser(newUser);
       }
 
@@ -105,20 +98,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     if (response?.userData != null) {
       const userDataWithStage = response.userData as {
         username: string;
-        stage: string;
         alignerCount: number;
         alignerProgress: number;
         alignerChangeDate: string;
-        medicalWaiverSigned: boolean;
-        dentistID: number;
       };
-
-      if (userDataWithStage.stage == "impression") {
-        setStatus("impressionStage");
-      }
-      if (userDataWithStage.stage == "aligner") {
-        setStatus("alignerStage");
-      }
 
       if (userDataWithStage.alignerCount) {
         setAlignerCount(userDataWithStage.alignerCount);
@@ -136,19 +119,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const tentativeLogin = async (userData: User) => {
     setUser(userData);
     setIsLoggedIn(false);
-  };
-
-  const nextStage = async () => {
-    setIsLoggedIn(true);
-    if (status == "impressionStage") {
-      setStatus("alignerStage");
-    }
-    const token = await getToken();
-    if (!token) {
-      console.error("Token is empty");
-      return;
-    }
-    setUserStatus(token, { stage: "aligner" });
   };
 
   const logout = async () => {
@@ -245,7 +215,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         login,
         logout,
         updateUserContext,
-        nextStage,
+
         tentativeLogin,
         alignerCount,
         alignerProgress,

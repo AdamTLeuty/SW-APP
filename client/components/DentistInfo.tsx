@@ -28,10 +28,15 @@ export default function DentistInfo() {
 
   const fetchDentistInfo = useCallback(async () => {
     try {
-      const info = await getDentistInfo(dentistID);
-      if (info != null) {
-        setDentistInfo(info.dentistData);
-        setError(null);
+      const apiKey = process.env.EXPO_PUBLIC_JARVIS_API_KEY;
+      if (apiKey) {
+        const info = await getDentistInfo(dentistID, apiKey);
+        if (info != null) {
+          setDentistInfo(info);
+          setError(null);
+        }
+      } else {
+        throw new Error("No jarvis api key found:" + apiKey);
       }
     } catch (err) {
       setError((err as Error).message);
@@ -51,7 +56,7 @@ export default function DentistInfo() {
   }, [dentistID, fetchDentistInfo]);
 
   if (error) {
-    console.log("ERROR: " + error);
+    console.error("ERROR: " + error);
     return <></>;
   }
 
@@ -83,9 +88,9 @@ export default function DentistInfo() {
       </Text>
       <Text lightColor={Colors.dark.text} darkColor={Colors.dark.text}>
         {[
-          `${dentistInfo["address.street_number"]} ${dentistInfo["address.street"]}`,
-          `${dentistInfo["address.city"]}`,
-          `${dentistInfo["address.region"]}, ${dentistInfo["address.country"]}`,
+          `${dentistInfo.address.street_number} ${dentistInfo.address.street}`,
+          `${dentistInfo.address.city}`,
+          `${dentistInfo.address.region}, ${dentistInfo.address.country}`,
           `${dentistInfo.postcode}`,
         ]
           .filter((line) => line.trim() !== "" && line.trim() != ",") // Filter out empty lines

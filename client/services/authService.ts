@@ -310,19 +310,17 @@ export const sign_medical_waiver = async (): Promise<ResponseMessage | null> => 
   }
 };
 
-export const getDentistInfo = async (dentistid: number): Promise<ResponseMessage | null> => {
+export const getDentistInfo = async (dentistid: number, apiKey: string): Promise<ResponseMessage | null> => {
   try {
-    const token = await getToken();
+    const url = `${JARVIS_BASE_URL}/smilewhite_app/dentist/${dentistid}/`;
 
-    const response = await authService.get(`/api/v1/dentist/${dentistid}`, {
+    const response = await axios.get(url, {
       headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Api-Key ${apiKey}`,
       },
     });
 
-    return { message: response.data.message, token: response.data.token, status: response.status, dentistData: response.data.dentist };
+    return response.data;
   } catch (error) {
     console.error("Error getting dentist info:", error);
     throw error;

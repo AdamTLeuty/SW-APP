@@ -5,6 +5,7 @@ import { getToken, storeToken } from "./tokenStorage";
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 const JARVIS_BASE_URL = process.env.EXPO_PUBLIC_JARVIS_URL;
+const JARVIS_API_KEY = process.env.EXPO_PUBLIC_JARVIS_API_KEY;
 
 const authService = axios.create({
   baseURL: BASE_URL,
@@ -285,27 +286,42 @@ export const updateAlignerChangeDate = async (delay: boolean): Promise<ResponseM
   }
 };
 
-export const sign_medical_waiver = async (): Promise<ResponseMessage | null> => {
+interface PatchResponse {
+  // Define the structure of the response if needed
+}
+
+export const signMedicalWaiver = async (email: string): Promise<PatchResponse | null> => {
   try {
-    const token = await getToken();
+    if (!JARVIS_BASE_URL || !JARVIS_API_KEY) {
+      throw new Error("Missing environment variables for BASE_URL or JARVIS_AUTH_TOKEN");
+    }
 
-    console.log(token);
+    console.log("Updating terms accepted for user: ", email);
 
-    const response = await authService.put(
-      "/api/v1/signWaiver",
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-cache",
-          Authorization: `Bearer ${token}`,
-        },
+    const requestURL = `${JARVIS_BASE_URL}/smilewhite_app/customer/${email}/`;
+
+    console.log("URL: ", JARVIS_BASE_URL);
+
+    const payload = {
+      terms_accepted: true,
+    };
+
+    const response = await axios.patch(requestURL, payload, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Api-Key ${JARVIS_API_KEY}`,
       },
-    );
+    });
 
-    return { message: response.data.message, token: response.data.token, status: response.status, userData: response.data.userData };
+    if (response.status === 200 || response.status === 204) {
+      console.log("Successfully updated terms_accepted for user:", email);
+      return response.data;
+    } else {
+      console.error("Jarvis responded with a status code:", response.status);
+      throw new Error(`Jarvis responded with a status code: ${response.status}`);
+    }
   } catch (error) {
-    console.error("Error signing medical waiver`:", error);
+    console.error("Error signing medical waiver:", error);
     throw error;
   }
 };

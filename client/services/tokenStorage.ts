@@ -13,10 +13,10 @@ export const getToken = async () => {
   try {
     const token = await SecureStore.getItemAsync("token");
     if (token) {
-      console.log("Token retrieved:", token);
+      //console.log("Token retrieved:", token);
       return token;
     } else {
-      console.log("No token stored");
+      //console.log("No token stored");
       return null;
     }
   } catch (error) {

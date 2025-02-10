@@ -214,12 +214,16 @@ export const checkUserStatus = async (email: string, token: string): Promise<Res
 
 export const getCustomerDataJarvis = async (apiKey: string, email: string, oauthToken: string): Promise<any> => {
   try {
-    console.log(apiKey);
-    console.log(email);
+    console.log("Getting customer data from Jarvis...");
+    console.log("Api key for jarvis: " + apiKey);
+    console.log("User email: " + email);
+    console.log("oauthtoken: " + oauthToken);
 
     const url = `${JARVIS_BASE_URL}/smilewhite_app/customer/${email}/`;
 
     console.log(url);
+    console.log(`Api-Key ${apiKey}`);
+    console.log("X-Cognito-Token: " + oauthToken);
 
     const response = await axios.get(url, {
       headers: {
@@ -231,6 +235,7 @@ export const getCustomerDataJarvis = async (apiKey: string, email: string, oauth
     return response.data;
   } catch (error) {
     console.error("Error fetching customer data:", error);
+    console.log(response);
     throw error;
   }
 };
@@ -344,15 +349,15 @@ export const getDentistInfo = async (dentistid: number, apiKey: string, oauthTok
   }
 };
 
-export const getDentistAvailability = async (dentistid: number): Promise<ResponseMessage | null> => {
+export const getDentistAvailability = async (dentistid: number, apiKey: string): Promise<ResponseMessage | null> => {
   try {
-    const token = await getToken();
+    console.log("Getting dentist availability for dentist ID:", dentistid);
 
-    const response = await authService.get(`/api/v1/dentist/${dentistid}/availability`, {
+    const url = `${JARVIS_BASE_URL}/smilewhite_app/dentist/${dentistid}/availability/`;
+
+    const response = await axios.get(url, {
       headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Api-Key ${apiKey}`,
       },
     });
 

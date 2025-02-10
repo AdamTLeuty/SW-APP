@@ -40,8 +40,8 @@ interface UserContextType {
   updateUsername: (name: string) => Promise<void>;
   medicalWaiverSigned: boolean;
   dentistID: number;
-  oauthTokens: string;
-  setOauthTokens: (token: string) => Promise<void>;
+  oauthTokens: any;
+  setOauthTokens: (oauthTokens: any) => Promise<void>;
 }
 
 // Create the context with an initial value
@@ -64,23 +64,26 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string) => {
     setIsLoggedIn(true);
     setStatus("alignerStage");
-    await updateUserContext(email);
+    console.log("About to call `updateUserContext`");
+    updateUserContext(email);
   };
 
   const updateUserContext = async (userEmail: string) => {
-    const token = await getToken();
-    let response;
-    let responseJarvis;
-    let jarvisData;
-    const apiKey = process.env.EXPO_PUBLIC_JARVIS_API_KEY;
-    const oauthToken = oauthTokens.token;
+    console.log("About to update user context ...");
 
-    if (token) {
-      response = await checkUserStatus(userEmail, token);
-      responseJarvis = await getCustomerDataJarvis(apiKey, userEmail, oauthToken);
-    }
+    const apiKey = process.env.EXPO_PUBLIC_JARVIS_API_KEY;
+
+    console.log(apiKey);
+    console.log(userEmail);
+    console.log(oauthTokens.idToken);
+
+    const responseJarvis = await getCustomerDataJarvis(apiKey, userEmail, oauthTokens.idToken);
+
+    console.log("Response jarvis:");
+    console.log(responseJarvis);
+
     if (responseJarvis != null) {
-      jarvisData = responseJarvis as JarvisData;
+      const jarvisData = responseJarvis as JarvisData;
 
       if (jarvisData.name != null && jarvisData?.last_name != null) {
         let newUser: User = { name: jarvisData.name + "\u00A0" + jarvisData.last_name, email: userEmail };
@@ -98,7 +101,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setMedicalWaiverSigned(jarvisData.terms_accepted);
       }
     }
-    if (response?.userData != null) {
+    /*if (response?.userData != null) {
       const userDataWithStage = response.userData as {
         username: string;
         alignerCount: number;
@@ -115,7 +118,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (userDataWithStage.alignerChangeDate) {
         setAlignerChangeDate(userDataWithStage.alignerChangeDate);
       }
-    }
+      }*/
     return;
   };
 

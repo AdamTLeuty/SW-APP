@@ -18,14 +18,29 @@ import { jwtDecode } from "jwt-decode";
 
 export default function SignInScreen() {
   const { authTokens, promptAsync, logout } = useAuth();
-  const { setOauthTokens, login } = useUserContext();
+  const { oauthTokens, setOauthTokens, login } = useUserContext();
 
   useEffect(() => {
     if (authTokens) {
       setOauthTokens(authTokens);
-      login();
     }
   }, [authTokens]);
+
+  useEffect(() => {
+    if (oauthTokens.idToken != null) {
+      console.log("TOKENS IN USER CONTEXT: ", oauthTokens);
+      const userEmail = jwtDecode(oauthTokens.idToken).email;
+      if (userEmail) {
+        console.log("User email:", userEmail);
+        login(userEmail);
+      } else {
+        console.error("No email in token");
+      }
+    } else {
+      console.error(oauthTokens);
+      console.log(oauthTokens);
+    }
+  }, [oauthTokens]);
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}>

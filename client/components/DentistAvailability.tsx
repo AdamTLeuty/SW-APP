@@ -23,7 +23,8 @@ export default function DentistAvailability() {
 
   const fetchAvailability = useCallback(async () => {
     try {
-      const info = (await getDentistAvailability(dentistID)) as { availability: AvailabilitySlot[] };
+      const apiKey = process.env.EXPO_PUBLIC_JARVIS_API_KEY;
+      const info = (await getDentistAvailability(dentistID, apiKey)) as { availability: AvailabilitySlot[] };
       if (info?.availability != null) {
         console.log("Availability");
         console.log(info.availability);

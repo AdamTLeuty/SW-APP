@@ -24,10 +24,15 @@ import Colors from "@/constants/Colors";
 import { BlurView } from "@/components/Themed";
 import { signMedicalWaiver } from "@/services/authService";
 
-const handleClick = async (setWaiting: React.Dispatch<React.SetStateAction<Boolean>>, updateUserContext: (email: string) => Promise<void>, userEmail: string) => {
+import { jwtDecode } from "jwt-decode";
+
+const handleClick = async (setWaiting: React.Dispatch<React.SetStateAction<Boolean>>, updateUserContext: (email: string) => Promise<void>, userEmail: string, oauthTokens: any) => {
   setWaiting(true);
   try {
-    const response = await signMedicalWaiver(userEmail);
+    const userEmail = jwtDecode(oauthTokens.idToken).email;
+    console.log("User email:", userEmail);
+    console.log(oauthTokens.idToken);
+    const response = await signMedicalWaiver(userEmail, oauthTokens.idToken);
     if (response) {
       console.log("Medical waiver signed successfully.");
       updateUserContext(userEmail);
@@ -46,16 +51,17 @@ interface TermsButtonProps {
   boxChecked: boolean;
   updateUserContext: (email: string) => Promise<void>;
   userEmail: string;
+  oauthTokens: any;
 }
 
-const TermsButton: React.FC<TermsButtonProps> = ({ boxChecked, updateUserContext, userEmail }) => {
+const TermsButton: React.FC<TermsButtonProps> = ({ boxChecked, updateUserContext, userEmail, oauthTokens }) => {
   const [waiting, setWaiting] = useState<Boolean>(false);
 
   if (boxChecked) {
     return (
       <Button
         onPressIn={() => {
-          handleClick(setWaiting, updateUserContext, userEmail);
+          handleClick(setWaiting, updateUserContext, userEmail, oauthTokens);
         }}
         waiting={waiting}
       >
@@ -76,7 +82,7 @@ const TermsButton: React.FC<TermsButtonProps> = ({ boxChecked, updateUserContext
 };
 
 export default function Home() {
-  const { updateUserContext, user } = useUserContext();
+  const { updateUserContext, user, oauthTokens } = useUserContext();
   const [refreshing, setRefreshing] = React.useState(false);
   const [isChecked, setChecked] = useState(false);
   const [confirmationBoxHeight, setConfirmationBoxHeight] = useState(0);
@@ -208,7 +214,7 @@ export default function Home() {
             style={styles.body}
           >{`I have reviewed and understood the terms and conditions for Smile White treatment. I accept the risks and agree to proceed with the treatment, acknowledging that Smile White makes no guarantees regarding the outcome.`}</Text>
         </View>
-        <TermsButton boxChecked={isChecked} updateUserContext={updateUserContext} userEmail={user?.email} />
+        <TermsButton boxChecked={isChecked} updateUserContext={updateUserContext} userEmail={user?.email} oauthTokens={oauthTokens} />
       </LinearGradient>
     </SafeAreaView>
   );

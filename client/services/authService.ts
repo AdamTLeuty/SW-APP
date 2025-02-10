@@ -1,5 +1,3 @@
-// services/hubspotService.ts
-
 import axios from "axios";
 import { getToken, storeToken } from "./tokenStorage";
 
@@ -214,7 +212,7 @@ export const checkUserStatus = async (email: string, token: string): Promise<Res
   }
 };
 
-export const getCustomerDataJarvis = async (apiKey: string, email: string): Promise<any> => {
+export const getCustomerDataJarvis = async (apiKey: string, email: string, oauthToken: string): Promise<any> => {
   try {
     console.log(apiKey);
     console.log(email);
@@ -226,6 +224,7 @@ export const getCustomerDataJarvis = async (apiKey: string, email: string): Prom
     const response = await axios.get(url, {
       headers: {
         Authorization: `Api-Key ${apiKey}`,
+        "X-Cognito-Token": oauthToken,
       },
     });
 
@@ -290,7 +289,7 @@ interface PatchResponse {
   // Define the structure of the response if needed
 }
 
-export const signMedicalWaiver = async (email: string): Promise<PatchResponse | null> => {
+export const signMedicalWaiver = async (email: string, oauthToken: string): Promise<PatchResponse | null> => {
   try {
     if (!JARVIS_BASE_URL || !JARVIS_API_KEY) {
       throw new Error("Missing environment variables for BASE_URL or JARVIS_AUTH_TOKEN");
@@ -310,6 +309,7 @@ export const signMedicalWaiver = async (email: string): Promise<PatchResponse | 
       headers: {
         "Content-Type": "application/json",
         Authorization: `Api-Key ${JARVIS_API_KEY}`,
+        "X-Cognito-Token": oauthToken,
       },
     });
 
@@ -326,13 +326,14 @@ export const signMedicalWaiver = async (email: string): Promise<PatchResponse | 
   }
 };
 
-export const getDentistInfo = async (dentistid: number, apiKey: string): Promise<ResponseMessage | null> => {
+export const getDentistInfo = async (dentistid: number, apiKey: string, oauthToken: string): Promise<ResponseMessage | null> => {
   try {
     const url = `${JARVIS_BASE_URL}/smilewhite_app/dentist/${dentistid}/`;
 
     const response = await axios.get(url, {
       headers: {
         Authorization: `Api-Key ${apiKey}`,
+        "X-Cognito-Token": oauthToken,
       },
     });
 

@@ -14,14 +14,16 @@ import { router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
 import { universalStyles } from "@/constants/Styles";
 import { useAuth } from "@/context/AuthContext";
+import { jwtDecode } from "jwt-decode";
 
 export default function SignInScreen() {
   const { authTokens, promptAsync, logout } = useAuth();
-  const { oauthToken, updateOauthToken } = useUserContext();
+  const { setOauthTokens, login } = useUserContext();
 
   useEffect(() => {
     if (authTokens) {
-      updateOauthToken(authTokens?.accessToken);
+      setOauthTokens(authTokens);
+      login();
     }
   }, [authTokens]);
 
@@ -45,7 +47,7 @@ export default function SignInScreen() {
           <View>
             {authTokens ? (
               <>
-                <Text>Welcome! {authTokens.accessToken}</Text>
+                <Text>{"There is an auth token"}</Text>
                 <Button onPress={logout}>Logout</Button>
               </>
             ) : (

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { router } from "expo-router";
 import { deleteToken, getToken } from "@/services/tokenStorage";
+import { useAuthContext } from "@/context/AuthContext";
 import { checkUserStatus, setUserStatus, getCustomerDataJarvis } from "@/services/authService";
 // Define the types for the context state and functions
 interface User {
@@ -39,8 +40,8 @@ interface UserContextType {
   updateUsername: (name: string) => Promise<void>;
   medicalWaiverSigned: boolean;
   dentistID: number;
-  oauthToken: string;
-  updateOauthToken: (token: string) => Promise<void>;
+  oauthTokens: string;
+  setOauthTokens: (token: string) => Promise<void>;
 }
 
 // Create the context with an initial value
@@ -58,7 +59,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [expoPushToken, setExpoPushToken] = useState<string>("");
   const [medicalWaiverSigned, setMedicalWaiverSigned] = useState<boolean>(true);
   const [dentistID, setDentistID] = useState<number>(-1);
-  const [oauthToken, setOauthtoken] = useState<string>("");
+  const [oauthTokens, setOauthTokens] = useState<any>({});
 
   const login = async (email: string) => {
     setIsLoggedIn(true);
@@ -72,9 +73,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     let responseJarvis;
     let jarvisData;
     const apiKey = process.env.EXPO_PUBLIC_JARVIS_API_KEY;
+    const oauthToken = oauthTokens.token;
+
     if (token) {
       response = await checkUserStatus(userEmail, token);
-      responseJarvis = await getCustomerDataJarvis(apiKey, userEmail);
+      responseJarvis = await getCustomerDataJarvis(apiKey, userEmail, oauthToken);
     }
     if (responseJarvis != null) {
       jarvisData = responseJarvis as JarvisData;
@@ -122,9 +125,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
+    const { clearToken } = useAuthContext();
     setIsLoggedIn(false);
     setUser(null);
     deleteToken();
+    clearToken();
     setStatus("loggedOut");
   };
 
@@ -227,8 +232,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         updateUsername,
         medicalWaiverSigned,
         dentistID,
-        oauthToken,
-        updateOauthToken,
+        oauthTokens,
+        setOauthTokens,
       }}
     >
       {children}

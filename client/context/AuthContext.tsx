@@ -1,24 +1,30 @@
-import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
+import React, { createContext, useContext, useState, useMemo, useEffect, ReactNode } from "react";
 import * as WebBrowser from "expo-web-browser";
 import { useAuthRequest, exchangeCodeAsync, revokeAsync, ResponseType, makeRedirectUri } from "expo-auth-session";
 import { Alert } from "react-native";
+import jwtDecode from "jwt-decode";
 import Cognito from "@/constants/Cognito";
 import Constants from "expo-constants";
 
 WebBrowser.maybeCompleteAuthSession();
 
-const AuthContext = createContext();
+interface AuthContextType {
+  authTokens: any;
+  promptAsync: () => void;
+  logout: () => void;
+  getEmailFromToken: () => string | null;
+  clearToken: () => void;
+}
 
-export const AuthProvider = ({ children }) => {
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authTokens, setAuthTokens] = useState(null);
   const clientId = Cognito.clientID;
+  const clientSecret = Cognito.clientSecret;
   const userPoolUrl = `https://${Cognito.userPoolID}.auth.${Cognito.region}.amazoncognito.com`;
 
-  const redirectUri =
-    Constants.executionEnvironment === "storeClient" ? "exp://localhost:8081" /*makeRedirectUri({ useProxy: true })*/ : makeRedirectUri({ scheme: "smilewhite", path: "oauthredirect" });
-
-  console.log("Redirect uri: " + redirectUri);
-  console.log(makeRedirectUri({ scheme: "smilewhite", path: "oauthredirect" }));
+  const redirectUri = Constants.executionEnvironment === "storeClient" ? "exp://localhost:8081" : makeRedirectUri({ scheme: "smilewhite", path: "oauthredirect" });
 
   const discoveryDocument = useMemo(
     () => ({
@@ -39,12 +45,16 @@ export const AuthProvider = ({ children }) => {
     discoveryDocument,
   );
 
-  console.log(request);
-
   useEffect(() => {
     const exchangeFn = async (exchangeTokenReq) => {
       try {
-        const exchangeTokenResponse = await exchangeCodeAsync(exchangeTokenReq, discoveryDocument);
+        const exchangeTokenResponse = await exchangeCodeAsync(
+          {
+            ...exchangeTokenReq,
+            clientSecret,
+          },
+          discoveryDocument,
+        );
         setAuthTokens(exchangeTokenResponse);
       } catch (error) {
         console.error("Token exchange error:", error);
@@ -73,14 +83,26 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     if (authTokens?.refreshToken) {
       try {
-        await revokeAsync(
+        const revokeResponse = await revokeAsync(
           {
             clientId,
             token: authTokens.refreshToken,
+            clientSecret,
           },
           discoveryDocument,
         );
-        setAuthTokens(null);
+
+        // Log the response for debugging purposes
+        console.log("Revoke response:");
+        console.log(revokeResponse);
+
+        // Check if the response is valid and handle it accordingly
+        if (revokeResponse.status === 200) {
+          setAuthTokens(null);
+        } else {
+          console.error("Logout error: Invalid response", revokeResponse);
+          Alert.alert("Logout error", "Failed to log out. Please try again.");
+        }
       } catch (error) {
         console.error("Logout error:", error);
         Alert.alert("Logout error", "Failed to log out. Please try again.");
@@ -90,7 +112,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  return <AuthContext.Provider value={{ authTokens, promptAsync, logout }}>{children}</AuthContext.Provider>;
+  const clearToken = async () => {
+    setAuthTokens(null);
+  };
+
+  return <AuthContext.Provider value={{ authTokens, promptAsync, logout, clearToken }}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => useContext(AuthContext);
+// Custom hook to use the UserContext
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuthContext must be used within a AuthProvider");
+  }
+  return context;
+};

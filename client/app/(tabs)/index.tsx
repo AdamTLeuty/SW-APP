@@ -50,23 +50,17 @@ export default function SignInScreen() {
             Log in
           </Title>
           <Text style={styles.greeting} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} fontWeight={"700"} textBreakStrategy="balanced">
-            Please enter the email you gave us when you booked your consultation.
+            Please use the email you used for your aligner e-consultation.
           </Text>
-          <LoginArea />
-          <Text style={styles.orText}>Or</Text>
-          <Pressable>
-            <Text style={styles.registerText} lightColor="#4378ff" darkColor="#ffffff" onPress={() => router.replace("/register")}>
-              Register
-            </Text>
-          </Pressable>
-          <View>
+          <View style={{ paddingVertical: 75 }}>
             {authTokens ? (
               <>
-                <Text>{"There is an auth token"}</Text>
                 <Button onPress={logout}>Logout</Button>
               </>
             ) : (
-              <Button onPress={() => promptAsync()}>Login/Register</Button>
+              <Button style={{ minWidth: "50%", textAlign: "center", justifyContent: "center", alignItems: "center" }} onPress={() => promptAsync()}>
+                Login
+              </Button>
             )}
           </View>
         </View>

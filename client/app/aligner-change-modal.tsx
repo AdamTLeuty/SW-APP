@@ -143,8 +143,7 @@ const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setInd
 
 export default function ModalScreen() {
   const [selectedIndex, setIndex] = useState(-1);
-  const { updateUserContext, alignerCount, updateAlignerCount } = useUserContext();
-
+  const { user, updateUserContext, alignerCount, updateAlignerCount, alignerProgress, updateAlignerProgress, updateAlignerChangeDate } = useUserContext();
   const delayReasons = [
     "My aligners are still hurting my teeth",
     "I am waiting for a replacement aligner",
@@ -153,10 +152,43 @@ export default function ModalScreen() {
     "Other",
   ];
 
-  const updateAlignerProgress = async () => {
-    const response = await updateAlignerChangeDate(false);
-    updateUserContext();
-    toCamera();
+  const changeAligner = async () => {
+    //This needs to be an endpoint in Jarvis first
+    //const response = await updateAlignerChangeDate(false);
+
+    console.log("\n\n\n");
+
+    //Increment the aligner progress
+    console.log("Aligner progress before: " + alignerProgress);
+    try {
+      await updateAlignerProgress(alignerProgress + 1);
+    } catch (e) {
+      console.error("Failed to update aligner progress:" + e);
+    }
+    console.log("Aligner progress after: " + alignerProgress);
+
+    //Update the aligner change date to 10 days from now
+    try {
+      console.log("Aligner date before: " + alignerChangeDate);
+      await updateAlignerChangeDate(new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString());
+      console.log("Aligner date after: " + alignerChangeDate);
+    } catch (e) {
+      console.error("Failed to update aligner change date:" + e);
+    }
+
+    try {
+      updateUserContext(user.email);
+    } catch (e) {
+      console.error("Failed to update user context" + e);
+    }
+    try {
+      console.log("About to move to the camera screen");
+      toCamera();
+      console.log("Moved to the camera?");
+    } catch (e) {
+      console.error("Failed to move to the camera screen" + e);
+    }
+
     return;
   };
 
@@ -169,7 +201,7 @@ export default function ModalScreen() {
         <Text style={[styles.title]} fontWeight="800" lightColor="black">
           {"It's time to change your\nclear aligners"}
         </Text>
-        <Pressable onPress={updateAlignerProgress} style={styles.button}>
+        <Pressable onPress={changeAligner} style={styles.button}>
           <Text style={styles.buttonText} lightColor="#fff" fontWeight="600">
             {"Take new photo"}
           </Text>

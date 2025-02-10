@@ -1,8 +1,10 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 import { router } from "expo-router";
 import { deleteToken, getToken } from "@/services/tokenStorage";
 import { useAuthContext } from "@/context/AuthContext";
-import { checkUserStatus, setUserStatus, getCustomerDataJarvis } from "@/services/authService";
+import { checkUserStatus, getCustomerDataJarvis } from "@/services/authService";
+import { saveToStorage, loadFromStorage } from "@/services/userDataStorage";
+
 // Define the types for the context state and functions
 interface User {
   name: string;
@@ -55,11 +57,31 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [alignerCount, setAlignerCount] = useState<number>(0);
   const [alignerProgress, setAlignerProgress] = useState<number>(0);
-  const [alignerChangeDate, setAlignerChangeDate] = useState<string>("");
+  const [alignerChangeDate, setAlignerChangeDate] = useState<string>(new Date(0).toISOString());
   const [expoPushToken, setExpoPushToken] = useState<string>("");
   const [medicalWaiverSigned, setMedicalWaiverSigned] = useState<boolean>(true);
   const [dentistID, setDentistID] = useState<number>(-1);
   const [oauthTokens, setOauthTokens] = useState<any>({});
+
+  useEffect(() => {
+    const loadInitialValues = async () => {
+      const storedAlignerCount = await loadFromStorage("alignerCount");
+      const storedAlignerProgress = await loadFromStorage("alignerProgress");
+      const storedAlignerChangeDate = await loadFromStorage("alignerChangeDate");
+
+      if (storedAlignerCount !== null) {
+        setAlignerCount(storedAlignerCount);
+      }
+      if (storedAlignerProgress !== null) {
+        setAlignerProgress(storedAlignerProgress);
+      }
+      if (storedAlignerChangeDate !== null) {
+        setAlignerChangeDate(storedAlignerChangeDate);
+      }
+    };
+
+    loadInitialValues();
+  }, []);
 
   const login = async (email: string) => {
     setIsLoggedIn(true);
@@ -101,24 +123,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setMedicalWaiverSigned(jarvisData.terms_accepted);
       }
     }
-    /*if (response?.userData != null) {
-      const userDataWithStage = response.userData as {
-        username: string;
-        alignerCount: number;
-        alignerProgress: number;
-        alignerChangeDate: string;
-      };
-
-      if (userDataWithStage.alignerCount) {
-        setAlignerCount(userDataWithStage.alignerCount);
-      }
-      if (userDataWithStage.alignerProgress != null) {
-        setAlignerProgress(userDataWithStage.alignerProgress);
-      }
-      if (userDataWithStage.alignerChangeDate) {
-        setAlignerChangeDate(userDataWithStage.alignerChangeDate);
-      }
-      }*/
     return;
   };
 
@@ -156,61 +160,34 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
     }
 
-    const token = await getToken();
-    if (!token) {
-      console.error("Token is empty");
-      return;
-    }
-    setUserStatus(token, { username: name });
-
     return;
   };
 
   const updateAlignerProgress = async (count: number) => {
     if (count <= 0) {
     } else {
-      setAlignerCount(count);
+      setAlignerProgress(count);
+      await saveToStorage("alignerProgress", count);
     }
-
-    const token = await getToken();
-    if (!token) {
-      console.error("Token is empty");
-      return;
-    }
-    setUserStatus(token, { aligner_count: count });
 
     return;
   };
 
   const updateAlignerCount = async (count: number) => {
-    await updateUserContext();
-
     if (alignerCount == 0) {
       if (count < 0) {
       } else {
         setAlignerCount(count);
+        await saveToStorage("alignerCount", count);
       }
     }
-    const token = await getToken();
-    if (!token) {
-      console.error("Token is empty");
-      return;
-    }
-    setUserStatus(token, { aligner_count: count });
 
     return;
   };
 
-  const updateOauthToken = async (token: string) => {
-    const userToken = await getToken();
-    if (!userToken) {
-      console.error("Token is empty");
-      return;
-    }
-    if (token != "" && token != oauthToken) {
-      setOauthtoken(token);
-      setUserStatus(userToken, { oauthToken: token });
-    }
+  const updateAlignerChangeDate = async (date: string) => {
+    setAlignerChangeDate(date);
+    await saveToStorage("alignerChangeDate", date);
   };
 
   return (
@@ -223,7 +200,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         login,
         logout,
         updateUserContext,
-
         tentativeLogin,
         alignerCount,
         alignerProgress,

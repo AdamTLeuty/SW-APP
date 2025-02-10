@@ -177,7 +177,6 @@ function RootLayoutNav() {
             headerShown: true,
           }}
         />
-        <Stack.Screen name="impressions_result" options={{ presentation: "modal", headerShown: false }} />
         <Stack.Screen name="(medicalWaiverProcess)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>

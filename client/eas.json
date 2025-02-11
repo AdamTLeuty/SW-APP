@@ -21,7 +21,9 @@
         "distribution": "store"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://app.smilewhite.co.uk"
+        "EXPO_PUBLIC_API_URL": "https://app.smilewhite.co.uk",
+        "EXPO_PUBLIC_JARVIS_URL": "https://smilewhite.miterracita.com/api",
+        "EXPO_PUBLIC_JARVIS_API_KEY": "k02x000p.8Iuyzc10rYtH3GCSQJGPZkBKkS2DSYIt"
       }
     }
   },

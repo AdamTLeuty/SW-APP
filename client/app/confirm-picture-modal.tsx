@@ -57,7 +57,8 @@ export default function ModalScreen() {
     console.log(image);
 
     try {
-      const result = await uploadImage(imageUri, status);
+      // This needs to be a jarvis endpoint first
+      //const result = await uploadImage(imageUri, status);
       await saveImageToAlbum(imageUri, "SCC");
       router.back();
       Toast.show({

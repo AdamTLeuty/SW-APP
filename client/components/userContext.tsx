@@ -1,7 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 import { router } from "expo-router";
 import { deleteToken, getToken } from "@/services/tokenStorage";
-import { useAuthContext } from "@/context/AuthContext";
 import { checkUserStatus, getCustomerDataJarvis } from "@/services/authService";
 import { saveToStorage, loadFromStorage } from "@/services/userDataStorage";
 
@@ -39,6 +38,7 @@ interface UserContextType {
   updateExpoPushToken: (expoToken: string) => Promise<void>;
   updateAlignerCount: (count: number) => Promise<void>;
   updateAlignerProgress: (count: number) => Promise<void>;
+  updateAlignerChangeDate: (date: string) => Promise<void>;
   updateUsername: (name: string) => Promise<void>;
   medicalWaiverSigned: boolean;
   dentistID: number;
@@ -213,6 +213,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         dentistID,
         oauthTokens,
         setOauthTokens,
+        updateAlignerChangeDate,
       }}
     >
       {children}

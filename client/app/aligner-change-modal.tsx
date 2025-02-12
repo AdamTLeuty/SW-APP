@@ -6,10 +6,10 @@ import { Button, Text, TextInput, View, Title, Radio } from "@/components/Themed
 import { Link, router } from "expo-router";
 import { Pressable } from "react-native";
 //import { CheckBox } from "@rneui/themed";
-import { updateAlignerChangeDate } from "@/services/authService";
 import Colors from "@/constants/Colors";
 import { useState } from "react";
 import { useUserContext } from "@/components/userContext";
+import Toast from "react-native-toast-message";
 
 interface DelayButtonProps {
   selectedIndex: number;
@@ -17,15 +17,25 @@ interface DelayButtonProps {
 }
 
 const DelayButton: React.FC<DelayButtonProps> = ({ selectedIndex, delayReasons }) => {
+  const { updateAlignerChangeDate } = useUserContext();
+
   const active = selectedIndex != -1;
 
   //{selectedIndex} {delayReasons[selectedIndex]}
   const delayAlignerChange = async () => {
     //This will call a function to delay the aligner change date by one, and send that information to the server
-    const response = await updateAlignerChangeDate(true);
     //This will include the `Reason` string to log the issue
-    //Then, send back to the home screen
-    router.replace("/(loggedIn)/home");
+    try {
+      await updateAlignerChangeDate(new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString());
+      Toast.show({
+        type: "success",
+        position: "bottom",
+        text1: "Delayed aligner change until tomorrow",
+      });
+      router.replace("/(loggedIn)/home");
+    } catch (e) {
+      console.error("Failed to update aligner change date:" + e);
+    }
   };
 
   if (active) {
@@ -110,6 +120,7 @@ const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setInd
       {delayReasons.map((reason, i) => (
         <View key={i}>
           <Radio
+            style={{ backgroundColor: "transparent" }}
             checked={selectedIndex === i}
             onPress={() => {
               if (selectedIndex === i) {
@@ -143,7 +154,7 @@ const DelayReasonList: React.FC<DelayReasonListProps> = ({ selectedIndex, setInd
 
 export default function ModalScreen() {
   const [selectedIndex, setIndex] = useState(-1);
-  const { user, updateUserContext, alignerCount, updateAlignerCount, alignerProgress, updateAlignerProgress, updateAlignerChangeDate } = useUserContext();
+  const { user, updateUserContext, alignerCount, updateAlignerCount, alignerProgress, updateAlignerProgress, alignerChangeDate, updateAlignerChangeDate } = useUserContext();
   const delayReasons = [
     "My aligners are still hurting my teeth",
     "I am waiting for a replacement aligner",
@@ -156,22 +167,17 @@ export default function ModalScreen() {
     //This needs to be an endpoint in Jarvis first
     //const response = await updateAlignerChangeDate(false);
 
-    console.log("\n\n\n");
-
     //Increment the aligner progress
-    console.log("Aligner progress before: " + alignerProgress);
     try {
       await updateAlignerProgress(alignerProgress + 1);
     } catch (e) {
       console.error("Failed to update aligner progress:" + e);
     }
-    console.log("Aligner progress after: " + alignerProgress);
 
     //Update the aligner change date to 10 days from now
+    // This should be set by the user at setup
     try {
-      console.log("Aligner date before: " + alignerChangeDate);
       await updateAlignerChangeDate(new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString());
-      console.log("Aligner date after: " + alignerChangeDate);
     } catch (e) {
       console.error("Failed to update aligner change date:" + e);
     }

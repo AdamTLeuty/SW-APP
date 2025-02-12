@@ -7,14 +7,16 @@ import { Text, View, Title, KeyboardAvoidingView, ScrollView, Button } from "@/c
 import Colors from "@/constants/Colors";
 import Toast from "react-native-toast-message";
 import { useUserContext } from "@/components/userContext";
-
+import { Alert } from "react-native";
 import { useEffect, useState } from "react";
-
-import { router } from "expo-router";
+import { Icon } from "@/components/Icon";
+import * as Linking from "expo-linking";
+import { Link, router } from "expo-router";
 import { getToken } from "@/services/tokenStorage";
 import { universalStyles } from "@/constants/Styles";
 import { useAuth } from "@/context/AuthContext";
 import { jwtDecode } from "jwt-decode";
+import { ActivityIndicator } from "react-native";
 
 export default function SignInScreen() {
   const { authTokens, promptAsync, logout } = useAuth();
@@ -43,29 +45,41 @@ export default function SignInScreen() {
   }, [oauthTokens]);
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
-        <View style={styles.container}>
-          <Title lightColor={"#000"} darkColor={"#fff"}>
-            Log in
-          </Title>
-          <Text style={styles.greeting} lightColor={Colors.light.tint} darkColor={Colors.dark.tint} fontWeight={"700"} textBreakStrategy="balanced">
-            Please use the email you used for your aligner e-consultation.
+    <View lightColor={Colors.tint} darkColor={Colors.tint} style={styles.container}>
+      <Text lightColor={"white"} darkColor={"white"}>
+        Welcome to
+      </Text>
+      <Icon style={{ marginTop: 9, marginBottom: 43 }} iconName="logo-wide" color={"white"} width={"231"} height={"34"} />
+      <Button
+        lightColor={"white"}
+        darkColor={"white"}
+        style={{ minWidth: "77%", width: "auto", justifyContent: "center", alignItems: "center" }}
+        onPress={authTokens ? () => {} : () => promptAsync()}
+      >
+        {authTokens ? (
+          <ActivityIndicator size="small" color={Colors.light.text} />
+        ) : (
+          <Text lightColor={Colors.light.text} darkColor={Colors.light.text}>
+            {"Log in/Sign up"}
           </Text>
-          <View style={{ paddingVertical: 75 }}>
-            {authTokens ? (
-              <>
-                <Button onPress={logout}>Logout</Button>
-              </>
-            ) : (
-              <Button style={{ minWidth: "50%", textAlign: "center", justifyContent: "center", alignItems: "center" }} onPress={() => promptAsync()}>
-                Login
-              </Button>
-            )}
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        )}
+      </Button>
+      <Text lightColor={"white"} darkColor={"white"}>
+        {"Having trouble logging in?"}
+      </Text>
+      <Pressable
+        onPress={() => {
+          Linking.openURL("tel:${01138687615}").catch((err) => {
+            Alert.alert("Error", "Unable to open dialer");
+            console.log("Could not open dialer" + err);
+          });
+        }}
+      >
+        <Text style={{ marginTop: 5, textDecorationStyle: "solid", textDecorationLine: "underline" }} lightColor={"white"} darkColor={"white"} fontWeight="700">
+          {"Get help signing in"}
+        </Text>
+      </Pressable>
+    </View>
   );
 }
 

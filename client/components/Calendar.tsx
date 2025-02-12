@@ -99,7 +99,7 @@ const Calendar: React.FC<CalendarProps> = ({ title }) => {
     try {
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status === "granted") {
-        const album = await MediaLibrary.getAlbumAsync("SCC");
+        const album = await MediaLibrary.getAlbumAsync("Smile White");
         if (album) {
           const assets = await MediaLibrary.getAssetsAsync({
             album: album,

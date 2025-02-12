@@ -41,14 +41,14 @@ export default function Gallery() {
     const fetchedAlbums = await MediaLibrary.getAlbumsAsync({
       includeSmartAlbums: true,
     });
-    const sccAlbum = await MediaLibrary.getAlbumAsync("SCC");
+    const sccAlbum = await MediaLibrary.getAlbumAsync("Smile White");
 
     if (sccAlbum) {
       const theOnlyAlbumThatMatters: Album[] = [sccAlbum];
       setAlbums(theOnlyAlbumThatMatters);
     } else {
       // Handle the case where sccAlbum is null or undefined
-      console.warn("The album 'SCC' was not found.");
+      console.warn("The album 'Smile White' was not found.");
     }
   }
 

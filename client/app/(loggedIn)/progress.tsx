@@ -26,7 +26,7 @@ export default function Progress() {
         </Text>
         <ProgressBar text="Progress" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />
         {/*<ProgressBar style={styles.progressHolder} text="Progress Bar" currentAlignerCount={alignerProgress} totalAlignerCount={alignerCount} />*/}
-        <Calendar title="Your calendar" rows={3} />
+        <Calendar title="Calendar" />
       </View>
     </ScrollView>
   );

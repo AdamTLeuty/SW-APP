@@ -1,0 +1,15 @@
+#!/bin/bash
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+#export EXPO_NO_KEYCHAIN=1  # Get rid of the keychain to manually give the password
+clear;
+echo "Starting Expo prebuild...";
+npx expo prebuild --yarn -p android;
+if [ $? -ne 0 ]; then
+    echo "${RED}Prebuild failed!";
+else
+    echo "${GREEN}Prebuild succeeded!";
+    echo "Building the application for Android...";
+    EXPO_NO_KEYCHAIN=1 eas build --profile production --platform android --local
+fi

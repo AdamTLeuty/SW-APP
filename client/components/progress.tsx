@@ -52,7 +52,7 @@ export const Progress: React.FC<Props> = ({ text, currentAlignerCount, totalAlig
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    borderRadius: 10,
+    borderRadius: 20,
     paddingHorizontal: 17,
     paddingBottom: 22,
     paddingTop: 12,

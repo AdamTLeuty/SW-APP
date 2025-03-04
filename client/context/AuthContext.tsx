@@ -14,6 +14,7 @@ interface AuthContextType {
   logout: () => void;
   getEmailFromToken: () => string | null;
   clearToken: () => void;
+  deleteUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -116,7 +117,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setAuthTokens(null);
   };
 
-  return <AuthContext.Provider value={{ authTokens, promptAsync, logout, clearToken }}>{children}</AuthContext.Provider>;
+  const deleteUser = async () => {
+    const accessToken = authTokens?.accessToken;
+    const response = await fetch("https://cognito-idp.eu-north-1.amazonaws.com/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-amz-json-1.1",
+        "X-Amz-Target": "AWSCognitoIdentityProviderService.DeleteUser",
+        "X-Amz-Date": new Date().toISOString().replace(/[:-]|\.\d{3}/g, ""),
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        AccessToken: accessToken,
+      }),
+    });
+
+    if (response.ok) {
+      console.log("User deleted successfully");
+    } else {
+      console.error("Error deleting user:", await response.text());
+    }
+  };
+
+  return <AuthContext.Provider value={{ authTokens, promptAsync, logout, clearToken, deleteUser }}>{children}</AuthContext.Provider>;
 };
 
 // Custom hook to use the UserContext

@@ -16,6 +16,7 @@ export default {
     tabIconSelectedTint: tintColorLight,
     surface: "#f5f5f5",
     none: "#FFFFFF00",
+    error: "#ff4346",
   },
   dark: {
     text: "#ffffff",
@@ -29,6 +30,7 @@ export default {
     tabIconSelectedBackground: "#4378ff",
     surface: "#f5f5f533",
     none: "#FFFFFF00",
+    error: "#ff4346",
   },
 };
 

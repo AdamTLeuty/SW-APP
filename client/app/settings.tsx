@@ -6,8 +6,8 @@ import { universalStyles as styles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
 
 import { useUserContext } from "@/components/userContext";
-
-import { RefreshControl } from "react-native";
+import { useAuth } from "@/context/AuthContext";
+import { RefreshControl, Alert } from "react-native";
 
 export default function SettingsScreen() {
   const {
@@ -20,6 +20,8 @@ export default function SettingsScreen() {
     updateAlignerProgress,
     updateUsername,
   } = useUserContext();
+
+  const { deleteUser } = useAuth();
 
   const [screenKey, setScreenKey] = useState(0); // Step 1: Initialize a key state
 
@@ -51,6 +53,33 @@ export default function SettingsScreen() {
     setRefreshing(false);
   }, []);
 
+  const handleDeleteAccount = async () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete your account? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteUser();
+              Alert.alert("Account deleted", "Your account has been successfully deleted.");
+            } catch (error) {
+              console.error("Error deleting account:", error);
+              Alert.alert("Delete user error", "Failed to delete account. Please try again.");
+            }
+          },
+        },
+      ],
+      { cancelable: true },
+    );
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       return () => {
@@ -76,6 +105,9 @@ export default function SettingsScreen() {
         <SettingSection propertyTitle="Aligner Count" value={alignerCount} setValue={setAlignerCount} />
         <View style={styles.separator} />
         <Button onPress={updateSettings}>{"Update settings"}</Button>
+        <Button lightColor={Colors.light.error} darkColor={Colors.dark.error} onPress={handleDeleteAccount}>
+          {"Delete Account"}
+        </Button>
       </ScrollView>
     );
   } else {

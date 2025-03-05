@@ -29,7 +29,7 @@ export default function SignInScreen() {
   }, [authTokens]);
 
   useEffect(() => {
-    if (oauthTokens.idToken != null) {
+    if (oauthTokens && oauthTokens.idToken != null) {
       console.log("TOKENS IN USER CONTEXT: ", oauthTokens);
       const userEmail = jwtDecode(oauthTokens.idToken).email;
       if (userEmail) {

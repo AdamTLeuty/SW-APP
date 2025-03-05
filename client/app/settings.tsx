@@ -22,6 +22,7 @@ export default function SettingsScreen() {
   } = useUserContext();
 
   const { deleteUser } = useAuth();
+  const { logout } = useUserContext();
 
   const [screenKey, setScreenKey] = useState(0); // Step 1: Initialize a key state
 
@@ -68,6 +69,7 @@ export default function SettingsScreen() {
           onPress: async () => {
             try {
               await deleteUser();
+              await logout();
               Alert.alert("Account deleted", "Your account has been successfully deleted.");
             } catch (error) {
               console.error("Error deleting account:", error);

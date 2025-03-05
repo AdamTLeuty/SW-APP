@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { deleteToken, getToken } from "@/services/tokenStorage";
 import { checkUserStatus, getCustomerDataJarvis } from "@/services/authService";
 import { saveToStorage, loadFromStorage } from "@/services/userDataStorage";
+import { useAuth } from "@/context/AuthContext";
 
 // Define the types for the context state and functions
 interface User {
@@ -62,6 +63,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [medicalWaiverSigned, setMedicalWaiverSigned] = useState<boolean>(true);
   const [dentistID, setDentistID] = useState<number>(-1);
   const [oauthTokens, setOauthTokens] = useState<any>({});
+  const { signout } = useAuth();
 
   useEffect(() => {
     const loadInitialValues = async () => {
@@ -132,12 +134,17 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-    const { clearToken } = useAuthContext();
-    setIsLoggedIn(false);
-    setUser(null);
-    deleteToken();
-    clearToken();
-    setStatus("loggedOut");
+    console.log("User Context: LOGGING OUT");
+    try {
+      await signout();
+      setIsLoggedIn(false);
+      setUser(null);
+      setOauthTokens(null);
+      deleteToken();
+      setStatus("loggedOut");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
   };
 
   const updateExpoPushToken = async (expoToken: string) => {

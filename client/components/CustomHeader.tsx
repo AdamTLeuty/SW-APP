@@ -19,7 +19,8 @@ const CustomHeader = (props: { locked: boolean; backButton?: boolean; nav?: any 
   //const routeTest = useRoute();
 
   const handleLogout = async () => {
-    logout();
+    console.log("CuSTOM HEADER: LOGGING OUT");
+    await logout();
   };
 
   const onPress = () => {

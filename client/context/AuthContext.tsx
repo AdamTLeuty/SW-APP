@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useMemo, useEffect, ReactNo
 import * as WebBrowser from "expo-web-browser";
 import { useAuthRequest, exchangeCodeAsync, revokeAsync, ResponseType, makeRedirectUri } from "expo-auth-session";
 import { Alert } from "react-native";
-import jwtDecode from "jwt-decode";
 import Cognito from "@/constants/Cognito";
 import Constants from "expo-constants";
 
@@ -11,10 +10,9 @@ WebBrowser.maybeCompleteAuthSession();
 interface AuthContextType {
   authTokens: any;
   promptAsync: () => void;
-  logout: () => void;
-  getEmailFromToken: () => string | null;
   clearToken: () => void;
   deleteUser: () => Promise<void>;
+  signout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -63,7 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    if (response) {
+    if (response && !authTokens) {
       if (response.error) {
         Alert.alert("Authentication error", response.params.error_description || "Something went wrong");
         return;
@@ -79,37 +77,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
       }
     }
-  }, [response, discoveryDocument, request]);
+  }, [response, discoveryDocument, request, authTokens]);
 
-  const logout = async () => {
-    if (authTokens?.refreshToken) {
-      try {
-        const revokeResponse = await revokeAsync(
-          {
-            clientId,
-            token: authTokens.refreshToken,
-            clientSecret,
-          },
-          discoveryDocument,
-        );
-
-        // Log the response for debugging purposes
-        console.log("Revoke response:");
-        console.log(revokeResponse);
-
-        // Check if the response is valid and handle it accordingly
-        if (revokeResponse.status === 200) {
-          setAuthTokens(null);
-        } else {
-          console.error("Logout error: Invalid response", revokeResponse);
-          Alert.alert("Logout error", "Failed to log out. Please try again.");
-        }
-      } catch (error) {
-        console.error("Logout error:", error);
-        Alert.alert("Logout error", "Failed to log out. Please try again.");
-      }
-    } else {
+  const signout = async () => {
+    console.log("Auth Context: LOGGING OUT");
+    const accessToken = authTokens?.accessToken;
+    const response = await fetch("https://cognito-idp.eu-north-1.amazonaws.com/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-amz-json-1.1",
+        "X-Amz-Target": "AWSCognitoIdentityProviderService.GlobalSignOut",
+        "X-Amz-Date": new Date().toISOString().replace(/[:-]|\.\d{3}/g, ""),
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        AccessToken: accessToken,
+      }),
+    });
+    console.log(response);
+    if (response.ok) {
+      console.log("User signed out successfully");
+      Alert.alert("Signout successful", "Signed out successfully");
       setAuthTokens(null);
+    } else {
+      console.error("Error signing out user:", await response.text());
+      Alert.alert("Signout error", "Failed to sign out. Please try again.");
     }
   };
 
@@ -139,7 +131,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  return <AuthContext.Provider value={{ authTokens, promptAsync, logout, clearToken, deleteUser }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ authTokens, promptAsync, clearToken, deleteUser, signout }}>{children}</AuthContext.Provider>;
 };
 
 // Custom hook to use the UserContext
